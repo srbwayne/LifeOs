@@ -6,6 +6,7 @@ from app.auth.domain.aggregates.user import User
 from app.auth.domain.value_objects.email import Email
 from app.auth.domain.value_objects.hashed_password import HashedPassword
 from app.auth.infrastructure.persistence.repositories.user_repository import SqlAlchemyUserRepository
+from app.auth.infrastructure.persistence.models.user_model import UserModel
 
 @pytest.fixture
 def session():
@@ -27,7 +28,10 @@ def test_can_save_and_retrieve_user(session):
     session.commit()
 
     retrieved_user = repository.find_by_id(user.id)
+    persisted_user = session.get(UserModel, user.id.to_persistence())
 
     assert retrieved_user is not None
+    assert persisted_user is not None
+    assert persisted_user.id == user.id.to_persistence()
     assert retrieved_user.id == user.id
     assert retrieved_user.email == user.email

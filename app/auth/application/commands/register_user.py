@@ -35,7 +35,10 @@ class RegisterUserCommandHandler:
             user = User.register(email=email, hashed_password=hashed_password)
             
             self._user_repository.save(user)
-            character_aggregates = self._character_factory.create_initial(user)
+            character_aggregates = self._character_factory.create_initial(
+                user_id=user.id,
+                email=user.email.value,
+            )
             
             uow.track_aggregate(user)
             for aggregate in character_aggregates:

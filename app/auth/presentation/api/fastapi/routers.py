@@ -7,13 +7,13 @@ from app.auth.application.commands.request_password_reset import RequestPassword
 from app.auth.application.commands.reset_password import ResetPasswordCommand, ResetPasswordCommandHandler
 from app.auth.presentation.api.fastapi.schemas import RegisterUserSchema, LoginSchema, TokenSchema, RefreshTokenSchema, RequestPasswordResetSchema, ResetPasswordSchema
 from app.auth.dependencies import (
-    get_register_user_handler,
     get_login_handler,
     get_logout_handler,
     get_refresh_token_handler,
     get_request_password_reset_handler,
     get_reset_password_handler,
 )
+from app.composition_root import get_register_user_handler
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 

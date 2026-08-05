@@ -1,12 +1,12 @@
 import pytest
 
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.character.domain.aggregates.player import Player
 from app.character.domain.value_objects.player_name import PlayerName
 
 
 def test_player_creation_preserves_user_identity_and_profile():
-    user_id = UserId("user-1")
+    user_id = UserId.new()
 
     player = Player.create(user_id=user_id, name=PlayerName(" Player "))
 

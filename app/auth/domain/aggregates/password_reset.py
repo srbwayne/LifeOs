@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from app.shared.domain.aggregate import AggregateRoot
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.auth.domain.errors.user_errors import InvalidPasswordResetTokenError
 import secrets
 import hashlib

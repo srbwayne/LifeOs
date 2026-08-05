@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.auth.infrastructure.persistence.models.user_model import UserModel
 from app.character.domain.aggregates.character import Character
 from app.character.domain.aggregates.player import Player
@@ -24,10 +24,10 @@ def test_repositories_restore_one_to_one_character_identity():
     now = datetime(2026, 8, 4, 12, 0, 0)
 
     with session_factory() as session:
-        user_id = UserId("user-1")
+        user_id = UserId.new()
         session.add(
             UserModel(
-                id=user_id.value,
+                id=user_id.to_persistence(),
                 email="character@example.com",
                 hashed_password="hash",
                 created_at=now,

@@ -17,17 +17,10 @@ from app.auth.infrastructure.persistence.repositories.session_repository import 
 from app.auth.domain.ports.password_reset_repository import IPasswordResetTokenRepository
 from app.auth.infrastructure.persistence.repositories.password_reset_repository import SqlAlchemyPasswordResetTokenRepository
 from app.auth.application.services.token_service import TokenService
-from app.auth.application.ports.character_factory import ICharacterFactory
 from app.auth.application.ports.password_reset_notifier import IPasswordResetNotifier
 from app.auth.infrastructure.services.smtp_password_reset_notifier import SmtpPasswordResetNotifier
-from app.character.application.factories.character_factory import CharacterFactory
-from app.character.domain.ports.player_repository import IPlayerRepository
-from app.character.infrastructure.persistence.repositories.player_repository import SqlAlchemyPlayerRepository
-from app.character.domain.ports.character_repository import ICharacterRepository
-from app.character.infrastructure.persistence.repositories.character_repository import SqlAlchemyCharacterRepository
 
 # Importações de Handlers
-from app.auth.application.commands.register_user import RegisterUserCommandHandler
 from app.auth.application.commands.login import LoginCommandHandler
 from app.auth.application.commands.logout import LogoutCommandHandler
 from app.auth.application.commands.refresh_token import RefreshTokenCommandHandler
@@ -57,7 +50,7 @@ def get_current_user_id(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
 ):
     from app.auth.domain.errors.user_errors import InvalidSessionError
-    from app.auth.domain.value_objects.user_id import UserId
+    from app.shared.domain.identifiers.user_id import UserId
 
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise InvalidSessionError()
@@ -81,30 +74,10 @@ def get_session_repository(db: Session = Depends(get_db)) -> ISessionRepository:
 def get_password_reset_repository(db: Session = Depends(get_db)) -> IPasswordResetTokenRepository:
     return SqlAlchemyPasswordResetTokenRepository(db)
 
-def get_player_repository(db: Session = Depends(get_db)) -> IPlayerRepository:
-    return SqlAlchemyPlayerRepository(db)
-
-def get_character_repository(db: Session = Depends(get_db)) -> ICharacterRepository:
-    return SqlAlchemyCharacterRepository(db)
-
-# Fábricas e Serviços
-def get_character_factory(
-    player_repo: IPlayerRepository = Depends(get_player_repository),
-    character_repo: ICharacterRepository = Depends(get_character_repository),
-) -> ICharacterFactory:
-    return CharacterFactory(player_repo, character_repo)
-
 def get_password_reset_notifier() -> IPasswordResetNotifier:
     return password_reset_notifier
 
 # Handlers
-def get_register_user_handler(
-    user_repo: IUserRepository = Depends(get_user_repository),
-    char_factory: ICharacterFactory = Depends(get_character_factory),
-    uow: SqlAlchemyUnitOfWork = Depends(get_uow),
-) -> RegisterUserCommandHandler:
-    return RegisterUserCommandHandler(user_repository=user_repo, password_hasher=password_hasher, character_factory=char_factory, unit_of_work=uow)
-
 def get_login_handler(
     user_repo: IUserRepository = Depends(get_user_repository),
     session_repo: ISessionRepository = Depends(get_session_repository),

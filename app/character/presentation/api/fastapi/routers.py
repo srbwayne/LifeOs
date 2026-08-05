@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from app.auth.dependencies import get_current_user_id
-from app.auth.domain.value_objects.user_id import UserId
+from app.composition_root import get_current_user_id
+from app.shared.domain.identifiers.user_id import UserId
 from app.character.application.queries.get_character import (
     GetCharacterQuery,
     GetCharacterQueryHandler,
