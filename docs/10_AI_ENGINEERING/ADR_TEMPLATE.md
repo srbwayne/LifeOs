@@ -1857,7 +1857,6 @@ Não.
 
 ```text
 app/shared/application/event_bus.py
-app/shared/infrastructure/event_bus.py
 app/shared/application/unit_of_work.py
 app/shared/infrastructure/unit_of_work.py
 ```
@@ -2079,8 +2078,8 @@ Sim, caso algum Repository controle commit diretamente.
 ## Documentos afetados
 
 - `docs/02_ARCHITECTURE/`
-- `docs/03_DATABASE/TRANSACTIONS.md`
-- `docs/03_DATABASE/UNIT_OF_WORK.md`
+- `docs/04_BACKEND/TRANSACTIONS.md`
+- `docs/04_BACKEND/UNIT_OF_WORK.md`
 - `GEMINI.md`
 - `docs/10_AI_ENGINEERING/CODE_REVIEW_CHECKLIST.md`
 

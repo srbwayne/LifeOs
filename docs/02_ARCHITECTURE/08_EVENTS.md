@@ -42,10 +42,10 @@ Este documento define:
 
 Este documento complementa:
 
-- `02_CLEAN_ARCHITECTURE.md`
-- `03_DDD.md`
-- `04_MODULAR_MONOLITH.md`
-- `06_HEXAGONAL.md`
+- `docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`
+- `docs/02_ARCHITECTURE/03_DDD.md`
+- `docs/02_ARCHITECTURE/05_MODULAR_MONOLITH.md`
+- `docs/02_ARCHITECTURE/04_HEXAGONAL.md`
 - `07_DEPENDENCY_RULES.md`
 
 ---

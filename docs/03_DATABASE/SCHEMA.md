@@ -52,8 +52,8 @@ Este documento deve permanecer consistente com:
 - `ERD.md`;
 - `INDEXES.md`;
 - `MIGRATIONS.md`;
-- `02_ARCHITECTURE/03_DDD.md`;
-- `02_ARCHITECTURE/04_MODULAR_MONOLITH.md`;
+- `docs/02_ARCHITECTURE/03_DDD.md`;
+- `docs/02_ARCHITECTURE/05_MODULAR_MONOLITH.md`;
 - `01_PRODUCT/FEATURE_CATALOG.md`;
 - `01_PRODUCT/PRD.md`.
 

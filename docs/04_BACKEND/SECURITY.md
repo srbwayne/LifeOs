@@ -88,11 +88,11 @@ Este documento complementa:
 
 - `AUTHORIZATION.md`;
 - `ERRORS.md`;
-- `TRANSACTIONS.md`;
+- `docs/04_BACKEND/TRANSACTIONS.md`;
 - `DTOs.md`;
 - `VALIDATORS.md`;
 - `USE_CASES.md`;
-- `UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
 - `DATABASE.md`;
 - `08_EVENTS.md`.
 
@@ -2375,12 +2375,12 @@ Também complementa:
 
 - `AUTHORIZATION.md`;
 - `ERRORS.md`;
-- `TRANSACTIONS.md`;
+- `docs/04_BACKEND/TRANSACTIONS.md`;
 - `DTOs.md`;
 - `VALIDATORS.md`;
-- `UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
 - `DATABASE.md`;
-- `EVENTS.md`;
+- `docs/02_ARCHITECTURE/08_EVENTS.md`;
 - `USE_CASES.md`.
 
 Todos esses documentos devem permanecer consistentes entre si.

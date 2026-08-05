@@ -61,12 +61,12 @@ Este documento complementa:
 
 - `SECURITY.md`;
 - `ERRORS.md`;
-- `TRANSACTIONS.md`;
+- `docs/04_BACKEND/TRANSACTIONS.md`;
 - `CONFIGURATION.md`;
 - `AUTHORIZATION.md`;
-- `EVENTS.md`;
-- `OBSERVABILITY.md`;
-- `MONITORING.md`.
+- `docs/02_ARCHITECTURE/08_EVENTS.md`;
+- artefato futuro proposto: OBSERVABILITY.md;
+- artefato futuro proposto: MONITORING.md.
 
 ---
 

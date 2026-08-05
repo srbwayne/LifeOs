@@ -85,49 +85,49 @@ Cada padrão será detalhado em documentos específicos desta pasta.
 
 A documentação arquitetural está organizada na seguinte ordem:
 
-## 1. OVERVIEW.md
+## 1. 01_OVERVIEW.md
 
 Apresenta uma visão geral da arquitetura do LifeOS, seus módulos e a relação entre eles.
 
 ---
 
-## 2. CLEAN_ARCHITECTURE.md
+## 2. 02_CLEAN_ARCHITECTURE.md
 
 Define as camadas do sistema, responsabilidades e regras de dependência.
 
 ---
 
-## 3. DDD.md
+## 3. 03_DDD.md
 
 Descreve o modelo de domínio, entidades, agregados, serviços de domínio e linguagem ubíqua.
 
 ---
 
-## 4. MODULAR_MONOLITH.md
+## 4. 05_MODULAR_MONOLITH.md
 
 Explica a estratégia de organização modular adotada pelo projeto e como novos módulos devem ser incorporados.
 
 ---
 
-## 5. FOLDER_STRUCTURE.md
+## 5. 06_FOLDER_STRUCTURE.md
 
 Documenta a estrutura oficial de diretórios do projeto e a responsabilidade de cada pasta.
 
 ---
 
-## 6. DEPENDENCY_RULES.md
+## 6. 07_DEPENDENCY_RULES.md
 
 Define quais módulos podem depender de outros e quais dependências são proibidas.
 
 ---
 
-## 7. EVENTS.md
+## 7. 08_EVENTS.md
 
 Documenta a estratégia de eventos do domínio, comunicação entre módulos e desacoplamento.
 
 ---
 
-## 8. ADR.md
+## 8. 09_DECISION_LOG.md
 
 Registra decisões arquiteturais importantes tomadas durante a evolução do projeto.
 
@@ -194,17 +194,17 @@ README.md
 
 OVERVIEW.md
 
-CLEAN_ARCHITECTURE.md
+docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md
 
-DDD.md
+docs/02_ARCHITECTURE/03_DDD.md
 
-MODULAR_MONOLITH.md
+docs/02_ARCHITECTURE/05_MODULAR_MONOLITH.md
 
-FOLDER_STRUCTURE.md
+docs/02_ARCHITECTURE/06_FOLDER_STRUCTURE.md
 
 DEPENDENCY_RULES.md
 
-EVENTS.md
+docs/02_ARCHITECTURE/08_EVENTS.md
 
 ADR.md
 ```

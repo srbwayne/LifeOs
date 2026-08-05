@@ -70,11 +70,11 @@ Este documento complementa:
 - `ERRORS.md`;
 - `AUTHORIZATION.md`;
 - `SECURITY.md`;
-- `TRANSACTIONS.md`;
+- `docs/04_BACKEND/TRANSACTIONS.md`;
 - `LOGGING.md`;
 - `CONFIGURATION.md`;
 - `USE_CASES.md`;
-- `EVENTS.md`.
+- `docs/02_ARCHITECTURE/08_EVENTS.md`.
 
 ---
 

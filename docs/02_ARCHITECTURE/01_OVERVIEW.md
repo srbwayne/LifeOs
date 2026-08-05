@@ -464,7 +464,7 @@ Cada camada possui sua própria organização.
 
 Os detalhes serão apresentados em:
 
-- FOLDER_STRUCTURE.md
+- `docs/02_ARCHITECTURE/06_FOLDER_STRUCTURE.md`
 
 ---
 
@@ -519,11 +519,11 @@ Cada decisão será detalhada em documentos específicos.
 
 Este documento deve ser lido antes de:
 
-- CLEAN_ARCHITECTURE.md
-- DDD.md
-- MODULAR_MONOLITH.md
-- DATABASE.md
-- BACKEND_GUIDE.md
+- `docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`
+- `docs/02_ARCHITECTURE/03_DDD.md`
+- `docs/02_ARCHITECTURE/05_MODULAR_MONOLITH.md`
+- `docs/03_DATABASE/DATABASE.md`
+- `docs/04_BACKEND/BACKEND_GUIDE.md`
 
 ---
 

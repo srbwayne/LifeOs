@@ -70,10 +70,10 @@ Este documento complementa:
 - `VALIDATORS.md`;
 - `SERVICES.md`;
 - `REPOSITORIES.md`;
-- `UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
 - `ERRORS.md`;
 - `DTOs.md`;
-- `02_ARCHITECTURE/03_DDD.md`;
+- `docs/02_ARCHITECTURE/03_DDD.md`;
 - `02_ARCHITECTURE/07_DEPENDENCY_RULES.md`.
 
 ---
@@ -2948,8 +2948,8 @@ Também complementa diretamente:
 - `USE_CASES.md`;
 - `SERVICES.md`;
 - `REPOSITORIES.md`;
-- `UNIT_OF_WORK.md`;
-- `TRANSACTIONS.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/TRANSACTIONS.md`;
 - `DTOs.md`;
 - `VALIDATORS.md`;
 - `08_EVENTS.md`.

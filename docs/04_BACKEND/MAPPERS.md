@@ -61,13 +61,13 @@ Este documento complementa:
 - `USE_CASES.md`;
 - `SERVICES.md`;
 - `REPOSITORIES.md`;
-- `UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
 - `VALIDATORS.md`;
 - `DATABASE.md`;
 - `SCHEMA.md`;
-- `02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`;
-- `02_ARCHITECTURE/03_DDD.md`;
-- `02_ARCHITECTURE/HEXAGONAL.md`.
+- `docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`;
+- `docs/02_ARCHITECTURE/03_DDD.md`;
+- `docs/02_ARCHITECTURE/04_HEXAGONAL.md`.
 
 ---
 
@@ -3025,7 +3025,7 @@ Também complementa:
 - `DTOs.md`;
 - `REPOSITORIES.md`;
 - `SERVICES.md`;
-- `UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
 - `VALIDATORS.md`.
 
 ---

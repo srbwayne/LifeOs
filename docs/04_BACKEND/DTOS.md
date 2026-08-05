@@ -67,8 +67,8 @@ Este documento complementa:
 - `SERVICES.md`;
 - `VALIDATORS.md`;
 - `REPOSITORIES.md`;
-- `UNIT_OF_WORK.md`;
-- `02_ARCHITECTURE/HEXAGONAL.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
+- `docs/02_ARCHITECTURE/04_HEXAGONAL.md`;
 - `02_ARCHITECTURE/07_DEPENDENCY_RULES.md`.
 
 ---

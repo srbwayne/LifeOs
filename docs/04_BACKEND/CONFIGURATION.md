@@ -62,12 +62,12 @@ Este documento complementa:
 
 - `SECURITY.md`;
 - `DATABASE.md`;
-- `TRANSACTIONS.md`;
+- `docs/04_BACKEND/TRANSACTIONS.md`;
 - `SERVICES.md`;
 - `USE_CASES.md`;
-- `EVENTS.md`;
-- `DEPENDENCY_INJECTION.md`;
-- `OBSERVABILITY.md`.
+- `docs/02_ARCHITECTURE/08_EVENTS.md`;
+- artefato futuro proposto: DEPENDENCY_INJECTION.md;
+- artefato futuro proposto: OBSERVABILITY.md.
 
 ---
 

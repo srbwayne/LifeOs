@@ -54,10 +54,10 @@ Este documento especifica:
 Este documento complementa:
 
 - `OVERVIEW.md`;
-- `CLEAN_ARCHITECTURE.md`;
-- `DDD.md`;
-- `MODULAR_MONOLITH.md`;
-- `FOLDER_STRUCTURE.md`.
+- `docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`;
+- `docs/02_ARCHITECTURE/03_DDD.md`;
+- `docs/02_ARCHITECTURE/05_MODULAR_MONOLITH.md`;
+- `docs/02_ARCHITECTURE/06_FOLDER_STRUCTURE.md`.
 
 ---
 

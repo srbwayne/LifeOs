@@ -62,7 +62,7 @@ Este documento complementa:
 - `USE_CASES.md`;
 - `SERVICES.md`;
 - `REPOSITORIES.md`;
-- `UNIT_OF_WORK.md`;
+- `docs/04_BACKEND/UNIT_OF_WORK.md`;
 - `DTOs.md`;
 - `02_ARCHITECTURE/07_DEPENDENCY_RULES.md`;
 - `02_ARCHITECTURE/08_EVENTS.md`.

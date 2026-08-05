@@ -66,9 +66,9 @@ Este documento complementa:
 - `SCHEMA.md`;
 - `INDEXES.md`;
 - `MIGRATIONS.md`;
-- `02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`;
-- `02_ARCHITECTURE/03_DDD.md`;
-- `02_ARCHITECTURE/HEXAGONAL.md`;
+- `docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`;
+- `docs/02_ARCHITECTURE/03_DDD.md`;
+- `docs/02_ARCHITECTURE/04_HEXAGONAL.md`;
 - `02_ARCHITECTURE/07_DEPENDENCY_RULES.md`.
 
 ---
@@ -1261,7 +1261,7 @@ class LifeOSUnitOfWork(Protocol):
         ...
 ```
 
-A forma final será detalhada em `UNIT_OF_WORK.md`.
+A forma final está detalhada em `docs/04_BACKEND/UNIT_OF_WORK.md`.
 
 ---
 

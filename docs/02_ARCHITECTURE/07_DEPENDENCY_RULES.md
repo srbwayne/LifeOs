@@ -50,11 +50,11 @@ Este documento cobre:
 Este documento complementa:
 
 - `OVERVIEW.md`;
-- `02_CLEAN_ARCHITECTURE.md`;
-- `03_DDD.md`;
-- `MODULAR_MONOLITH.md`;
-- `FOLDER_STRUCTURE.md`;
-- `HEXAGONAL.md`.
+- `docs/02_ARCHITECTURE/02_CLEAN_ARCHITECTURE.md`;
+- `docs/02_ARCHITECTURE/03_DDD.md`;
+- `docs/02_ARCHITECTURE/05_MODULAR_MONOLITH.md`;
+- `docs/02_ARCHITECTURE/06_FOLDER_STRUCTURE.md`;
+- `docs/02_ARCHITECTURE/04_HEXAGONAL.md`.
 
 ---
 
