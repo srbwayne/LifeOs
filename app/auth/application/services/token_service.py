@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.auth.application.dtos.token_dtos import TokenDTO
 from app.shared.domain.tsid import new_tsid
 from app.auth.domain.errors.user_errors import InvalidSessionError

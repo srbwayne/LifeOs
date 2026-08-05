@@ -2,11 +2,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from app.shared.domain.aggregate import AggregateRoot
-from app.shared.domain.tsid import new_tsid
+from app.shared.domain.identifiers.user_id import UserId
 from app.auth.domain.events.user_registered import UserRegistered
 from app.auth.domain.value_objects.email import Email
 from app.auth.domain.value_objects.hashed_password import HashedPassword
-from app.auth.domain.value_objects.user_id import UserId
 
 @dataclass
 class User(AggregateRoot):
@@ -18,7 +17,7 @@ class User(AggregateRoot):
 
     @staticmethod
     def register(email: Email, hashed_password: HashedPassword) -> User:
-        user_id = UserId(new_tsid())
+        user_id = UserId.new()
         now = datetime.now()
         user = User(
             id=user_id,

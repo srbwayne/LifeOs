@@ -1,5 +1,5 @@
 from app.auth.domain.aggregates.session import Session
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.auth.infrastructure.persistence.models.session_model import SessionModel
 
 class SessionMapper:
@@ -7,7 +7,7 @@ class SessionMapper:
     def to_domain(model: SessionModel) -> Session:
         return Session(
             id=model.id,
-            user_id=UserId(model.user_id),
+            user_id=UserId.from_value(model.user_id),
             refresh_token_hash=model.refresh_token_hash,
             user_agent=model.user_agent,
             ip_address=model.ip_address,
@@ -21,7 +21,7 @@ class SessionMapper:
     def to_persistence(entity: Session) -> SessionModel:
         return SessionModel(
             id=entity.id,
-            user_id=entity.user_id.value,
+            user_id=entity.user_id.to_persistence(),
             refresh_token_hash=entity.refresh_token_hash,
             user_agent=entity.user_agent,
             ip_address=entity.ip_address,

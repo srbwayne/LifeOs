@@ -1,5 +1,5 @@
 from typing import Protocol
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.character.domain.aggregates.player import Player
 
 class IPlayerRepository(Protocol):

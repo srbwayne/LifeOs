@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from app.auth.domain.value_objects.user_id import UserId
+from app.shared.domain.identifiers.user_id import UserId
 from app.character.application.queries.get_character import (
     GetCharacterQuery,
     GetCharacterQueryHandler,
@@ -47,7 +47,7 @@ class CharacterRepositoryStub:
 
 def build_handlers():
     now = datetime(2026, 8, 4, 12, 0, 0)
-    user_id = UserId("user-1")
+    user_id = UserId.new()
     player = Player(
         id=PlayerId("player-1"),
         user_id=user_id,
@@ -75,7 +75,7 @@ def test_get_character_returns_persistent_identity_and_profile():
 
     assert result.character_id == "character-1"
     assert result.player_id == "player-1"
-    assert result.user_id == "user-1"
+    assert result.user_id == user_id.value
     assert result.name == "player"
 
 
@@ -85,7 +85,7 @@ def test_get_character_profile_returns_only_persistent_profile():
     result = handler(GetCharacterProfileQuery(user_id=user_id))
 
     assert result.player_id == "player-1"
-    assert result.user_id == "user-1"
+    assert result.user_id == user_id.value
     assert result.name == "player"
     assert not hasattr(result, "experience")
     assert not hasattr(result, "level")
@@ -95,4 +95,4 @@ def test_get_character_rejects_another_user_context():
     _, handler, _ = build_handlers()
 
     with pytest.raises(CharacterNotFoundError):
-        handler(GetCharacterQuery(user_id=UserId("another-user")))
+        handler(GetCharacterQuery(user_id=UserId.new()))
