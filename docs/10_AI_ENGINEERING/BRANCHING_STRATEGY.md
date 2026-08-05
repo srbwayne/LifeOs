@@ -172,9 +172,8 @@ main
 
 A branch **main** representa a versão oficial do projeto.
 
-Estado transitório: o repositório ainda utiliza `master`. A migração real para
-`main` está aprovada para a Fase 3; até sua execução, esta política mantém
-`main` como nome normativo futuro sem alterar a configuração atual.
+`main` é a branch oficial e padrão do repositório. A antiga branch `master` foi
+removida após a migração de governança da Fase 3.
 
 Ela deverá refletir sempre um estado:
 
