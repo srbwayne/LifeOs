@@ -202,6 +202,10 @@ Toda nova funcionalidade deverá respeitar essa versão mínima.
 
 Não utilizar recursos de versões superiores sem atualização oficial do projeto.
 
+O `pyproject.toml` ainda declara uma versão mínima divergente. Esse alinhamento
+técnico está pendente de fase posterior; esta política permanece normativa em
+Python 3.10+.
+
 ---
 
 # 6. Ferramentas Oficiais
@@ -210,20 +214,20 @@ O projeto utilizará ferramentas automáticas para manter consistência.
 
 ## Formatação
 
-- Ruff (formatter)
-- Black (caso mantido oficialmente)
+- Ruff (decisão aprovada; ainda não configurado)
+- Black não será adotado
 
 ---
 
 ## Lint
 
-- Ruff
+- Ruff (decisão aprovada; ainda não configurado)
 
 ---
 
 ## Tipagem
 
-- Mypy (quando oficialmente adotado)
+- Mypy (decisão aprovada; ainda não configurado)
 
 ---
 
@@ -1079,7 +1083,10 @@ Repositories representam a porta de acesso aos Aggregates.
 
 ## 20.1. Interfaces
 
-As interfaces deverão permanecer na camada Domain.
+Repository Ports de Aggregates deverão permanecer em `domain/ports`.
+Ports de orquestração ou integração usados por casos de uso deverão permanecer
+em `application/ports`. Contratos transversais somente pertencem ao Shared
+Kernel quando forem realmente compartilhados.
 
 Exemplo:
 

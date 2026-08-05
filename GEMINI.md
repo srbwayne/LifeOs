@@ -65,14 +65,14 @@ A leitura deverá seguir exatamente esta ordem:
 
 1. docs/01_PRODUCT/PRODUCT_VISION.md
 2. docs/00_FOUNDATION/PRINCIPLES.md
-3. CAPABILITY_MAP.md
-4. FEATURE_CATALOG.md
-5. PRD.md
+3. docs/01_PRODUCT/CAPABILITY_MAP.md
+4. docs/01_PRODUCT/FEATURE_CATALOG.md
+5. docs/01_PRODUCT/PRD.md
 6. docs/02_ARCHITECTURE/ (pasta completa)
-7. DATABASE.md
-8. MASTER_EXECUTION_PLAN.md
-9. DEVELOPMENT_WORKFLOW.md
-10. DEFINITION_OF_DONE.md
+7. docs/03_DATABASE/DATABASE.md
+8. docs/10_AI_ENGINEERING/MASTER_EXECUTION_PLAN.md
+9. docs/10_AI_ENGINEERING/DEVELOPMENT_WORKFLOW.md
+10. docs/10_AI_ENGINEERING/DEFINITION_OF_DONE.md
 
 Nenhuma implementação poderá começar antes dessa leitura.
 
@@ -82,17 +82,29 @@ Caso algum documento esteja ausente, inconsistente ou contraditório, o agente d
 
 # 4. Fontes Oficiais do Projeto
 
-As decisões do projeto deverão respeitar a seguinte ordem de autoridade:
+Cada tema possui uma única fonte oficial de verdade:
 
-1. PRODUCT_VISION.md
-2. PRD.md
-3. CAPABILITY_MAP.md
-4. FEATURE_CATALOG.md
-5. docs/02_ARCHITECTURE/ (pasta completa)
-6. DATABASE.md
-7. MASTER_EXECUTION_PLAN.md
-8. DEVELOPMENT_WORKFLOW.md
-9. DEFINITION_OF_DONE.md
+| Tema | Fonte oficial |
+|---|---|
+| Arquitetura | ADRs aceitos e `docs/02_ARCHITECTURE/` |
+| Produto | `docs/01_PRODUCT/CAPABILITY_MAP.md`, `docs/01_PRODUCT/FEATURE_CATALOG.md` e `docs/01_PRODUCT/PRD.md` |
+| Tarefa autorizada | `NEXT_TASK.md` |
+| Desenvolvimento | `docs/10_AI_ENGINEERING/DEVELOPMENT_WORKFLOW.md` |
+| Plano macro | `docs/10_AI_ENGINEERING/MASTER_EXECUTION_PLAN.md` |
+| Definition of Done | `docs/10_AI_ENGINEERING/DEFINITION_OF_DONE.md` |
+| Testes | `docs/10_AI_ENGINEERING/TESTING_POLICY.md` |
+| Segurança | `docs/10_AI_ENGINEERING/SECURITY_POLICY.md` |
+| Dependências | `docs/10_AI_ENGINEERING/DEPENDENCY_POLICY.md` |
+| Estilo | `docs/10_AI_ENGINEERING/CODE_STYLE.md` |
+| Commits | `docs/10_AI_ENGINEERING/COMMIT_GUIDELINES.md` |
+| Branches e merges | `docs/10_AI_ENGINEERING/BRANCHING_STRATEGY.md` |
+| Versionamento | `docs/10_AI_ENGINEERING/VERSIONING.md` |
+| Releases | `docs/10_AI_ENGINEERING/RELEASE_PROCESS.md` |
+| Inteligência Artificial | `docs/10_AI_ENGINEERING/AI_DEVELOPMENT_POLICY.md` |
+
+`AGENTS.md` é a entrada universal dos agentes, este arquivo define a operação
+local do Gemini e `docs/10_AI_ENGINEERING/GEMINI_AGENT.md` define seu perfil
+específico.
 
 Nunca utilize conhecimento externo para sobrescrever decisões documentadas.
 
@@ -530,11 +542,9 @@ Nunca corrigir um bug sem criar um teste.
 
 ## Cobertura
 
-O objetivo mínimo será:
-
-- 90% de cobertura da camada de domínio.
-
-A cobertura nunca poderá diminuir após uma implementação.
+A cobertura deverá atender integralmente às metas e aos critérios definidos em
+`docs/10_AI_ENGINEERING/TESTING_POLICY.md`, única fonte normativa para testes e
+cobertura.
 
 ---
 
@@ -743,53 +753,10 @@ Nunca invente comportamento.
 
 # 22. Definition of Done
 
-Toda tarefa somente poderá ser considerada concluída quando atender integralmente aos critérios abaixo.
-
-## Desenvolvimento
-
-- Código implementado.
-- Código compilando.
-- Sem erros de execução.
-- Sem código morto.
-- Sem duplicação desnecessária.
-
-## Arquitetura
-
-- Clean Architecture preservada.
-- SOLID respeitado.
-- DDD respeitado.
-- Camadas desacopladas.
-- Dependências corretas.
-
-## Banco de Dados
-
-- Migration criada.
-- Migration testada.
-- Schema atualizado.
-- Documentação atualizada.
-
-## Testes
-
-- Testes unitários criados.
-- Testes de integração criados.
-- Todos os testes executados.
-- Nenhum teste falhando.
-- Cobertura preservada.
-
-## Documentação
-
-- PRD atualizado quando necessário.
-- CHANGELOG atualizado.
-- Documentação técnica sincronizada.
-- Comentários relevantes adicionados.
-
-## Entrega
-
-- Resumo técnico produzido.
-- Impactos documentados.
-- Nenhum bloqueador pendente.
-
-Se qualquer item não for atendido, a tarefa deverá permanecer em andamento.
+Toda tarefa somente poderá ser considerada concluída quando atender
+integralmente a `docs/10_AI_ENGINEERING/DEFINITION_OF_DONE.md`, única fonte
+normativa para a Definition of Done. Se qualquer critério oficial não for
+atendido, a tarefa deverá permanecer em andamento.
 
 ---
 

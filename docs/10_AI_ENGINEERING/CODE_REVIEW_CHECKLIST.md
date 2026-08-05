@@ -682,12 +682,8 @@ Quando a alteração envolver ou tocar o Character:
 - [ ] Quedas de cobertura foram justificadas.
 - [ ] Cobertura foi executada no mesmo código entregue.
 
-Meta atual:
-
-```text
-Domain: mínimo de 90%
-Projeto: preservar ou aumentar
-```
+As metas oficiais de cobertura são definidas exclusivamente em
+`docs/10_AI_ENGINEERING/TESTING_POLICY.md`.
 
 ---
 
@@ -758,7 +754,7 @@ python -m uvicorn app.main:app --reload
 
 # 26. Gate 22 — Branch e integração
 
-- [ ] A branch está de acordo com `BRANCH_STRATEGY.md`.
+- [ ] A branch está de acordo com `docs/10_AI_ENGINEERING/BRANCHING_STRATEGY.md`.
 - [ ] A branch possui nome adequado.
 - [ ] A branch partiu da base correta.
 - [ ] Não existem alterações não relacionadas.

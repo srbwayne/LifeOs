@@ -172,6 +172,10 @@ main
 
 A branch **main** representa a versão oficial do projeto.
 
+Estado transitório: o repositório ainda utiliza `master`. A migração real para
+`main` está aprovada para a Fase 3; até sua execução, esta política mantém
+`main` como nome normativo futuro sem alterar a configuração atual.
+
 Ela deverá refletir sempre um estado:
 
 - compilável;
@@ -440,18 +444,21 @@ Não será permitido merge direto.
 
 ## Estratégias Permitidas
 
-### Squash Merge
+### Rebase and Merge
 
-Utilizar quando uma Feature possuir diversos commits intermediários.
+Estratégia padrão quando os commits estiverem atômicos e conformes com
+`docs/10_AI_ENGINEERING/COMMIT_GUIDELINES.md`. Esses commits deverão ser
+preservados no histórico.
 
 Resultado:
 
 - histórico limpo;
-- um commit representando toda a Feature.
+- commits atômicos preservados.
 
-### Rebase and Merge
+### Squash Merge
 
-Permitido quando os commits estiverem organizados e fizer sentido preservar o histórico.
+Permitido somente quando existirem commits temporários, intermediários ou não
+conformes que não devam permanecer no histórico.
 
 ## Estratégia Proibida
 

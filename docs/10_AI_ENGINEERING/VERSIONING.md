@@ -216,7 +216,7 @@ As versões deverão acompanhar a evolução funcional do produto.
 | Fundação | Estrutura inicial | 0.1.0 |
 | Sprint 01 | Authentication | 0.2.0 |
 | Sprint 02 | Character | 0.3.0 |
-| Sprint 2.1 | Engineering Governance | 0.3.1 |
+| Sprint 2.1 | Engineering Governance | 0.3.1 (planejada, não publicada) |
 | Sprint 03 | Health | 0.4.0 |
 | Sprint 04 | Workout | 0.5.0 |
 | Sprint 05 | Reading | 0.6.0 |
@@ -299,7 +299,13 @@ Serve apenas para identificação interna.
 
 A versão oficial do LifeOS deverá existir em apenas um local.
 
-O arquivo oficial será:
+O arquivo oficial é `pyproject.toml`. O estado documental aprovado atual é
+0.3.0; a versão 0.3.1 está planejada somente após a conclusão integral da Sprint
+2.1 e ainda não foi publicada. A divergência técnica atualmente presente no
+`pyproject.toml` será tratada em fase posterior.
+
+O trecho abaixo é apenas um exemplo estrutural; o valor exibido não declara uma
+versão publicada:
 
 ```toml
 [project]

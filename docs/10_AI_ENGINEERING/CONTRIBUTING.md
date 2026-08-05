@@ -843,12 +843,10 @@ Antes do Merge, confirmar:
 
 ## Estratégias Permitidas
 
-Preferencialmente:
-
-- Squash Merge;
-- Rebase and Merge.
-
-A estratégia deverá manter o histórico limpo e rastreável.
+A estratégia padrão é Rebase and Merge para preservar commits atômicos e
+conformes. Squash Merge é permitido somente nas exceções definidas em
+`docs/10_AI_ENGINEERING/BRANCHING_STRATEGY.md`, fonte normativa para branches e
+merges.
 
 ---
 

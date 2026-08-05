@@ -796,7 +796,9 @@ SQLAlchemy Model ↔ Domain Entity
 
 ## 11.5 `adapters`
 
-Implementa os **Ports** definidos na Application Layer.
+Implementa os **Ports** definidos em `domain/ports` para Repositories de
+Aggregates ou em `application/ports` para orquestração e integrações de casos de
+uso. Adapters concretos permanecem na Infrastructure.
 
 ### Exemplos
 

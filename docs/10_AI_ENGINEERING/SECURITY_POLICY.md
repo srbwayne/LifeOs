@@ -81,10 +81,10 @@ Esta política deverá ser utilizada em conjunto com os seguintes documentos ofi
 
 Para detalhes de implementação deverão ser consultados, quando aplicável:
 
-- SECURITY.md
-- AUTHORIZATION.md
-- API.md
-- DATABASE.md
+- `docs/04_BACKEND/SECURITY.md`
+- `docs/04_BACKEND/AUTHORIZATION.md`
+- `docs/04_BACKEND/API.md`
+- `docs/03_DATABASE/DATABASE.md`
 - ADRs aprovadas
 
 Este documento não substitui a documentação de implementação.
@@ -592,9 +592,11 @@ A implementação específica permanece documentada na arquitetura da Capability
 
 ---
 
-# 16. Isolamento Multi-Tenant
+# 16. Isolamento Atual e Multi-Tenant Futuro
 
-O LifeOS deverá preservar o isolamento entre usuários e organizações.
+O estado implementado deverá preservar o isolamento entre usuários
+autenticados. O isolamento organizacional multi-tenant é futuro e não está
+implementado no estágio atual.
 
 ---
 
@@ -618,7 +620,10 @@ Toda consulta deverá considerar o contexto do usuário autenticado.
 
 ## Implementação
 
-As regras específicas de isolamento permanecem documentadas na arquitetura do domínio e nas Capabilities correspondentes.
+As regras atuais de isolamento por usuário permanecem documentadas na
+arquitetura do domínio e nas Capabilities correspondentes. Regras
+organizacionais somente se tornarão normativas após autorização e implementação
+futuras.
 
 ---
 

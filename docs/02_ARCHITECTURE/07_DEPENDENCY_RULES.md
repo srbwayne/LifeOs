@@ -809,6 +809,11 @@ use_case = RegisterWorkoutUseCase(repository)
 
 ## Domain Repository Interface
 
+Repository Ports de Aggregates pertencem a `domain/ports`. Ports de
+orquestração ou integração usados por casos de uso pertencem a
+`application/ports`. Contratos transversais pertencem ao Shared Kernel somente
+quando forem realmente compartilhados.
+
 Pode depender de:
 
 - Aggregate Root;
