@@ -202,9 +202,8 @@ Toda nova funcionalidade deverá respeitar essa versão mínima.
 
 Não utilizar recursos de versões superiores sem atualização oficial do projeto.
 
-O `pyproject.toml` ainda declara uma versão mínima divergente. Esse alinhamento
-técnico está pendente de fase posterior; esta política permanece normativa em
-Python 3.10+.
+O `pyproject.toml` declara `requires-python = ">=3.10"` e as ferramentas de
+qualidade utilizam Python 3.10 como versão-alvo.
 
 ---
 
@@ -214,20 +213,41 @@ O projeto utilizará ferramentas automáticas para manter consistência.
 
 ## Formatação
 
-- Ruff (decisão aprovada; ainda não configurado)
+- Ruff
 - Black não será adotado
+
+Comando oficial:
+
+```bash
+python -m ruff format --check .
+```
 
 ---
 
 ## Lint
 
-- Ruff (decisão aprovada; ainda não configurado)
+- Ruff
+
+Comando oficial:
+
+```bash
+python -m ruff check .
+```
 
 ---
 
 ## Tipagem
 
-- Mypy (decisão aprovada; ainda não configurado)
+- Mypy
+
+Comando oficial:
+
+```bash
+python -m mypy app tests
+```
+
+A configuração ativa e as exceções específicas permanecem centralizadas no
+`pyproject.toml`.
 
 ---
 
