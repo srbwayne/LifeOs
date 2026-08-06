@@ -1,7 +1,10 @@
-from sqlalchemy import String, DateTime, ForeignKey, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
-from app.shared.infrastructure.database import Base
 import datetime
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.shared.infrastructure.database import Base
+
 
 class PasswordResetTokenModel(Base):
     __tablename__ = "password_reset_tokens"

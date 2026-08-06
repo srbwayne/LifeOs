@@ -1,11 +1,14 @@
 from __future__ import annotations
+
+import hashlib
+import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+
+from app.auth.domain.errors.user_errors import InvalidPasswordResetTokenError
 from app.shared.domain.aggregate import AggregateRoot
 from app.shared.domain.identifiers.user_id import UserId
-from app.auth.domain.errors.user_errors import InvalidPasswordResetTokenError
-import secrets
-import hashlib
+
 
 @dataclass
 class PasswordResetToken(AggregateRoot):
@@ -19,12 +22,9 @@ class PasswordResetToken(AggregateRoot):
         token = secrets.token_urlsafe(32)
         token_hash = hashlib.sha256(token.encode()).hexdigest()
         expires_at = datetime.now() + timedelta(minutes=expires_in_minutes)
-        
+
         token_aggregate = PasswordResetToken(
-            token_hash=token_hash,
-            user_id=user_id,
-            expires_at=expires_at,
-            is_used=False
+            token_hash=token_hash, user_id=user_id, expires_at=expires_at, is_used=False
         )
         return token_aggregate, token
 

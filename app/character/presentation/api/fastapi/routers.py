@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends
 
-from app.composition_root import get_current_user_id
-from app.shared.domain.identifiers.user_id import UserId
 from app.character.application.queries.get_character import (
     GetCharacterQuery,
     GetCharacterQueryHandler,
@@ -18,7 +16,8 @@ from app.character.presentation.api.fastapi.schemas import (
     CharacterProfileSchema,
     CharacterSchema,
 )
-
+from app.composition_root import get_current_user_id
+from app.shared.domain.identifiers.user_id import UserId
 
 router = APIRouter(prefix="/character", tags=["Character"])
 
@@ -34,8 +33,6 @@ def get_character(
 @router.get("/profile", response_model=CharacterProfileSchema)
 def get_character_profile(
     user_id: UserId = Depends(get_current_user_id),
-    handler: GetCharacterProfileQueryHandler = Depends(
-        get_character_profile_query_handler
-    ),
+    handler: GetCharacterProfileQueryHandler = Depends(get_character_profile_query_handler),
 ):
     return handler(GetCharacterProfileQuery(user_id=user_id))

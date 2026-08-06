@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from app.shared.domain.identifiers.user_id import UserId
 from app.character.application.dtos.character_dtos import CharacterDTO
 from app.character.domain.errors.character_errors import CharacterNotFoundError
 from app.character.domain.ports.character_repository import ICharacterRepository
 from app.character.domain.ports.player_repository import IPlayerRepository
+from app.shared.domain.identifiers.user_id import UserId
 
 
 @dataclass(frozen=True)

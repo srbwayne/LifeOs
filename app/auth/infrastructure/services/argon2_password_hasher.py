@@ -5,8 +5,10 @@ from argon2.exceptions import VerifyMismatchError
 from app.auth.domain.ports.password_hasher import IPasswordHasher
 from app.auth.domain.value_objects.hashed_password import HashedPassword
 
+
 class Argon2PasswordHasher(IPasswordHasher):
     """Um adapter que implementa a interface IPasswordHasher usando a biblioteca argon2-cffi."""
+
     def __init__(self):
         # Instancia a classe da biblioteca, não a si mesma
         self._ph = Argon2LibraryHasher()

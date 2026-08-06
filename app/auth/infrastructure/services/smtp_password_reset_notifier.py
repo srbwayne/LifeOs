@@ -15,9 +15,6 @@ class SmtpPasswordResetNotifier(IPasswordResetNotifier):
         message["Subject"] = "LifeOS password reset"
         message["From"] = self._sender
         message["To"] = email
-        message.set_content(
-            "Use this token to reset your LifeOS password: "
-            + token
-        )
+        message.set_content("Use this token to reset your LifeOS password: " + token)
         with smtplib.SMTP(self._host, self._port, timeout=10) as smtp:
             smtp.send_message(message)

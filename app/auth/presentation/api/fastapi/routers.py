@@ -1,11 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
-from app.auth.application.commands.register_user import RegisterUserCommand, RegisterUserCommandHandler
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+
 from app.auth.application.commands.login import LoginCommand, LoginCommandHandler
 from app.auth.application.commands.logout import LogoutCommand, LogoutCommandHandler
-from app.auth.application.commands.refresh_token import RefreshTokenCommand, RefreshTokenCommandHandler
-from app.auth.application.commands.request_password_reset import RequestPasswordResetCommand, RequestPasswordResetCommandHandler
-from app.auth.application.commands.reset_password import ResetPasswordCommand, ResetPasswordCommandHandler
-from app.auth.presentation.api.fastapi.schemas import RegisterUserSchema, LoginSchema, TokenSchema, RefreshTokenSchema, RequestPasswordResetSchema, ResetPasswordSchema
+from app.auth.application.commands.refresh_token import (
+    RefreshTokenCommand,
+    RefreshTokenCommandHandler,
+)
+from app.auth.application.commands.register_user import (
+    RegisterUserCommand,
+    RegisterUserCommandHandler,
+)
+from app.auth.application.commands.request_password_reset import (
+    RequestPasswordResetCommand,
+    RequestPasswordResetCommandHandler,
+)
+from app.auth.application.commands.reset_password import (
+    ResetPasswordCommand,
+    ResetPasswordCommandHandler,
+)
 from app.auth.dependencies import (
     get_login_handler,
     get_logout_handler,
@@ -13,9 +25,17 @@ from app.auth.dependencies import (
     get_request_password_reset_handler,
     get_reset_password_handler,
 )
+from app.auth.presentation.api.fastapi.schemas import (
+    LoginSchema,
+    RegisterUserSchema,
+    RequestPasswordResetSchema,
+    ResetPasswordSchema,
+    TokenSchema,
+)
 from app.composition_root import get_register_user_handler
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(
@@ -25,6 +45,7 @@ def register_user(
     command = RegisterUserCommand(email=schema.email, password=schema.password)
     handler(command)
     return {"message": "User registered successfully."}
+
 
 @router.post("/login", response_model=TokenSchema)
 def login(
@@ -37,7 +58,7 @@ def login(
         email=schema.email,
         password=schema.password,
         user_agent=request.headers.get("User-Agent"),
-        ip_address=request.client.host,
+        ip_address=request.client.host if request.client else None,
     )
     tokens = handler(command)
     response.set_cookie(
@@ -45,9 +66,10 @@ def login(
         value=tokens.refresh_token,
         httponly=True,
         samesite="strict",
-        secure=False, # Em produção, deve ser True
+        secure=False,  # Em produção, deve ser True
     )
     return tokens
+
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 def logout(
@@ -62,6 +84,7 @@ def logout(
     response.delete_cookie(key="refresh_token")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
 @router.post("/refresh", response_model=TokenSchema)
 def refresh(
     request: Request,
@@ -74,18 +97,19 @@ def refresh(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No refresh token found.",
         )
-    
+
     command = RefreshTokenCommand(refresh_token=refresh_token)
     new_tokens = handler(command)
-    
+
     response.set_cookie(
         key="refresh_token",
         value=new_tokens.refresh_token,
         httponly=True,
         samesite="strict",
-        secure=False, # Em produção, deve ser True
+        secure=False,  # Em produção, deve ser True
     )
     return new_tokens
+
 
 @router.post("/request-password-reset", status_code=status.HTTP_202_ACCEPTED)
 def request_password_reset(
@@ -95,6 +119,7 @@ def request_password_reset(
     command = RequestPasswordResetCommand(email=schema.email)
     handler(command)
     return {"message": "If a user with that email exists, a password reset link has been sent."}
+
 
 @router.post("/reset-password", status_code=status.HTTP_204_NO_CONTENT)
 def reset_password(

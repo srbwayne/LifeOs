@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from app.shared.domain.identifiers.user_id import UserId
 from app.character.application.dtos.character_dtos import CharacterProfileDTO
 from app.character.application.queries.get_character import (
     GetCharacterQuery,
     GetCharacterQueryHandler,
 )
+from app.shared.domain.identifiers.user_id import UserId
 
 
 @dataclass(frozen=True)

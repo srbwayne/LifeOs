@@ -1,6 +1,7 @@
 from app.auth.domain.aggregates.session import Session
-from app.shared.domain.identifiers.user_id import UserId
 from app.auth.infrastructure.persistence.models.session_model import SessionModel
+from app.shared.domain.identifiers.user_id import UserId
+
 
 class SessionMapper:
     @staticmethod

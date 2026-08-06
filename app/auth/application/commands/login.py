@@ -1,15 +1,17 @@
+import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from app.shared.application.unit_of_work import IUnitOfWork
+
+from app.auth.application.dtos.token_dtos import TokenDTO
+from app.auth.application.services.token_service import TokenService
 from app.auth.domain.aggregates.session import Session
 from app.auth.domain.errors.user_errors import InvalidCredentialsError
 from app.auth.domain.ports.password_hasher import IPasswordHasher
-from app.auth.domain.ports.user_repository import IUserRepository
 from app.auth.domain.ports.session_repository import ISessionRepository
+from app.auth.domain.ports.user_repository import IUserRepository
 from app.auth.domain.value_objects.email import Email
-from app.auth.application.dtos.token_dtos import TokenDTO
-from app.auth.application.services.token_service import TokenService
-import hashlib
+from app.shared.application.unit_of_work import IUnitOfWork
+
 
 @dataclass(frozen=True)
 class LoginCommand:
@@ -17,6 +19,7 @@ class LoginCommand:
     password: str
     user_agent: str | None
     ip_address: str | None
+
 
 class LoginCommandHandler:
     def __init__(
@@ -42,7 +45,7 @@ class LoginCommandHandler:
                 raise InvalidCredentialsError()
 
             tokens = self._token_service.generate_tokens(user.id)
-            
+
             refresh_token_hash = hashlib.sha256(tokens.refresh_token.encode()).hexdigest()
             expires_at = datetime.now() + timedelta(days=7)
 

@@ -1,10 +1,13 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
-from app.shared.domain.aggregate import AggregateRoot
-from app.shared.domain.tsid import new_tsid
-from app.shared.domain.identifiers.user_id import UserId
+
 from app.auth.domain.errors.user_errors import InvalidSessionError
+from app.shared.domain.aggregate import AggregateRoot
+from app.shared.domain.identifiers.user_id import UserId
+from app.shared.domain.tsid import new_tsid
+
 
 @dataclass
 class Session(AggregateRoot):
@@ -47,7 +50,7 @@ class Session(AggregateRoot):
     def refresh(self, new_refresh_token_hash: str, new_expires_at: datetime):
         if self.revoked_at or self.expires_at < datetime.now():
             raise InvalidSessionError()
-        
+
         self.refresh_token_hash = new_refresh_token_hash
         self.expires_at = new_expires_at
         self.last_used_at = datetime.now()

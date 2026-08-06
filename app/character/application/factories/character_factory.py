@@ -1,13 +1,14 @@
-from app.shared.domain.identifiers.user_id import UserId
-from app.character.domain.aggregates.player import Player
 from app.character.domain.aggregates.character import Character
-from app.character.domain.ports.player_repository import IPlayerRepository
-from app.character.domain.ports.character_repository import ICharacterRepository
+from app.character.domain.aggregates.player import Player
 from app.character.domain.errors.character_errors import (
     PlayerAlreadyHasCharacterError,
     UserAlreadyHasPlayerError,
 )
+from app.character.domain.ports.character_repository import ICharacterRepository
+from app.character.domain.ports.player_repository import IPlayerRepository
 from app.character.domain.value_objects.player_name import PlayerName
+from app.shared.domain.identifiers.user_id import UserId
+
 
 class CharacterFactory:
     def __init__(
@@ -23,8 +24,8 @@ class CharacterFactory:
             raise UserAlreadyHasPlayerError()
 
         # O nome do Player inicialmente será derivado do email
-        player_name = PlayerName(email.split('@')[0])
-        
+        player_name = PlayerName(email.split("@")[0])
+
         player = Player.create(user_id=user_id, name=player_name)
         self._player_repository.save(player)
 

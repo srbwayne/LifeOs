@@ -1,9 +1,12 @@
-import jwt
 from datetime import datetime, timedelta, timezone
-from app.shared.domain.identifiers.user_id import UserId
+
+import jwt
+
 from app.auth.application.dtos.token_dtos import TokenDTO
-from app.shared.domain.tsid import new_tsid
 from app.auth.domain.errors.user_errors import InvalidSessionError
+from app.shared.domain.identifiers.user_id import UserId
+from app.shared.domain.tsid import new_tsid
+
 
 class TokenService:
     def __init__(self, secret_key: str, algorithm: str = "HS256"):
@@ -21,7 +24,7 @@ class TokenService:
             "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
             "iat": datetime.now(timezone.utc),
             "jti": new_tsid(),
-            "type": "access"
+            "type": "access",
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)
 
@@ -31,7 +34,7 @@ class TokenService:
             "exp": datetime.now(timezone.utc) + timedelta(days=7),
             "iat": datetime.now(timezone.utc),
             "jti": new_tsid(),
-            "type": "refresh"
+            "type": "refresh",
         }
         return jwt.encode(payload, self._secret_key, algorithm=self._algorithm)
 
