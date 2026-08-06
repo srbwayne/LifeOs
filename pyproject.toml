@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "lifeos"
 version = "0.1.0"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "fastapi==0.115.12",
     "uvicorn[standard]==0.34.2",
@@ -25,6 +25,10 @@ test = [
     "pytest-archon==0.0.7",
     "pytest-cov==6.1.1",
 ]
+dev = [
+    "mypy==2.3.0",
+    "ruff==0.16.1",
+]
 
 [tool.setuptools]
 py-modules = []
@@ -37,3 +41,41 @@ namespaces = false
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+include = ["app/**/*.py", "tests/**/*.py", "migrations/**/*.py"]
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/auth/dependencies.py" = ["B008"]
+"app/auth/presentation/api/fastapi/routers.py" = ["B008"]
+"app/character/dependencies.py" = ["B008"]
+"app/character/presentation/api/fastapi/routers.py" = ["B008"]
+"app/composition_root.py" = ["B008"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+files = ["app", "tests"]
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+explicit_package_bases = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+pretty = true
+show_error_codes = true
