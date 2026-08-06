@@ -1,8 +1,9 @@
 from app.auth.domain.aggregates.user import User
 from app.auth.domain.value_objects.email import Email
 from app.auth.domain.value_objects.hashed_password import HashedPassword
-from app.shared.domain.identifiers.user_id import UserId
 from app.auth.infrastructure.persistence.models.user_model import UserModel
+from app.shared.domain.identifiers.user_id import UserId
+
 
 class UserMapper:
     @staticmethod
@@ -12,7 +13,7 @@ class UserMapper:
             email=Email(model.email),
             hashed_password=HashedPassword(model.hashed_password),
             created_at=model.created_at,
-            updated_at=model.updated_at
+            updated_at=model.updated_at,
         )
 
     @staticmethod
@@ -22,5 +23,5 @@ class UserMapper:
             email=entity.email.value,
             hashed_password=entity.hashed_password.value,
             created_at=entity.created_at,
-            updated_at=entity.updated_at
+            updated_at=entity.updated_at,
         )

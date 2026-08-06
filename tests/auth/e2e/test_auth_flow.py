@@ -1,11 +1,11 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, StaticPool
+from sqlalchemy import StaticPool, create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.app_factory import create_app
-from app.shared.infrastructure.database import Base
 from app.auth.dependencies import get_db, get_password_reset_notifier
+from app.shared.infrastructure.database import Base
 
 # --- Configuração do Banco de Dados de Teste ---
 DATABASE_URL_TEST = "sqlite:///:memory:"
@@ -27,6 +27,7 @@ class FakePasswordResetNotifier:
 
 fake_notifier = FakePasswordResetNotifier()
 
+
 # --- Sobrescrever a dependência get_db para usar o banco de teste ---
 def override_get_db():
     try:
@@ -34,6 +35,7 @@ def override_get_db():
         yield db
     finally:
         db.close()
+
 
 # --- Fixture do Teste ---
 @pytest.fixture(scope="function")
@@ -43,7 +45,7 @@ def client():
     app.dependency_overrides[get_db] = override_get_db
     app.dependency_overrides[get_password_reset_notifier] = lambda: fake_notifier
     fake_notifier.tokens.clear()
-    
+
     Base.metadata.create_all(bind=engine)
     yield TestClient(app)
     Base.metadata.drop_all(bind=engine)

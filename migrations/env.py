@@ -6,12 +6,16 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from app.auth.infrastructure.persistence.models.password_reset_model import (  # noqa: F401
+    PasswordResetTokenModel,
+)
+from app.auth.infrastructure.persistence.models.session_model import SessionModel  # noqa: F401
+from app.auth.infrastructure.persistence.models.user_model import UserModel  # noqa: F401
+from app.character.infrastructure.persistence.models.character_model import (  # noqa: F401
+    CharacterModel,
+)
+from app.character.infrastructure.persistence.models.player_model import PlayerModel  # noqa: F401
 from app.shared.infrastructure.database import Base
-from app.auth.infrastructure.persistence.models.password_reset_model import PasswordResetTokenModel
-from app.auth.infrastructure.persistence.models.session_model import SessionModel
-from app.auth.infrastructure.persistence.models.user_model import UserModel
-from app.character.infrastructure.persistence.models.character_model import CharacterModel
-from app.character.infrastructure.persistence.models.player_model import PlayerModel
 
 config = context.config
 if config.config_file_name is not None:

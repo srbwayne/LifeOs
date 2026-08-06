@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.shared.domain.identifiers.user_id import UserId
 from app.auth.infrastructure.persistence.models.user_model import UserModel
 from app.character.domain.aggregates.character import Character
 from app.character.domain.aggregates.player import Player
@@ -14,6 +13,7 @@ from app.character.infrastructure.persistence.repositories.character_repository 
 from app.character.infrastructure.persistence.repositories.player_repository import (
     SqlAlchemyPlayerRepository,
 )
+from app.shared.domain.identifiers.user_id import UserId
 from app.shared.infrastructure.database import Base
 
 

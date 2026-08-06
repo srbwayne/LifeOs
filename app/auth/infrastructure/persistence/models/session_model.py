@@ -1,7 +1,10 @@
-from sqlalchemy import String, DateTime, ForeignKey, Text
-from sqlalchemy.orm import Mapped, mapped_column
-from app.shared.infrastructure.database import Base
 import datetime
+
+from sqlalchemy import DateTime, ForeignKey, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.shared.infrastructure.database import Base
+
 
 class SessionModel(Base):
     __tablename__ = "sessions"

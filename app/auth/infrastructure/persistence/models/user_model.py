@@ -1,7 +1,10 @@
-from sqlalchemy import String, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
-from app.shared.infrastructure.database import Base
 import datetime
+
+from sqlalchemy import DateTime, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.shared.infrastructure.database import Base
+
 
 class UserModel(Base):
     __tablename__ = "users"

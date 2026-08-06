@@ -1,16 +1,19 @@
 from dataclasses import dataclass
-from app.shared.application.unit_of_work import IUnitOfWork
+
+from app.auth.application.ports.character_factory import ICharacterFactory
 from app.auth.domain.aggregates.user import User
 from app.auth.domain.errors.user_errors import UserAlreadyExistsError
 from app.auth.domain.ports.password_hasher import IPasswordHasher
 from app.auth.domain.ports.user_repository import IUserRepository
 from app.auth.domain.value_objects.email import Email
-from app.auth.application.ports.character_factory import ICharacterFactory
+from app.shared.application.unit_of_work import IUnitOfWork
+
 
 @dataclass(frozen=True)
 class RegisterUserCommand:
     email: str
     password: str
+
 
 class RegisterUserCommandHandler:
     def __init__(
@@ -33,13 +36,13 @@ class RegisterUserCommandHandler:
 
             hashed_password = self._password_hasher.hash(command.password)
             user = User.register(email=email, hashed_password=hashed_password)
-            
+
             self._user_repository.save(user)
             character_aggregates = self._character_factory.create_initial(
                 user_id=user.id,
                 email=user.email.value,
             )
-            
+
             uow.track_aggregate(user)
             for aggregate in character_aggregates:
                 uow.track_aggregate(aggregate)

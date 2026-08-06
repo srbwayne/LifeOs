@@ -40,6 +40,6 @@ def get_register_user_handler(
 
 
 __all__ = [
-    'get_current_user_id',
-    'get_register_user_handler',
+    "get_current_user_id",
+    "get_register_user_handler",
 ]

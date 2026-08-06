@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from app.shared.application.unit_of_work import IUnitOfWork
 from app.auth.application.ports.password_reset_notifier import IPasswordResetNotifier
 from app.auth.domain.aggregates.password_reset import PasswordResetToken
-from app.auth.domain.ports.user_repository import IUserRepository
 from app.auth.domain.ports.password_reset_repository import IPasswordResetTokenRepository
+from app.auth.domain.ports.user_repository import IUserRepository
 from app.auth.domain.value_objects.email import Email
+from app.shared.application.unit_of_work import IUnitOfWork
 
 
 @dataclass(frozen=True)

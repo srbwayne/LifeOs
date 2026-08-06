@@ -1,8 +1,8 @@
 import pytest
 
-from app.shared.domain.identifiers.user_id import UserId
 from app.character.domain.aggregates.player import Player
 from app.character.domain.value_objects.player_name import PlayerName
+from app.shared.domain.identifiers.user_id import UserId
 
 
 def test_player_creation_preserves_user_identity_and_profile():

@@ -13,7 +13,7 @@ def test_user_id_creation_restoration_and_value_semantics() -> None:
     assert restored.to_persistence() == created.value
 
 
-@pytest.mark.parametrize('value', ['', 'user-1', '0r7azmtwhc2cv'])
+@pytest.mark.parametrize("value", ["", "user-1", "0r7azmtwhc2cv"])
 def test_user_id_rejects_invalid_or_noncanonical_values(value: str) -> None:
     with pytest.raises(ValueError):
         UserId(value)

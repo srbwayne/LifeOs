@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
-from app.auth.presentation.api.fastapi.routers import router as auth_router
-from app.character.presentation.api.fastapi.routers import router as character_router
-from app.character.domain.errors.character_errors import CharacterNotFoundError
+
 from app.auth.domain.errors.user_errors import (
     InvalidCredentialsError,
     InvalidEmailError,
@@ -12,6 +11,10 @@ from app.auth.domain.errors.user_errors import (
     UserAlreadyExistsError,
     UserNotFoundError,
 )
+from app.auth.presentation.api.fastapi.routers import router as auth_router
+from app.character.domain.errors.character_errors import CharacterNotFoundError
+from app.character.presentation.api.fastapi.routers import router as character_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,14 +24,10 @@ async def lifespan(app: FastAPI):
     yield
     print("Finalizando a aplicação...")
 
+
 def create_app() -> FastAPI:
     """Cria e configura a instância da aplicação FastAPI."""
-    app = FastAPI(
-        title="LifeOS",
-        lifespan=lifespan,
-        docs_url="/docs",
-        redoc_url="/redoc"
-    )
+    app = FastAPI(title="LifeOS", lifespan=lifespan, docs_url="/docs", redoc_url="/redoc")
 
     # Inclui os roteadores das capabilities
     app.include_router(auth_router)

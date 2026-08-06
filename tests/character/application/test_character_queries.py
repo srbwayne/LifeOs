@@ -2,7 +2,6 @@ from datetime import datetime
 
 import pytest
 
-from app.shared.domain.identifiers.user_id import UserId
 from app.character.application.queries.get_character import (
     GetCharacterQuery,
     GetCharacterQueryHandler,
@@ -17,6 +16,7 @@ from app.character.domain.errors.character_errors import CharacterNotFoundError
 from app.character.domain.value_objects.character_id import CharacterId
 from app.character.domain.value_objects.player_id import PlayerId
 from app.character.domain.value_objects.player_name import PlayerName
+from app.shared.domain.identifiers.user_id import UserId
 
 
 class PlayerRepositoryStub:

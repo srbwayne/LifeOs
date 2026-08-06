@@ -1,6 +1,7 @@
 from app.auth.domain.aggregates.password_reset import PasswordResetToken
-from app.shared.domain.identifiers.user_id import UserId
 from app.auth.infrastructure.persistence.models.password_reset_model import PasswordResetTokenModel
+from app.shared.domain.identifiers.user_id import UserId
+
 
 class PasswordResetTokenMapper:
     @staticmethod

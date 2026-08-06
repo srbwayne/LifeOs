@@ -1,12 +1,16 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.shared.infrastructure.database import Base
+
 from app.auth.domain.aggregates.user import User
 from app.auth.domain.value_objects.email import Email
 from app.auth.domain.value_objects.hashed_password import HashedPassword
-from app.auth.infrastructure.persistence.repositories.user_repository import SqlAlchemyUserRepository
 from app.auth.infrastructure.persistence.models.user_model import UserModel
+from app.auth.infrastructure.persistence.repositories.user_repository import (
+    SqlAlchemyUserRepository,
+)
+from app.shared.infrastructure.database import Base
+
 
 @pytest.fixture
 def session():
@@ -17,6 +21,7 @@ def session():
     yield db_session
     db_session.close()
     Base.metadata.drop_all(engine)
+
 
 def test_can_save_and_retrieve_user(session):
     repository = SqlAlchemyUserRepository(session)

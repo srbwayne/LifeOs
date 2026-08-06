@@ -5,13 +5,13 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.app_factory import create_app
-from app.auth.dependencies import get_db
+from app.auth.dependencies import event_bus, get_db
 from app.auth.infrastructure.persistence.models.user_model import UserModel
+from app.character.domain.events.character_created import CharacterCreated
 from app.character.infrastructure.persistence.models.character_model import CharacterModel
 from app.character.infrastructure.persistence.models.player_model import PlayerModel
+from app.shared.domain.domain_event import DomainEvent
 from app.shared.infrastructure.database import Base
-from app.auth.dependencies import event_bus
-from app.character.domain.events.character_created import CharacterCreated
 
 
 @pytest.fixture
@@ -48,8 +48,12 @@ def test_client(test_database):
 
 def test_register_user_successfully(test_client, test_database):
     _, session_factory = test_database
-    published_events = []
-    event_bus.subscribe(CharacterCreated, published_events.append)
+    published_events: list[DomainEvent] = []
+
+    def capture_event(event: DomainEvent) -> None:
+        published_events.append(event)
+
+    event_bus.subscribe(CharacterCreated, capture_event)
     response = test_client.post(
         "/auth/register",
         json={"email": "test@example.com", "password": "a_strong_password"},

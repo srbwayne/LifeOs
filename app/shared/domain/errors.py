@@ -1,6 +1,6 @@
 class DomainError(Exception):
     """Classe base para exceções de domínio."""
-    
+
     @property
     def message(self) -> str:
         return "Um erro de domínio ocorreu."

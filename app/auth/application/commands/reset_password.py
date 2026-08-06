@@ -1,18 +1,21 @@
-from dataclasses import dataclass
 import hashlib
-from app.shared.application.unit_of_work import IUnitOfWork
-from app.auth.domain.ports.password_hasher import IPasswordHasher
-from app.auth.domain.ports.user_repository import IUserRepository
-from app.auth.domain.ports.password_reset_repository import IPasswordResetTokenRepository
+from dataclasses import dataclass
+
 from app.auth.domain.errors.user_errors import (
     InvalidPasswordResetTokenError,
     UserNotFoundError,
 )
+from app.auth.domain.ports.password_hasher import IPasswordHasher
+from app.auth.domain.ports.password_reset_repository import IPasswordResetTokenRepository
+from app.auth.domain.ports.user_repository import IUserRepository
+from app.shared.application.unit_of_work import IUnitOfWork
+
 
 @dataclass(frozen=True)
 class ResetPasswordCommand:
     token: str
     new_password: str
+
 
 class ResetPasswordCommandHandler:
     def __init__(
@@ -36,14 +39,14 @@ class ResetPasswordCommandHandler:
                 raise InvalidPasswordResetTokenError()
 
             token_aggregate.use()
-            
+
             user = self._user_repo.find_by_id(token_aggregate.user_id)
             if not user:
                 raise UserNotFoundError()
 
             new_hashed_password = self._password_hasher.hash(command.new_password)
             user.change_password(new_hashed_password)
-            
+
             self._user_repo.save(user)
             self._token_repo.save(token_aggregate)
             uow.commit()

@@ -1,16 +1,18 @@
-from typing import List, TypeVar
+from typing import TypeVar
+
 from app.shared.domain.domain_event import DomainEvent
 
-T = TypeVar('T', bound='AggregateRoot')
+T = TypeVar("T", bound="AggregateRoot")
+
 
 class AggregateRoot:
     """Classe base para Aggregate Roots."""
-    
+
     def __init__(self) -> None:
-        self._domain_events: List[DomainEvent] = []
+        self._domain_events: list[DomainEvent] = []
 
     @property
-    def domain_events(self) -> List[DomainEvent]:
+    def domain_events(self) -> list[DomainEvent]:
         if not hasattr(self, "_domain_events"):
             self._domain_events = []
         return self._domain_events

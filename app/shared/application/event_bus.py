@@ -1,28 +1,29 @@
-from typing import Protocol, List, Type, Dict, Callable
+from typing import Protocol
+
 from app.shared.domain.domain_event import DomainEvent
 
+
 class EventHandler(Protocol):
-    def __call__(self, event: DomainEvent) -> None:
-        ...
+    def __call__(self, event: DomainEvent) -> None: ...
+
 
 class IEventBus(Protocol):
-    def publish(self, events: List[DomainEvent]) -> None:
-        ...
+    def publish(self, events: list[DomainEvent]) -> None: ...
 
-    def subscribe(self, event_type: Type[DomainEvent], handler: EventHandler) -> None:
-        ...
+    def subscribe(self, event_type: type[DomainEvent], handler: EventHandler) -> None: ...
+
 
 # Implementação simples em memória
 class InMemoryEventBus(IEventBus):
     def __init__(self) -> None:
-        self._handlers: Dict[Type[DomainEvent], List[EventHandler]] = {}
+        self._handlers: dict[type[DomainEvent], list[EventHandler]] = {}
 
-    def subscribe(self, event_type: Type[DomainEvent], handler: EventHandler) -> None:
+    def subscribe(self, event_type: type[DomainEvent], handler: EventHandler) -> None:
         if event_type not in self._handlers:
             self._handlers[event_type] = []
         self._handlers[event_type].append(handler)
 
-    def publish(self, events: List[DomainEvent]) -> None:
+    def publish(self, events: list[DomainEvent]) -> None:
         for event in events:
             event_type = type(event)
             if event_type in self._handlers:
