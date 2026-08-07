@@ -108,3 +108,80 @@ Critérios atendidos?
 ```
 
 O Gate aplica os critérios definidos pela governança e pelos documentos normativos correspondentes. Ele não cria critérios próprios.
+
+## 7. Transições
+
+Toda transição ocorre entre dois estados válidos e representa uma mudança governada no processo oficial de engenharia.
+
+Toda transição possui:
+
+- estado de origem;
+- Gate;
+- decisão;
+- estado de destino.
+
+Uma transição nunca ocorre diretamente. Toda mudança entre estados é mediada por um Gate.
+
+### Transição Autorizada
+
+Os critérios do Gate foram atendidos.
+
+```text
+Estado A
+  ↓
+Gate
+  ↓
+Critérios atendidos
+  ↓
+Estado B
+```
+
+### Transição Bloqueada
+
+Os critérios do Gate não foram atendidos.
+
+```text
+Estado A
+  ↓
+Gate
+  ↓
+Critérios não atendidos
+  ↓
+Permanece em Estado A
+```
+
+### Transição Suspensa
+
+Existe um incidente de processo.
+
+```text
+Estado A
+  ↓
+Gate
+  ↓
+Incidente
+  ↓
+INCIDENT_RESPONSE.md
+  ↓
+Retorno ao estado apropriado
+```
+
+A transição permanece suspensa sob a referência de [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md).
+
+### Transição Excepcional
+
+A transição excepcional ocorre somente mediante autorização da governança.
+
+- Não representa o fluxo normal.
+- Deve ser registrada.
+- Deve possuir justificativa.
+- Permanece sujeita à governança.
+
+Princípios das transições:
+
+- toda transição possui origem;
+- toda transição possui destino;
+- nenhuma transição ignora um Gate;
+- incidentes suspendem transições;
+- exceções dependem da governança;
+- documentos especializados executam as validações.
