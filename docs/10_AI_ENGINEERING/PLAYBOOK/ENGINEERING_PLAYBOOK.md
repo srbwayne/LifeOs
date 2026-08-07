@@ -225,3 +225,50 @@ O Engineering Playbook coordena o acionamento sem executar a resposta. Após o e
 ```
 
 O diagrama representa coordenação entre o Engineering Playbook e os documentos especializados, sem estabelecer dependência hierárquica.
+
+## 11. Relação com a Governança
+
+A Governança define regras. As políticas estabelecem normas. O Engineering Playbook coordena a execução do processo. Os documentos especializados executam responsabilidades específicas. A execução aplica o processo aprovado.
+
+```text
+                         Governança
+                             │
+                             ▼
+                          Políticas
+                             │
+                             ▼
+                    Engineering Playbook
+                             │
+                             ▼
+        ┌────────────────────┼────────────────────────┐
+        ▼                    ▼                        ▼
+AI Agent Workflow       Checklists            Incident Response
+        └────────────────────┼────────────────────────┘
+                             ▼
+                   Execução da Engenharia
+```
+
+O Engineering Playbook coordena a aplicação do processo de engenharia, mas não substitui a Governança nem altera responsabilidades definidas pelos documentos especializados.
+
+Em caso de conflito, prevalecem sempre os documentos normativos.
+
+## 12. Referências
+
+### Referências do Playbook
+
+- [README.md](README.md)
+- [AI_AGENT_WORKFLOW.md](AI_AGENT_WORKFLOW.md)
+- [CHECKLISTS.md](CHECKLISTS.md)
+- [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md)
+
+### Documentação Normativa
+
+- [AI_DEVELOPMENT_POLICY.md](../AI_DEVELOPMENT_POLICY.md)
+- [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [DEVELOPMENT_WORKFLOW.md](../DEVELOPMENT_WORKFLOW.md)
+- [TESTING_POLICY.md](../TESTING_POLICY.md)
+- [CODE_REVIEW_CHECKLIST.md](../CODE_REVIEW_CHECKLIST.md)
+- [COMMIT_GUIDELINES.md](../COMMIT_GUIDELINES.md)
+- [RELEASE_PROCESS.md](../RELEASE_PROCESS.md)
+- [VERSIONING.md](../VERSIONING.md)
+- [ADR_TEMPLATE.md](../ADR_TEMPLATE.md)
