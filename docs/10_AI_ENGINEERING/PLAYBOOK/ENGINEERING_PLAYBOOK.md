@@ -56,3 +56,55 @@ AI Agent Workflow       Checklists            Incident Response
 ```
 
 A governança define. O Engineering Playbook coordena. Os documentos especializados apoiam. A execução aplica.
+
+## 5. Modelo de Estados
+
+O processo oficial de engenharia é modelado como uma máquina de estados. Todo trabalho percorre estados bem definidos, que organizam sua evolução sem estabelecer regras próprias.
+
+Cada estado possui obrigatoriamente:
+
+- objetivo;
+- critérios de entrada;
+- execução;
+- Gate;
+- critérios de saída;
+- próximo estado.
+
+```text
+Estado
+  ↓
+Critérios de Entrada
+  ↓
+Execução
+  ↓
+Gate
+  ↓
+Critérios de Saída
+  ↓
+Próximo Estado
+```
+
+Nenhum estado pode ser ignorado sem autorização da governança. Os estados utilizam documentos especializados e não criam regras próprias.
+
+## 6. Gates
+
+Gate é o mecanismo oficial que autoriza ou impede a transição entre estados.
+
+Um Gate:
+
+- valida critérios;
+- consulta documentos especializados;
+- registra evidências;
+- permite ou bloqueia a transição.
+
+```text
+Estado Atual
+  ↓
+Gate
+  ↓
+Critérios atendidos?
+  ├── Sim → Próximo Estado
+  └── Não → Permanecer no Estado Atual
+```
+
+O Gate aplica os critérios definidos pela governança e pelos documentos normativos correspondentes. Ele não cria critérios próprios.
