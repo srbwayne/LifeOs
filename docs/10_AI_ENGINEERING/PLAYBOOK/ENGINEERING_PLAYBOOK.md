@@ -185,3 +185,43 @@ Princípios das transições:
 - incidentes suspendem transições;
 - exceções dependem da governança;
 - documentos especializados executam as validações.
+
+## 8. Integração com AI Agent Workflow
+
+O [AI_AGENT_WORKFLOW.md](AI_AGENT_WORKFLOW.md) deve ser consultado quando o processo exigir definição ou confirmação de responsabilidades, papéis, autoridade ou colaboração entre participantes.
+
+O Engineering Playbook coordena essa consulta sem assumir autoridade. Após a definição dos papéis, o processo retorna ao Engineering Playbook.
+
+## 9. Integração com Checklists
+
+O [CHECKLISTS.md](CHECKLISTS.md) deve ser utilizado quando o processo exigir validação de um estado, confirmação de critérios ou autorização para prosseguir.
+
+O Engineering Playbook coordena essa validação sem executar suas verificações. Após a validação, o processo retorna ao Engineering Playbook.
+
+## 10. Integração com Incident Response
+
+O [INCIDENT_RESPONSE.md](INCIDENT_RESPONSE.md) deve ser acionado quando houver interrupção do fluxo, incidente processual ou suspensão de uma transição que exija retorno seguro.
+
+O Engineering Playbook coordena o acionamento sem executar a resposta. Após o encerramento do incidente, o processo retorna ao Engineering Playbook.
+
+```text
+                 Engineering Playbook
+                          │
+                          ▼
+                     Estado Atual
+                          │
+                          ▼
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+    AI Agent          Checklists         Incident
+    Workflow                              Response
+        │                 │                 │
+        └─────────────────┼─────────────────┘
+                          ▼
+                 Engineering Playbook
+                          │
+                          ▼
+                    Próximo Estado
+```
+
+O diagrama representa coordenação entre o Engineering Playbook e os documentos especializados, sem estabelecer dependência hierárquica.
