@@ -1155,6 +1155,25 @@ Quando houver alteração na API, deverá ser validado:
 
 ---
 
+## 25.7. Automação no CI
+
+Os Quality Gates oficiais são executados automaticamente em Pull Requests destinados à
+`main` e em pushes para a branch principal.
+
+A automação valida:
+
+- instalação e integridade das dependências;
+- qualidade estática e tipagem;
+- suíte completa, warnings e cobertura;
+- testes arquiteturais incluídos na suíte;
+- migrations;
+- importabilidade da aplicação.
+
+Os comandos, critérios e metas permanecem definidos nesta política. A proteção da branch
+somente deverá exigir checks observados após a primeira execução real do workflow.
+
+---
+
 # 26. Checklist de Testes
 
 Antes da conclusão de qualquer Sprint, verificar:
