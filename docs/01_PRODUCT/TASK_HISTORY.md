@@ -1,5 +1,15 @@
 # Task History
 
+## SPR-2.1: Consolidação de Governança - 2026-08-08
+- **Status:** ✅ Concluída.
+- **Governança:** baseline consolidada e políticas de engenharia estabelecidas.
+- **Arquitetura:** isolamento entre Capabilities validado e identidade transversal centralizada no Shared Kernel.
+- **Qualidade:** Ruff e Mypy adotados; Quality Gates automatizados no GitHub Actions.
+- **Playbook:** Engineering Playbook, AI Agent Workflow, Checklists e Incident Response integrados.
+- **CI:** Python 3.10 validado em runner real; três required status checks ativos na `main`.
+- **Proteção:** branch protection preservada.
+- **Autorização funcional:** nenhuma nova Sprint funcional autorizada.
+
 ## Sprint 02: Expandir Capability Character - 2026-08-04
 - **Status:** ✅ Concluída após implementação e validação real.
 - **Escopo:** RF-CHAR-001 a RF-CHAR-004, restritos a identidade, representação persistente, evento de criação e consultas autenticadas somente leitura.

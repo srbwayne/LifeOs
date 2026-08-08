@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Consolidada a baseline de governança e estabelecidas as políticas oficiais de engenharia.
+- Adotados Ruff e Mypy como ferramentas oficiais de qualidade.
+- Integrado o Playbook Permanente de Engenharia com AI Agent Workflow, Checklists e Incident Response.
+- Ativado o GitHub Actions com execução real em Python 3.10 e Quality Gates automatizados.
+
+### Changed
+- Validado o isolamento entre Capabilities e centralizada a identidade transversal no Shared Kernel.
+- Configurados três required status checks na proteção da `main`, preservando as demais regras de branch protection.
+
 ## [0.2.0] - 2026-08-04
 
 ### Added

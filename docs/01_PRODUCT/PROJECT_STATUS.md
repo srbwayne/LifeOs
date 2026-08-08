@@ -1,5 +1,21 @@
 # Project Status
 
+## SPR-2.1 — Consolidação de Governança - 2026-08-08
+
+**Status:** ✅ Concluída
+**Autorização funcional:** Nenhuma
+
+### Estado consolidado
+
+- Baseline de governança e políticas de engenharia consolidadas.
+- Arquitetura e isolamento entre Capabilities validados.
+- Ruff e Mypy adotados como ferramentas oficiais.
+- Playbook Permanente de Engenharia integrado com AI Agent Workflow, Checklists e Incident Response.
+- GitHub Actions ativo com Python 3.10 validado em runner real.
+- Quality Gates automatizados e três required status checks ativos na `main`.
+- Branch protection preservada.
+- Nenhuma Sprint funcional subsequente autorizada.
+
 ## Sprint 02 — Character - 2026-08-04
 
 **Versão Atual:** 0.2.0
