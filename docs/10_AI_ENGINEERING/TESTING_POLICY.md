@@ -1169,8 +1169,14 @@ A automação valida:
 - migrations;
 - importabilidade da aplicação.
 
-Os comandos, critérios e metas permanecem definidos nesta política. A proteção da branch
-somente deverá exigir checks observados após a primeira execução real do workflow.
+Após a primeira execução real bem-sucedida em Python 3.10, a proteção da `main` exige
+exclusivamente os checks produzidos pelos três jobs observados no GitHub:
+
+- `Static quality (Python 3.10)`;
+- `Tests and coverage (Python 3.10)`;
+- `Alembic migration (Python 3.10)`.
+
+Os comandos, critérios e metas permanecem definidos nesta política.
 
 ---
 
