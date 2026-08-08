@@ -120,7 +120,7 @@ Responsável pela aprovação
 Integração ou retorno para ajustes
 ```
 
-O fluxo representa somente a colaboração e a transferência de responsabilidade entre papéis. O ciclo completo de engenharia permanece no `ENGINEERING_PLAYBOOK.md`.
+O fluxo representa somente a colaboração e a transferência de responsabilidade entre papéis. O ciclo completo de engenharia permanece no [ENGINEERING_PLAYBOOK.md](ENGINEERING_PLAYBOOK.md).
 
 ## 7. Escalonamento de Decisões
 
@@ -183,7 +183,7 @@ O novo participante deverá validar o estado real antes de prosseguir. A transfe
 
 ## 11. Relação com a Governança
 
-Este documento não substitui `AI_DEVELOPMENT_POLICY.md`, `DEVELOPMENT_WORKFLOW.md`, `CONTRIBUTING.md`, `ENGINEERING_PLAYBOOK.md`, `AGENTS.md` ou instruções locais aplicáveis. Ele define apenas a colaboração entre papéis durante o processo de engenharia.
+Este documento não substitui [AI_DEVELOPMENT_POLICY.md](../AI_DEVELOPMENT_POLICY.md), [DEVELOPMENT_WORKFLOW.md](../DEVELOPMENT_WORKFLOW.md), [CONTRIBUTING.md](../CONTRIBUTING.md), [ENGINEERING_PLAYBOOK.md](ENGINEERING_PLAYBOOK.md), [AGENTS.md](../../../AGENTS.md) ou instruções locais aplicáveis. Ele define apenas a colaboração entre papéis durante o processo de engenharia.
 
 Em caso de conflito entre este documento e qualquer documento normativo do projeto, prevalece sempre o documento normativo. A governança determina a autoridade; o Playbook apenas coordena sua aplicação no fluxo de colaboração.
 
