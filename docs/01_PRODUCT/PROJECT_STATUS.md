@@ -1,5 +1,26 @@
 # Project Status
 
+## Sprint 03 — Reading Library - 2026-08-08
+
+**Status:** AUTORIZADA — implementação ainda não iniciada
+**Capability:** READ
+**Feature:** READ-001 — Cadastro de livros e consulta da biblioteca
+**User Story:** US-READ-001-001
+**Requisitos Funcionais:** RF-READ-001 e RF-READ-002
+
+### Objetivo autorizado
+
+Permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e consulte exclusivamente os livros associados ao próprio Player.
+
+### Limites
+
+- Cada livro pertence a um único Player.
+- A consulta preserva o isolamento entre Players.
+- Uma biblioteca vazia retorna uma coleção vazia e não constitui erro.
+- Qualquer RF posterior a RF-READ-002 permanece fora do escopo.
+- Qualquer expansão depende de nova autorização explícita do Product Owner.
+- Nenhuma implementação foi iniciada por este registro administrativo.
+
 ## SPR-2.1 — Consolidação de Governança - 2026-08-08
 
 **Status:** ✅ Concluída
