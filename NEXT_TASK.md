@@ -10,7 +10,7 @@
 |---|---|
 | ID | SPR-2.1 |
 | Iniciativa | Sprint 2.1 — Consolidação de Governança |
-| Status | EM ANDAMENTO |
+| Status | CONCLUÍDA |
 | Tipo | Documental |
 | Capability | SHARED |
 | Sprint funcional autorizada | Nenhuma |
@@ -24,10 +24,25 @@ oficiais do projeto e não constitui autorização para nova implementação.
 
 ---
 
-# Autorização Vigente
+# Encerramento da SPR-2.1
 
-Está autorizada somente a consolidação documental da Sprint 2.1, conforme as
-fases explicitamente aprovadas pelo Product Owner e pelo Arquiteto.
+A SPR-2.1 — Consolidação de Governança foi concluída.
+
+O encerramento consolida:
+
+- baseline e políticas de governança de engenharia;
+- arquitetura e isolamento entre Capabilities validados;
+- Ruff e Mypy como ferramentas oficiais;
+- Playbook Permanente de Engenharia;
+- AI Agent Workflow, Checklists e Incident Response;
+- GitHub Actions executado em Python 3.10 real;
+- Quality Gates automatizados;
+- três required status checks ativos na proteção da `main`;
+- branch protection preservada.
+
+---
+
+# Autorização Vigente
 
 Nenhuma tarefa funcional está autorizada neste momento.
 
@@ -49,11 +64,10 @@ Enquanto não houver nova autorização explícita:
 - não inferir escopo a partir de Roadmap, épicos ou artefatos futuros;
 - não iniciar a Sprint 03;
 - preservar o histórico funcional das Sprints 01 e 02;
-- executar somente a fase de governança documental expressamente autorizada.
+- não iniciar nova Sprint funcional ou fase de implementação.
 
 ---
 
 # Regra Final
 
-Na ausência de tarefa funcional autorizada, qualquer desenvolvimento funcional
-deverá permanecer bloqueado até decisão explícita do Product Owner.
+Nenhuma Sprint funcional poderá ser iniciada sem autorização explícita do Product Owner.
