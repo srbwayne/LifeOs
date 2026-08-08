@@ -1,5 +1,19 @@
 # Task History
 
+## Sprint 03: Reading Library - 2026-08-08
+- **Status:** AUTORIZADA — implementação ainda não iniciada.
+- **Capability:** READ.
+- **Feature:** READ-001 — Cadastro de livros e consulta da biblioteca.
+- **User Story:** US-READ-001-001.
+- **Escopo:** RF-READ-001 e RF-READ-002.
+- **Objetivo:** permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e consulte exclusivamente os livros associados ao próprio Player.
+- **Dados obrigatórios:** título, autor e quantidade total de páginas.
+- **Dados opcionais:** ISBN, editora, edição, capa, gênero e idioma; sua ausência não bloqueia o cadastro.
+- **Isolamento:** cada livro pertence a um único Player e não pode ser consultado por outro Player.
+- **Biblioteca vazia:** consulta válida com retorno de coleção vazia.
+- **Fora do escopo:** RF-READ-003 ou posteriores, filtros, busca, paginação, ordenação configurável, sessões de leitura, progresso, páginas lidas, tempo de leitura, XP, GAME, Analytics, Dashboard e AI.
+- **Gate:** implementação condicionada ao Engineering Playbook, ao planejamento técnico autorizado e aos required Quality Gates.
+
 ## SPR-2.1: Consolidação de Governança - 2026-08-08
 - **Status:** ✅ Concluída.
 - **Governança:** baseline consolidada e políticas de engenharia estabelecidas.

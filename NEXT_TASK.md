@@ -8,66 +8,82 @@
 
 | Campo | Valor |
 |---|---|
-| ID | SPR-2.1 |
-| Iniciativa | Sprint 2.1 — Consolidação de Governança |
-| Status | CONCLUÍDA |
-| Tipo | Documental |
-| Capability | SHARED |
-| Sprint funcional autorizada | Nenhuma |
+| ID | Sprint 03 |
+| Iniciativa | Sprint 03 — Reading Library |
+| Status | AUTORIZADA |
+| Tipo | Funcional |
+| Capability | READ |
+| Feature | READ-001 — Cadastro de livros e consulta da biblioteca |
+| User Story | US-READ-001-001 |
+| Requisitos Funcionais | RF-READ-001 e RF-READ-002 |
 
 ---
 
-# Última Sprint Funcional
+# Objetivo Autorizado
 
-A Sprint 02 — Character foi concluída. Seu histórico permanece nos registros
-oficiais do projeto e não constitui autorização para nova implementação.
-
----
-
-# Encerramento da SPR-2.1
-
-A SPR-2.1 — Consolidação de Governança foi concluída.
-
-O encerramento consolida:
-
-- baseline e políticas de governança de engenharia;
-- arquitetura e isolamento entre Capabilities validados;
-- Ruff e Mypy como ferramentas oficiais;
-- Playbook Permanente de Engenharia;
-- AI Agent Workflow, Checklists e Incident Response;
-- GitHub Actions executado em Python 3.10 real;
-- Quality Gates automatizados;
-- três required status checks ativos na proteção da `main`;
-- branch protection preservada.
+Permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e consulte exclusivamente os livros associados ao próprio Player.
 
 ---
 
-# Autorização Vigente
+# Dados Funcionais
 
-Nenhuma tarefa funcional está autorizada neste momento.
+São obrigatórios:
+
+- título;
+- autor;
+- quantidade total de páginas.
+
+São opcionais:
+
+- ISBN;
+- editora;
+- edição;
+- capa;
+- gênero;
+- idioma.
+
+Os campos opcionais podem ser informados, não influenciam regras de negócio nesta Sprint e sua ausência não bloqueia o cadastro.
 
 ---
 
-# Próxima Tarefa Funcional
+# Comportamentos Autorizados
 
-A próxima tarefa funcional depende de decisão explícita do Product Owner.
-
-Este documento não seleciona, antecipa nem autoriza a Sprint 03.
+- Cada livro pertence a um único Player.
+- Um Player não pode consultar livros de outro Player.
+- A consulta de uma biblioteca vazia é válida e retorna uma coleção vazia.
+- Nesta Sprint, biblioteca organizada significa pertencimento correto ao Player autenticado, retorno consistente da coleção e disponibilidade dos livros cadastrados para consulta.
 
 ---
 
-# Restrições
+# Fora do Escopo
 
-Enquanto não houver nova autorização explícita:
+- RF-READ-003 ou qualquer RF posterior;
+- filtros;
+- busca;
+- paginação;
+- ordenação configurável;
+- sessões de leitura;
+- progresso;
+- páginas lidas;
+- tempo de leitura;
+- XP;
+- GAME;
+- Analytics;
+- Dashboard;
+- AI.
 
-- não implementar nova Capability, Feature ou requisito funcional;
-- não inferir escopo a partir de Roadmap, épicos ou artefatos futuros;
-- não iniciar a Sprint 03;
-- preservar o histórico funcional das Sprints 01 e 02;
-- não iniciar nova Sprint funcional ou fase de implementação.
+Qualquer expansão do escopo exige nova autorização explícita do Product Owner.
+
+---
+
+# Execução
+
+A implementação deverá seguir o Engineering Playbook, a governança vigente e os required Quality Gates da `main`.
+
+A autorização desta Sprint não define schema, ORM, endpoints, migrations ou outras decisões técnicas, que pertencem ao planejamento técnico autorizado posteriormente.
 
 ---
 
 # Regra Final
 
-Nenhuma Sprint funcional poderá ser iniciada sem autorização explícita do Product Owner.
+Somente READ-001, RF-READ-001, RF-READ-002 e US-READ-001-001 estão autorizados para a Sprint 03 — Reading Library.
