@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pytest_archon import archrule
 
-CAPABILITIES = {"auth", "character"}
+CAPABILITIES = {"auth", "character", "read"}
 
 
 def _imported_modules(file_path: Path) -> set[str]:
@@ -80,6 +80,40 @@ def test_character_application_should_not_depend_on_infrastructure_or_presentati
             "app.character.infrastructure*",
             "app.character.presentation*",
         )
+        .check("app")
+    )
+
+
+def test_read_domain_should_not_depend_on_outer_layers():
+    (
+        archrule("Check READ Domain Dependencies")
+        .match("app.read.domain*")
+        .should_not_import(
+            "app.read.application*",
+            "app.read.infrastructure*",
+            "app.read.presentation*",
+        )
+        .check("app")
+    )
+
+
+def test_read_application_should_not_depend_on_infrastructure_or_presentation():
+    (
+        archrule("Check READ Application Dependencies")
+        .match("app.read.application*")
+        .should_not_import(
+            "app.read.infrastructure*",
+            "app.read.presentation*",
+        )
+        .check("app")
+    )
+
+
+def test_read_infrastructure_should_not_depend_on_presentation():
+    (
+        archrule("Check READ Infrastructure Dependencies")
+        .match("app.read.infrastructure*")
+        .should_not_import("app.read.presentation*")
         .check("app")
     )
 

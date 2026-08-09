@@ -63,6 +63,8 @@ known-first-party = ["app", "tests"]
 "app/character/dependencies.py" = ["B008"]
 "app/character/presentation/api/fastapi/routers.py" = ["B008"]
 "app/composition_root.py" = ["B008"]
+"app/read/dependencies.py" = ["B008"]
+"app/read/presentation/api/fastapi/routers.py" = ["B008"]
 
 [tool.ruff.format]
 quote-style = "double"
