@@ -13,6 +13,7 @@ from app.read.domain.errors.book_errors import (
     InvalidBookTitleError,
     InvalidTotalPagesError,
 )
+from app.read.domain.value_objects.book_id import BookId
 from app.shared.domain.aggregate import AggregateRoot
 from app.shared.domain.identifiers.user_id import UserId
 
@@ -26,6 +27,12 @@ class BookRepositoryFake:
 
     def list_by_owner(self, owner_id: UserId) -> tuple[Book, ...]:
         return tuple(book for book in self.saved if book.owner_id == owner_id)
+
+    def get_by_id_and_owner(self, book_id: BookId, owner_id: UserId) -> Book | None:
+        return next(
+            (book for book in self.saved if book.id == book_id and book.owner_id == owner_id),
+            None,
+        )
 
 
 class UnitOfWorkFake:
