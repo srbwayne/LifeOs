@@ -629,42 +629,45 @@ CREATE TABLE workout_records (
 
 ```sql
 CREATE TABLE books (
-    id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    author VARCHAR(255),
-    total_pages INTEGER,
-    status VARCHAR(30) NOT NULL,
-    started_at DATE,
-    finished_at DATE,
+    id VARCHAR(26) NOT NULL,
+    user_id VARCHAR(26) NOT NULL,
+    title VARCHAR NOT NULL,
+    author VARCHAR NOT NULL,
+    total_pages INTEGER NOT NULL,
+    isbn VARCHAR,
+    publisher VARCHAR,
+    edition VARCHAR,
+    cover VARCHAR,
+    genre VARCHAR,
+    language VARCHAR,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
-    deleted_at DATETIME,
 
     CONSTRAINT pk_books PRIMARY KEY (id),
     CONSTRAINT fk_books_user_id_users
         FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT ck_books_total_pages_positive
-        CHECK (
-            total_pages IS NULL
-            OR total_pages > 0
-        )
+        CHECK (total_pages > 0)
 );
+
+CREATE INDEX ix_books_user_id
+ON books(user_id);
 ```
 
-Status iniciais:
+Regras:
 
-```text
-PLANNED
-READING
-COMPLETED
-PAUSED
-ABANDONED
-```
+- `id` persiste o TSID de `BookId` em sua representação canônica;
+- `user_id` é obrigatório e referencia `users.id`;
+- `title`, `author` e `total_pages` são obrigatórios;
+- `isbn`, `publisher`, `edition`, `cover`, `genre` e `language` são opcionais e nullable;
+- `created_at` e `updated_at` são timestamps técnicos de persistência e não pertencem ao Aggregate `Book`;
+- não existem campos de status, progresso, sessão de leitura ou exclusão lógica em READ-001.
 
 ---
 
-## 10.2 Tabela `reading_sessions`
+## 10.2 Planejamento futuro — `reading_sessions`
+
+> Esta tabela não está implementada e não integra o schema vigente de READ-001.
 
 ```sql
 CREATE TABLE reading_sessions (
@@ -693,7 +696,9 @@ CREATE TABLE reading_sessions (
 
 ---
 
-## 10.3 Tabela `reading_insights`
+## 10.3 Planejamento futuro — `reading_insights`
+
+> Esta tabela não está implementada e não integra o schema vigente de READ-001.
 
 ```sql
 CREATE TABLE reading_insights (
@@ -1296,6 +1301,7 @@ ON workout_records(user_id, occurred_at);
 CREATE INDEX ix_workout_records_user_id_type_id
 ON workout_records(user_id, workout_type_id);
 
+-- Planejamento futuro; não implementado em READ-001.
 CREATE INDEX ix_reading_sessions_user_id_record_date
 ON reading_sessions(user_id, record_date);
 
@@ -1483,8 +1489,8 @@ A ordem oficial deve respeitar dependências:
 17. wellbeing_records
 18. body_composition_records
 19. workout_records
-20. reading_sessions
-21. reading_insights
+20. reading_sessions (futuro)
+21. reading_insights (futuro)
 22. therapy_sessions
 23. habit_records
 24. habit_streaks

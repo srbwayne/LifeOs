@@ -234,51 +234,35 @@ Quando houver mudanças independentes, criar migrations separadas.
 
 ---
 
-# 10. Ordem Inicial das Migrations
+# 10. Estado Atual das Migrations
 
-Ordem oficial sugerida:
+A cadeia aplicada permanece linear:
 
 ```text
-0001_create_users
-0002_create_user_preferences
-0003_create_user_sessions
-0004_create_password_reset_tokens
-0005_create_characters
-0006_create_character_attributes
-0007_create_character_history
-0008_create_workout_types
-0009_create_books
-0010_create_therapists
-0011_create_habits
-0012_create_skills
-0013_create_quests
-0014_create_achievements
-0015_create_titles
-0016_create_sleep_records
-0017_create_wellbeing_records
-0018_create_body_composition_records
-0019_create_workout_records
-0020_create_reading_sessions
-0021_create_reading_insights
-0022_create_therapy_sessions
-0023_create_habit_records
-0024_create_habit_streaks
-0025_create_experience_transactions
-0026_create_user_skills
-0027_create_quest_progress
-0028_create_user_achievements
-0029_create_user_titles
-0030_create_analytics_snapshots
-0031_create_generated_insights
-0032_create_dashboard_cache
-0033_create_report_exports
-0034_create_audit_logs
-0035_create_event_store
-0036_create_processed_events
-0037_create_application_settings
-0038_create_initial_indexes
-0039_seed_reference_data
+0001_create_users_table
+↓
+0002_create_players_and_characters_tables
+↓
+0003_create_auth_tables
+↓
+0004_create_books_table (head)
 ```
+
+A migration `0004_create_books_table.py` possui:
+
+- revision `0004`;
+- down revision `0003`;
+- criação da tabela `books`;
+- Foreign Key obrigatória de `books.user_id` para `users.id`;
+- constraint `ck_books_total_pages_positive`, com `total_pages > 0`;
+- índice `ix_books_user_id` para ownership e consulta da biblioteca pessoal.
+
+O downgrade remove, nesta ordem:
+
+1. `ix_books_user_id`;
+2. tabela `books`.
+
+As migrations `0001`, `0002` e `0003` permanecem inalteradas.
 
 ---
 

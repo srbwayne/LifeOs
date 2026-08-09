@@ -301,25 +301,29 @@ WorkoutCompleted
 
 ## Responsabilidade
 
-Registrar aprendizagem.
+Gerenciar o cadastro de livros e a consulta da biblioteca pessoal do usuário autenticado.
 
 ---
 
-## Entidades
+## Aggregate Root
 
 Book
 
-ReadingSession
+---
 
-Insight
+## Value Objects
+
+BookId
+
+TotalPages
+
+`UserId` é o contrato transversal de ownership reutilizado por READ e permanece no Shared Kernel.
 
 ---
 
 ## Eventos
 
-ReadingRegistered
-
-BookCompleted
+READ-001 não publica Domain Events. Não existe consumidor autorizado que justifique evento nesta Sprint.
 
 ---
 
@@ -592,8 +596,6 @@ Exemplos:
 UserRegistered
 
 WorkoutCompleted
-
-ReadingFinished
 
 SleepRegistered
 
