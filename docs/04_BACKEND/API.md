@@ -225,6 +225,60 @@ Futuras versões:
 
 Mudanças incompatíveis nunca devem ocorrer dentro da mesma versão.
 
+## 6.1 Estado implementado — READ-001
+
+A Reading Library está atualmente exposta sem prefixo de versão, conforme a aplicação FastAPI implantada:
+
+### `POST /books`
+
+- autenticação: obrigatória;
+- status de sucesso: `201 Created`;
+- ownership: derivado exclusivamente do `UserId` autenticado.
+
+Request:
+
+| Campo | Obrigatoriedade |
+|---|---|
+| `title` | Obrigatório |
+| `author` | Obrigatório |
+| `total_pages` | Obrigatório |
+| `isbn` | Opcional |
+| `publisher` | Opcional |
+| `edition` | Opcional |
+| `cover` | Opcional |
+| `genre` | Opcional |
+| `language` | Opcional |
+
+A API não recebe `owner_id`, `user_id` ou `player_id` do cliente.
+
+Response `BookResponse`:
+
+- `id`;
+- `title`;
+- `author`;
+- `total_pages`;
+- `isbn`;
+- `publisher`;
+- `edition`;
+- `cover`;
+- `genre`;
+- `language`.
+
+O owner não integra o contrato público.
+
+### `GET /books`
+
+- autenticação: obrigatória;
+- status de sucesso: `200 OK`;
+- resposta: coleção dos livros pertencentes exclusivamente ao usuário autenticado;
+- biblioteca vazia: `200 OK` com `[]`.
+
+READ-001 não implementa filtros, busca, paginação, ordenação configurável, endpoint individual ou listagem global.
+
+O Repository recebe obrigatoriamente o `UserId` autenticado e filtra a consulta por ownership.
+
+> Divergência conhecida: estas rotas implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001.
+
 ---
 
 # 7. Responsabilidades
@@ -767,7 +821,7 @@ GET /workouts?type=RUNNING
 Outro exemplo:
 
 ```text
-GET /books?status=READ
+GET /habits?active=true
 ```
 
 Filtros devem:
@@ -826,7 +880,7 @@ query
 Exemplo:
 
 ```text
-GET /books?query=Clean%20Architecture
+GET /workouts?query=running
 ```
 
 Regras:
@@ -1169,7 +1223,7 @@ POST /api/v1/workouts/batch
 ou
 
 ```text
-POST /api/v1/books/import
+POST /api/v1/workouts/import
 ```
 
 Regras:
@@ -2101,7 +2155,7 @@ CreateWorkoutRequest
 
 WorkoutResponse
 
-UpdateBookRequest
+UpdateWorkoutRequest
 
 CharacterResponse
 ```

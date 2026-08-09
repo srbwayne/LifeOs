@@ -112,9 +112,7 @@ Workout
 └── workout_records
 
 Reading
-├── books
-├── reading_sessions
-└── reading_insights
+└── books
 
 Therapy
 ├── therapists
@@ -169,9 +167,6 @@ erDiagram
     WORKOUT_TYPES ||--o{ WORKOUT_RECORDS : classifies
 
     USERS ||--o{ BOOKS : owns
-    USERS ||--o{ READING_SESSIONS : records
-    BOOKS ||--o{ READING_SESSIONS : receives
-    READING_SESSIONS ||--o{ READING_INSIGHTS : produces
 
     USERS ||--o{ THERAPISTS : registers
     USERS ||--o{ THERAPY_SESSIONS : attends
@@ -490,20 +485,33 @@ UNIQUE(user_id, name)
 
 | Campo | Tipo | Regras |
 |---|---|---|
-| `id` | VARCHAR(36) | PK |
-| `user_id` | VARCHAR(36) | FK users.id |
-| `title` | VARCHAR(255) | NOT NULL |
-| `author` | VARCHAR(255) | NULL |
-| `total_pages` | INTEGER | NULL |
-| `status` | VARCHAR(30) | NOT NULL |
-| `started_at` | DATE | NULL |
-| `finished_at` | DATE | NULL |
-| `created_at` | DATETIME | NOT NULL |
-| `updated_at` | DATETIME | NOT NULL |
+| `id` | VARCHAR(26) | PK, TSID de `BookId` |
+| `user_id` | VARCHAR(26) | NOT NULL, FK users.id |
+| `title` | VARCHAR | NOT NULL |
+| `author` | VARCHAR | NOT NULL |
+| `total_pages` | INTEGER | NOT NULL, CHECK > 0 |
+| `isbn` | VARCHAR | NULL |
+| `publisher` | VARCHAR | NULL |
+| `edition` | VARCHAR | NULL |
+| `cover` | VARCHAR | NULL |
+| `genre` | VARCHAR | NULL |
+| `language` | VARCHAR | NULL |
+| `created_at` | DATETIME | NOT NULL, timestamp técnico de persistência |
+| `updated_at` | DATETIME | NOT NULL, timestamp técnico de persistência |
+
+Relacionamento vigente:
+
+```text
+users 1 — N books
+```
+
+Cada `Book` pertence obrigatoriamente a um único `User`. READ utiliza o `UserId` transversal e não depende de Player ou Character.
 
 ---
 
-## 10.2 `reading_sessions`
+## 10.2 Planejamento futuro — `reading_sessions`
+
+> Esta entidade persistente não está implementada e não integra READ-001.
 
 | Campo | Tipo | Regras |
 |---|---|---|
@@ -517,7 +525,9 @@ UNIQUE(user_id, name)
 
 ---
 
-## 10.3 `reading_insights`
+## 10.3 Planejamento futuro — `reading_insights`
+
+> Esta entidade persistente não está implementada e não integra READ-001.
 
 | Campo | Tipo | Regras |
 |---|---|---|
@@ -986,7 +996,7 @@ Regra:
 
 ---
 
-## Book e Reading Session
+## Planejamento futuro — Book e Reading Session
 
 ```text
 books 1 — N reading_sessions
@@ -1103,7 +1113,6 @@ UNIQUE(email)
 Soft delete recomendado para:
 
 - users;
-- books;
 - therapists;
 - habits;
 - workout_types;
@@ -1151,8 +1160,6 @@ erDiagram
 ```mermaid
 erDiagram
     USERS ||--o{ BOOKS : owns
-    BOOKS ||--o{ READING_SESSIONS : receives
-    READING_SESSIONS ||--o{ READING_INSIGHTS : produces
     USERS ||--o{ THERAPISTS : registers
     THERAPISTS ||--o{ THERAPY_SESSIONS : conducts
 ```
@@ -1216,8 +1223,8 @@ Ordem recomendada para migrations iniciais:
 17. wellbeing_records
 18. body_composition_records
 19. workout_records
-20. reading_sessions
-21. reading_insights
+20. reading_sessions (futuro)
+21. reading_insights (futuro)
 22. therapy_sessions
 23. habit_records
 24. habit_streaks

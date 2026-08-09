@@ -1258,93 +1258,25 @@ Já cobertas pelo índice composto.
 
 # 14. Índices para Reading
 
-O módulo Reading possui consultas tanto por livro quanto por sessões.
-
----
+READ-001 implementa somente a consulta da biblioteca pessoal por proprietário.
 
 ## Books
 
-Consulta:
+Consulta principal:
 
 ```sql
 WHERE user_id = ?
-
-AND status = ?
+ORDER BY id ASC
 ```
 
-Índice:
+Índices implementados:
 
-```text
-(user_id, status)
-```
+| Índice | Coluna | Finalidade |
+|---|---|---|
+| Primary Key de `books` | `id` | Identidade TSID e ordenação técnica determinística. |
+| `ix_books_user_id` | `user_id` | Isolamento e consulta eficiente da biblioteca do usuário autenticado. |
 
----
-
-Busca por título
-
-Na versão SQLite:
-
-```text
-Sem índice textual.
-```
-
-Futuramente:
-
-```text
-FTS5
-
-ou
-
-PostgreSQL Full Text Search
-```
-
----
-
-## Reading Sessions
-
-Consulta:
-
-```sql
-WHERE user_id = ?
-
-ORDER BY record_date DESC
-```
-
-Índice:
-
-```text
-(user_id, record_date)
-```
-
----
-
-Consulta por livro
-
-```sql
-WHERE book_id = ?
-```
-
-Índice:
-
-```text
-(book_id)
-```
-
----
-
-## Reading Insights
-
-Consulta:
-
-```sql
-WHERE reading_session_id = ?
-```
-
-Índice:
-
-```text
-(reading_session_id)
-```
+Não existem índices para `title`, `isbn`, status, progresso ou timestamps em READ-001.
 
 ---
 
