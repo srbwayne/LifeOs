@@ -14,6 +14,12 @@ from app.auth.domain.errors.user_errors import (
 from app.auth.presentation.api.fastapi.routers import router as auth_router
 from app.character.domain.errors.character_errors import CharacterNotFoundError
 from app.character.presentation.api.fastapi.routers import router as character_router
+from app.read.domain.errors.book_errors import (
+    InvalidBookAuthorError,
+    InvalidBookTitleError,
+    InvalidTotalPagesError,
+)
+from app.read.presentation.api.fastapi.routers import router as read_router
 
 
 @asynccontextmanager
@@ -32,6 +38,7 @@ def create_app() -> FastAPI:
     # Inclui os roteadores das capabilities
     app.include_router(auth_router)
     app.include_router(character_router)
+    app.include_router(read_router)
 
     error_statuses = {
         UserAlreadyExistsError: status.HTTP_409_CONFLICT,
@@ -41,6 +48,9 @@ def create_app() -> FastAPI:
         InvalidPasswordResetTokenError: status.HTTP_400_BAD_REQUEST,
         UserNotFoundError: status.HTTP_404_NOT_FOUND,
         CharacterNotFoundError: status.HTTP_404_NOT_FOUND,
+        InvalidBookTitleError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        InvalidBookAuthorError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        InvalidTotalPagesError: status.HTTP_422_UNPROCESSABLE_ENTITY,
     }
     for error_type, status_code in error_statuses.items():
         app.add_exception_handler(
