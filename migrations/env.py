@@ -15,6 +15,7 @@ from app.character.infrastructure.persistence.models.character_model import (  #
     CharacterModel,
 )
 from app.character.infrastructure.persistence.models.player_model import PlayerModel  # noqa: F401
+from app.read.infrastructure.persistence.models.book_model import BookModel  # noqa: F401
 from app.shared.infrastructure.database import Base
 
 config = context.config
