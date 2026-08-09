@@ -301,32 +301,44 @@ WorkoutCompleted
 
 ## Responsabilidade
 
-Gerenciar o cadastro de livros e a consulta da biblioteca pessoal do usuário autenticado.
+Gerenciar livros da biblioteca pessoal e registrar acontecimentos históricos de leitura do usuário autenticado.
 
 ---
 
-## Aggregate Root
+## Aggregate Roots
 
-Book
+- `Book`: representa o item permanente da biblioteca e não controla sessões.
+- `ReadingSession`: representa um fato histórico de leitura e referencia o livro por `BookId`.
+
+`ReadingSession` possui identidade própria, não oferece mutabilidade pública para edição em READ-002 e calcula `pages_read` pelo intervalo inclusivo entre `start_page` e `end_page`.
 
 ---
 
 ## Value Objects
 
-BookId
+- `BookId`;
+- `TotalPages`;
+- `ReadingSessionId`, com representação TSID;
+- `PageNumber`, inteiro imutável maior ou igual a 1.
 
-TotalPages
+Não existe `PageRange` Value Object. A consistência entre página inicial e final pertence ao Aggregate `ReadingSession`.
 
 `UserId` é o contrato transversal de ownership reutilizado por READ e permanece no Shared Kernel.
 
 ---
 
-## Eventos
+## Repository Ports
 
-READ-001 não publica Domain Events. Não existe consumidor autorizado que justifique evento nesta Sprint.
+- `IBookRepository`: inclui lookup obrigatório por `BookId` e `UserId` para preservar ownership;
+- `IReadingSessionRepository`: expõe somente `save(session)` em READ-002.
 
 ---
 
+## Eventos
+
+READ-001 e READ-002 não publicam Domain Events. Não existe consumidor autorizado que justifique evento nas Features implementadas.
+
+---
 # Bounded Context — Therapy
 
 ## Responsabilidade
@@ -472,6 +484,8 @@ Workout
 
 Book
 
+ReadingSession
+
 Habit
 
 Quest
@@ -499,6 +513,8 @@ Character
 Workout
 
 Book
+
+ReadingSession
 
 Habit
 ```
@@ -578,6 +594,8 @@ CharacterRepository
 WorkoutRepository
 
 BookRepository
+
+ReadingSessionRepository
 
 HabitRepository
 ```

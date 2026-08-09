@@ -509,22 +509,31 @@ Cada `Book` pertence obrigatoriamente a um único `User`. READ utiliza o `UserId
 
 ---
 
-## 10.2 Planejamento futuro — `reading_sessions`
-
-> Esta entidade persistente não está implementada e não integra READ-001.
+## 10.2 `reading_sessions`
 
 | Campo | Tipo | Regras |
 |---|---|---|
-| `id` | VARCHAR(36) | PK |
-| `user_id` | VARCHAR(36) | FK users.id |
-| `book_id` | VARCHAR(36) | FK books.id |
-| `record_date` | DATE | NOT NULL |
-| `pages_read` | INTEGER | NOT NULL |
-| `duration_minutes` | INTEGER | NULL |
-| `created_at` | DATETIME | NOT NULL |
+| `id` | VARCHAR(26) | PK, TSID de `ReadingSessionId` |
+| `user_id` | VARCHAR(26) | NOT NULL, FK users.id |
+| `book_id` | VARCHAR(26) | NOT NULL, FK books.id |
+| `start_page` | INTEGER | NOT NULL, CHECK >= 1 |
+| `end_page` | INTEGER | NOT NULL, CHECK >= start_page |
+| `started_at` | DATETIME | NOT NULL, timestamp funcional UTC |
+| `ended_at` | DATETIME | NOT NULL, timestamp funcional UTC, CHECK >= started_at |
+| `notes` | TEXT | NULL |
+| `created_at` | DATETIME | NOT NULL, timestamp técnico de persistência |
+| `updated_at` | DATETIME | NOT NULL, timestamp técnico de persistência |
+
+Relacionamentos vigentes:
+
+```text
+users 1 — N reading_sessions
+books 1 — N reading_sessions
+```
+
+Cada `ReadingSession` pertence obrigatoriamente a exatamente um `User` e um `Book`. `pages_read` é derivado no Domain/Application e não existe como coluna persistida.
 
 ---
-
 ## 10.3 Planejamento futuro — `reading_insights`
 
 > Esta entidade persistente não está implementada e não integra READ-001.
@@ -996,7 +1005,7 @@ Regra:
 
 ---
 
-## Planejamento futuro — Book e Reading Session
+## Book e Reading Session
 
 ```text
 books 1 — N reading_sessions
@@ -1160,6 +1169,8 @@ erDiagram
 ```mermaid
 erDiagram
     USERS ||--o{ BOOKS : owns
+    USERS ||--o{ READING_SESSIONS : records
+    BOOKS ||--o{ READING_SESSIONS : receives
     USERS ||--o{ THERAPISTS : registers
     THERAPISTS ||--o{ THERAPY_SESSIONS : conducts
 ```
@@ -1223,7 +1234,7 @@ Ordem recomendada para migrations iniciais:
 17. wellbeing_records
 18. body_composition_records
 19. workout_records
-20. reading_sessions (futuro)
+20. reading_sessions
 21. reading_insights (futuro)
 22. therapy_sessions
 23. habit_records

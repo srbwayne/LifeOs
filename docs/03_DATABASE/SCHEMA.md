@@ -665,37 +665,46 @@ Regras:
 
 ---
 
-## 10.2 Planejamento futuro — `reading_sessions`
-
-> Esta tabela não está implementada e não integra o schema vigente de READ-001.
+## 10.2 Tabela `reading_sessions`
 
 ```sql
 CREATE TABLE reading_sessions (
-    id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    book_id VARCHAR(36) NOT NULL,
-    record_date DATE NOT NULL,
-    pages_read INTEGER NOT NULL,
-    duration_minutes INTEGER,
+    id VARCHAR(26) NOT NULL,
+    user_id VARCHAR(26) NOT NULL,
+    book_id VARCHAR(26) NOT NULL,
+    start_page INTEGER NOT NULL,
+    end_page INTEGER NOT NULL,
+    started_at DATETIME NOT NULL,
+    ended_at DATETIME NOT NULL,
+    notes TEXT,
     created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
 
     CONSTRAINT pk_reading_sessions PRIMARY KEY (id),
     CONSTRAINT fk_reading_sessions_user_id_users
         FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT fk_reading_sessions_book_id_books
         FOREIGN KEY (book_id) REFERENCES books(id),
-    CONSTRAINT ck_reading_sessions_pages_positive
-        CHECK (pages_read > 0),
-    CONSTRAINT ck_reading_sessions_duration_non_negative
-        CHECK (
-            duration_minutes IS NULL
-            OR duration_minutes >= 0
-        )
+    CONSTRAINT ck_reading_sessions_start_page_positive
+        CHECK (start_page >= 1),
+    CONSTRAINT ck_reading_sessions_end_page_not_before_start
+        CHECK (end_page >= start_page),
+    CONSTRAINT ck_reading_sessions_end_not_before_start_time
+        CHECK (ended_at >= started_at)
 );
 ```
 
----
+Regras:
 
+- `id` persiste o TSID de `ReadingSessionId` em sua representação canônica;
+- `user_id` e `book_id` são obrigatórios e referenciam, respectivamente, `users.id` e `books.id`;
+- `started_at` e `ended_at` são timestamps funcionais timezone-aware, normalizados para UTC pelo Domain;
+- `notes` é opcional e nullable;
+- `created_at` e `updated_at` são timestamps técnicos de persistência e não pertencem ao Aggregate;
+- `pages_read` não é coluna: o valor é derivado no Domain/Application por `end_page - start_page + 1`;
+- não existem índices secundários para `reading_sessions` em READ-002.
+
+---
 ## 10.3 Planejamento futuro — `reading_insights`
 
 > Esta tabela não está implementada e não integra o schema vigente de READ-001.
@@ -1301,13 +1310,6 @@ ON workout_records(user_id, occurred_at);
 CREATE INDEX ix_workout_records_user_id_type_id
 ON workout_records(user_id, workout_type_id);
 
--- Planejamento futuro; não implementado em READ-001.
-CREATE INDEX ix_reading_sessions_user_id_record_date
-ON reading_sessions(user_id, record_date);
-
-CREATE INDEX ix_reading_sessions_book_id
-ON reading_sessions(book_id);
-
 CREATE INDEX ix_therapy_sessions_user_id_occurred_at
 ON therapy_sessions(user_id, occurred_at);
 
@@ -1489,7 +1491,7 @@ A ordem oficial deve respeitar dependências:
 17. wellbeing_records
 18. body_composition_records
 19. workout_records
-20. reading_sessions (futuro)
+20. reading_sessions
 21. reading_insights (futuro)
 22. therapy_sessions
 23. habit_records

@@ -1278,6 +1278,16 @@ ORDER BY id ASC
 
 Não existem índices para `title`, `isbn`, status, progresso ou timestamps em READ-001.
 
+## Reading Sessions
+
+READ-002 autoriza somente o registro de sessões; não existe caso de uso de consulta de sessões nesta Feature.
+
+| Índice | Coluna | Finalidade |
+|---|---|---|
+| Primary Key de `reading_sessions` | `id` | Identidade TSID da sessão. |
+
+Não existem índices secundários por `user_id`, `book_id`, `started_at` ou combinações dessas colunas. Índices para consultas futuras somente poderão ser introduzidos junto ao respectivo caso de uso autorizado.
+
 ---
 
 # 15. Índices para Therapy
