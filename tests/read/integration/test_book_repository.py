@@ -135,3 +135,44 @@ def test_book_model_assigns_technical_timestamps_on_insert(session: Session) -> 
     assert model is not None
     assert model.created_at is not None
     assert model.updated_at is not None
+
+
+def test_get_by_id_and_owner_returns_owned_book(session: Session) -> None:
+    owner_id = UserId.new()
+    add_user(session, owner_id, "lookup@example.com")
+    repository = SqlAlchemyBookRepository(session)
+    book = Book.create(owner_id, "Owned", "Author", 100)
+    repository.save(book)
+    session.commit()
+
+    result = repository.get_by_id_and_owner(book.id, owner_id)
+
+    assert result == book
+
+
+def test_get_by_id_and_owner_returns_none_for_missing_book(session: Session) -> None:
+    owner_id = UserId.new()
+    add_user(session, owner_id, "missing@example.com")
+    repository = SqlAlchemyBookRepository(session)
+
+    assert (
+        repository.get_by_id_and_owner(Book.create(owner_id, "Temp", "Author", 10).id, owner_id)
+        is None
+    )
+
+
+def test_get_by_id_and_owner_hides_book_from_other_owner(session: Session) -> None:
+    owner_id = UserId.new()
+    other_owner_id = UserId.new()
+    add_user(session, owner_id, "visible@example.com")
+    add_user(session, other_owner_id, "hidden@example.com")
+    repository = SqlAlchemyBookRepository(session)
+    book = Book.create(other_owner_id, "Hidden", "Author", 100)
+    repository.save(book)
+    session.commit()
+
+    result = repository.get_by_id_and_owner(book.id, owner_id)
+
+    assert result is None
+    assert not session.dirty
+    assert not session.new

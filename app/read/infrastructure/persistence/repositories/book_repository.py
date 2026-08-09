@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.read.domain.aggregates.book import Book
 from app.read.domain.ports.book_repository import IBookRepository
+from app.read.domain.value_objects.book_id import BookId
 from app.read.infrastructure.persistence.mappers.book_mapper import BookMapper
 from app.read.infrastructure.persistence.models.book_model import BookModel
 from app.shared.domain.identifiers.user_id import UserId
@@ -22,3 +23,14 @@ class SqlAlchemyBookRepository(IBookRepository):
             .all()
         )
         return tuple(BookMapper.to_domain(model) for model in models)
+
+    def get_by_id_and_owner(self, book_id: BookId, owner_id: UserId) -> Book | None:
+        model = (
+            self._session.query(BookModel)
+            .filter_by(
+                id=book_id.to_persistence(),
+                user_id=owner_id.to_persistence(),
+            )
+            .one_or_none()
+        )
+        return BookMapper.to_domain(model) if model is not None else None

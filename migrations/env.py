@@ -16,6 +16,9 @@ from app.character.infrastructure.persistence.models.character_model import (  #
 )
 from app.character.infrastructure.persistence.models.player_model import PlayerModel  # noqa: F401
 from app.read.infrastructure.persistence.models.book_model import BookModel  # noqa: F401
+from app.read.infrastructure.persistence.models.reading_session_model import (  # noqa: F401
+    ReadingSessionModel,
+)
 from app.shared.infrastructure.database import Base
 
 config = context.config
