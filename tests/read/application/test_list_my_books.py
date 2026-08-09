@@ -7,6 +7,7 @@ from app.read.application.queries.list_my_books import (
     ListMyBooksQueryHandler,
 )
 from app.read.domain.aggregates.book import Book
+from app.read.domain.value_objects.book_id import BookId
 from app.shared.domain.identifiers.user_id import UserId
 
 
@@ -21,6 +22,9 @@ class BookRepositoryStub:
     def list_by_owner(self, owner_id: UserId) -> tuple[Book, ...]:
         self.listed_owners.append(owner_id)
         return self.books
+
+    def get_by_id_and_owner(self, book_id: BookId, owner_id: UserId) -> Book | None:
+        raise AssertionError("List query must not get an individual book.")
 
 
 def test_list_my_books_query_is_immutable() -> None:
