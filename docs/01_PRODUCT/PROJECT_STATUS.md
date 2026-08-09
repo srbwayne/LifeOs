@@ -1,5 +1,23 @@
 # Project Status
 
+## Sprint 04 — Reading Sessions - 2026-08-09
+
+**Status:** AUTORIZADA — implementação ainda não iniciada
+**Capability:** READ
+**Feature:** READ-002 — Reading Sessions
+**User Story:** US-READ-002-001
+**Requisito Funcional:** RF-READ-003
+
+### Objetivo autorizado
+
+Permitir que o Player registre uma sessão de leitura referente a um Book existente em sua biblioteca.
+
+### Estado
+
+- READ-002 selecionada pelo Product Owner.
+- Planejamento técnico pendente.
+- Nenhuma implementação iniciada nesta etapa.
+- RF-READ-004+ permanecem fora do escopo.
 ## Sprint 03 — Reading Library - 2026-08-09
 
 **Status:** ✅ Concluída
@@ -24,7 +42,7 @@
 - RF-READ-001: ENTREGUE.
 - RF-READ-002: ENTREGUE.
 - RF-READ-003+: NÃO ENTREGUES.
-- Próxima Sprint: NÃO AUTORIZADA.
+- Sprint 04 — Reading Sessions autorizada posteriormente pelo Product Owner.
 
 ### Pendência
 

@@ -169,3 +169,178 @@ RF-READ-002
 ```
 
 Esta User Story especifica uma candidata funcional. Ela não autoriza o início da Sprint 03 nem qualquer implementação.
+## US-READ-002-001 — Registro de sessão de leitura
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-READ-002-001 |
+| Capability | READ |
+| Feature | READ-002 — Reading Sessions |
+| Requisito Funcional | RF-READ-003 |
+| Status | Aprovada — Sprint 04 autorizada |
+
+### Persona
+
+Player autenticado.
+
+### Necessidade
+
+Registrar uma sessão de leitura referente a um livro existente em sua própria biblioteca.
+
+### Valor
+
+Manter um histórico fiel das leituras e das reflexões realizadas em cada sessão.
+
+### User Story
+
+Como Player,
+quero registrar uma sessão de leitura de um livro da minha biblioteca,
+para manter um histórico fiel das minhas leituras e das reflexões realizadas em cada sessão.
+
+### Pré-condições
+
+- O Player está autenticado.
+- O Book existe na biblioteca do Player autenticado.
+
+### Dados funcionais
+
+| Campo | Obrigatoriedade | Observação |
+|---|---|---|
+| book | Obrigatório | Identifica o Book existente ao qual a sessão pertence. |
+| start_page | Obrigatório | Primeira página do intervalo contínuo lido. |
+| end_page | Obrigatório | Última página do intervalo contínuo lido. |
+| started_at | Obrigatório | Momento de início da sessão. |
+| ended_at | Obrigatório | Momento de encerramento da sessão. |
+| notes | Opcional | Observações, aprendizados, percepções ou reflexões da sessão. |
+| pages_read | Calculado | Não é informado pelo cliente; corresponde a `end_page - start_page + 1`. |
+
+### Princípio de domínio
+
+- Book representa o Asset permanente da biblioteca.
+- ReadingSession representa um acontecimento real de leitura.
+- Progress permanece futuro e será derivado das sessões.
+
+### Regras de negócio
+
+- **RN-01:** O Book deve existir.
+- **RN-02:** O Book deve pertencer ao usuário autenticado.
+- **RN-03:** Não é permitido registrar ReadingSession para Book pertencente a outro usuário.
+- **RN-04:** `start_page` deve ser maior ou igual a 1.
+- **RN-05:** `end_page` deve ser maior ou igual a `start_page`.
+- **RN-06:** `end_page` não pode ser maior que `total_pages` do Book.
+- **RN-07:** A sessão representa um único intervalo contínuo de páginas.
+- **RN-08:** `notes` é opcional.
+- **RN-09:** `pages_read` é calculado automaticamente por `end_page - start_page + 1`.
+- **RN-10:** ReadingSession representa um fato histórico e não poderá ser editada nesta Feature.
+
+### Cenários
+
+#### Cenário 1 — Registrar sessão válida
+
+**Dado** que o Player está autenticado
+**E** selecionou um Book existente em sua biblioteca
+**E** informou um intervalo válido e os horários da sessão
+**Quando** solicitar o registro
+**Então** a ReadingSession deverá ser registrada para o Book selecionado
+**E** deverá compor seu histórico de leitura.
+
+#### Cenário 2 — Impedir sessão para Book inexistente
+
+**Dado** que o Player está autenticado
+**E** informou um Book inexistente
+**Quando** solicitar o registro da sessão
+**Então** a ReadingSession não deverá ser registrada.
+
+#### Cenário 3 — Impedir sessão para Book de outro usuário
+
+**Dado** que o Book pertence a outro usuário
+**Quando** o Player autenticado solicitar o registro da sessão
+**Então** a ReadingSession não deverá ser registrada
+**E** o isolamento entre usuários deverá ser preservado.
+
+#### Cenário 4 — Impedir intervalo invertido
+
+**Dado** que `start_page` é maior que `end_page`
+**Quando** o Player solicitar o registro
+**Então** a ReadingSession não deverá ser registrada.
+
+#### Cenário 5 — Impedir página final além do Book
+
+**Dado** que `end_page` é maior que `total_pages` do Book
+**Quando** o Player solicitar o registro
+**Então** a ReadingSession não deverá ser registrada.
+
+#### Cenário 6 — Registrar sessão com notes
+
+**Dado** que os dados obrigatórios são válidos
+**E** o Player informou `notes`
+**Quando** solicitar o registro
+**Então** a ReadingSession deverá ser registrada com as observações da sessão.
+
+#### Cenário 7 — Registrar sessão sem notes
+
+**Dado** que os dados obrigatórios são válidos
+**E** o Player não informou `notes`
+**Quando** solicitar o registro
+**Então** a ausência de `notes` não deverá impedir o registro.
+
+#### Cenário 8 — Registrar leitura de uma única página
+
+**Dado** que `start_page` e `end_page` são iguais a 150
+**Quando** a sessão for registrada
+**Então** `pages_read` deverá ser igual a 1.
+
+#### Cenário 9 — Calcular intervalo com várias páginas
+
+**Dado** que `start_page` é igual a 80
+**E** `end_page` é igual a 92
+**Quando** a sessão for registrada
+**Então** `pages_read` deverá ser igual a 13.
+
+### Critérios de aceite
+
+- Uma sessão válida é registrada para um Book existente da biblioteca do Player autenticado.
+- Uma sessão não é registrada quando o Book não existe.
+- Uma sessão não é registrada quando o Book pertence a outro usuário.
+- Uma sessão não é registrada quando `start_page` é maior que `end_page`.
+- Uma sessão não é registrada quando `end_page` supera `total_pages` do Book.
+- Uma sessão válida pode ser registrada com `notes`.
+- Uma sessão válida pode ser registrada sem `notes`.
+- Um intervalo de uma única página produz `pages_read` igual a 1.
+- Um intervalo de 80 a 92 produz `pages_read` igual a 13.
+- `pages_read` é sempre calculado pelo sistema e nunca informado pelo cliente.
+
+### Fora do escopo
+
+- RF-READ-004 ou posteriores;
+- ReadingProgress;
+- percentual concluído;
+- última página lida;
+- Book concluído;
+- tempo acumulado;
+- velocidade média;
+- streak;
+- XP;
+- Domain Events para GAME;
+- GAME;
+- Analytics;
+- Dashboard;
+- AI;
+- edição de ReadingSession;
+- exclusão de ReadingSession;
+- anexos;
+- comentários sociais.
+
+### Rastreabilidade
+
+```text
+US-READ-002-001
+↓
+READ-002
+↓
+RF-READ-003
+```
+
+Esta User Story formaliza exclusivamente o contrato funcional autorizado para a Sprint 04. A implementação ainda não foi iniciada.
