@@ -245,27 +245,30 @@ A cadeia aplicada permanece linear:
 ↓
 0003_create_auth_tables
 ↓
-0004_create_books_table (head)
+0004_create_books_table
+↓
+0005_create_reading_sessions_table (head)
 ```
 
-A migration `0004_create_books_table.py` possui:
+A migration `0004_create_books_table.py` permanece inalterada e mantém a tabela `books`, sua Foreign Key de ownership, a constraint de `total_pages` e o índice `ix_books_user_id`.
 
-- revision `0004`;
-- down revision `0003`;
-- criação da tabela `books`;
-- Foreign Key obrigatória de `books.user_id` para `users.id`;
-- constraint `ck_books_total_pages_positive`, com `total_pages > 0`;
-- índice `ix_books_user_id` para ownership e consulta da biblioteca pessoal.
+A migration `0005_create_reading_sessions_table.py` possui:
 
-O downgrade remove, nesta ordem:
+- revision `0005`;
+- down revision `0004`;
+- criação da tabela `reading_sessions`;
+- Primary Key TSID em `id`;
+- Foreign Keys obrigatórias de `user_id` para `users.id` e de `book_id` para `books.id`;
+- constraints `start_page >= 1`, `end_page >= start_page` e `ended_at >= started_at`;
+- timestamps funcionais e técnicos;
+- nenhuma coluna `pages_read`;
+- nenhum índice secundário.
 
-1. `ix_books_user_id`;
-2. tabela `books`.
+O downgrade de `0005` remove a tabela `reading_sessions` e os objetos criados com ela.
 
-As migrations `0001`, `0002` e `0003` permanecem inalteradas.
+As migrations `0001`, `0002`, `0003` e `0004` permanecem inalteradas.
 
 ---
-
 # 11. Autogenerate
 
 Alembic `autogenerate` poderá ser utilizado como apoio.

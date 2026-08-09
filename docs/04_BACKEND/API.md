@@ -277,7 +277,50 @@ READ-001 não implementa filtros, busca, paginação, ordenação configurável,
 
 O Repository recebe obrigatoriamente o `UserId` autenticado e filtra a consulta por ownership.
 
-> Divergência conhecida: estas rotas implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001.
+## 6.2 Estado implementado — READ-002
+
+### `POST /books/{book_id}/reading-sessions`
+
+- autenticação: obrigatória;
+- status de sucesso: `201 Created`;
+- `book_id`: informado exclusivamente no path e validado como TSID de `BookId`;
+- ownership: derivado do `UserId` autenticado e validado por `get_by_id_and_owner(book_id, owner_id)`.
+
+Request `CreateReadingSessionRequest`:
+
+| Campo | Obrigatoriedade |
+|---|---|
+| `start_page` | Obrigatório |
+| `end_page` | Obrigatório |
+| `started_at` | Obrigatório, ISO 8601 timezone-aware |
+| `ended_at` | Obrigatório, ISO 8601 timezone-aware |
+| `notes` | Opcional |
+
+O body rejeita campos extras e não aceita `owner_id`, `user_id`, `player_id`, `id`, `book_id` ou `pages_read`.
+
+Response `ReadingSessionResponse`:
+
+- `id`;
+- `book_id`;
+- `start_page`;
+- `end_page`;
+- `pages_read`, derivado pelo Aggregate;
+- `started_at` e `ended_at`, normalizados para UTC;
+- `notes`.
+
+O response não expõe owner nem `created_at`/`updated_at` técnicos.
+
+Erros:
+
+| Status | Condição |
+|---|---|
+| `401 Unauthorized` | Autenticação ausente ou inválida. |
+| `404 Not Found` | Book inexistente ou pertencente a outro usuário, sem diferenciação pública. |
+| `422 Unprocessable Entity` | `BookId` inválido, página ou intervalo inválido, leitura além do total do Book, timestamp naive, `ended_at < started_at`, payload inválido ou campo extra. |
+
+READ-002 não expõe consulta, edição ou exclusão de `ReadingSession`.
+
+> Divergência conhecida: as rotas READ implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001 ou READ-002.
 
 ---
 
