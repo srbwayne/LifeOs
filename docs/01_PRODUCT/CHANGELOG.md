@@ -7,10 +7,13 @@
 - Adotados Ruff e Mypy como ferramentas oficiais de qualidade.
 - Integrado o Playbook Permanente de Engenharia com AI Agent Workflow, Checklists e Incident Response.
 - Ativado o GitHub Actions com execução real em Python 3.10 e Quality Gates automatizados.
+- Adicionada a Reading Library pessoal com cadastro de livros e consulta autenticada da biblioteca do usuário.
 
 ### Changed
 - Validado o isolamento entre Capabilities e centralizada a identidade transversal no Shared Kernel.
 - Configurados três required status checks na proteção da `main`, preservando as demais regras de branch protection.
+- Integrada a migration `0004` para persistência de `books` com ownership por `UserId`.
+- Sincronizada a documentação técnica da Capability READ com a implementação de READ-001.
 
 ## [0.2.0] - 2026-08-04
 

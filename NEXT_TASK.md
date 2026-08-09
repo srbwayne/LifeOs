@@ -10,7 +10,7 @@
 |---|---|
 | ID | Sprint 03 |
 | Iniciativa | Sprint 03 — Reading Library |
-| Status | AUTORIZADA |
+| Status | CONCLUÍDA |
 | Tipo | Funcional |
 | Capability | READ |
 | Feature | READ-001 — Cadastro de livros e consulta da biblioteca |
@@ -19,7 +19,7 @@
 
 ---
 
-# Objetivo Autorizado
+# Objetivo Entregue
 
 Permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e consulte exclusivamente os livros associados ao próprio Player.
 
@@ -46,7 +46,7 @@ Os campos opcionais podem ser informados, não influenciam regras de negócio ne
 
 ---
 
-# Comportamentos Autorizados
+# Comportamentos Entregues
 
 - Cada livro pertence a um único Player.
 - Um Player não pode consultar livros de outro Player.
@@ -76,14 +76,21 @@ Qualquer expansão do escopo exige nova autorização explícita do Product Owne
 
 ---
 
-# Execução
+# Encerramento
 
-A implementação deverá seguir o Engineering Playbook, a governança vigente e os required Quality Gates da `main`.
+A implementação seguiu o Engineering Playbook, a governança vigente e os required Quality Gates da `main`.
 
-A autorização desta Sprint não define schema, ORM, endpoints, migrations ou outras decisões técnicas, que pertencem ao planejamento técnico autorizado posteriormente.
+READ-001 foi integrada à `main` pelo PR #7, com CI aprovado e migration `0004` como head.
 
 ---
 
-# Regra Final
+# Estado Funcional Final
 
-Somente READ-001, RF-READ-001, RF-READ-002 e US-READ-001-001 estão autorizados para a Sprint 03 — Reading Library.
+- READ-001: ENTREGUE.
+- RF-READ-001: ENTREGUE.
+- RF-READ-002: ENTREGUE.
+- RF-READ-003+: NÃO ENTREGUES.
+- Sprint 03 — Reading Library: CONCLUÍDA.
+- Próxima Sprint: NÃO AUTORIZADA.
+
+Nenhuma Sprint funcional poderá ser iniciada sem autorização explícita do Product Owner.

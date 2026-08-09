@@ -1,18 +1,19 @@
 # Task History
 
-## Sprint 03: Reading Library - 2026-08-08
-- **Status:** AUTORIZADA — implementação ainda não iniciada.
+## Sprint 03: Reading Library - 2026-08-09
+- **Status:** ✅ Concluída.
 - **Capability:** READ.
 - **Feature:** READ-001 — Cadastro de livros e consulta da biblioteca.
 - **User Story:** US-READ-001-001.
-- **Escopo:** RF-READ-001 e RF-READ-002.
-- **Objetivo:** permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e consulte exclusivamente os livros associados ao próprio Player.
-- **Dados obrigatórios:** título, autor e quantidade total de páginas.
-- **Dados opcionais:** ISBN, editora, edição, capa, gênero e idioma; sua ausência não bloqueia o cadastro.
-- **Isolamento:** cada livro pertence a um único Player e não pode ser consultado por outro Player.
-- **Biblioteca vazia:** consulta válida com retorno de coleção vazia.
-- **Fora do escopo:** RF-READ-003 ou posteriores, filtros, busca, paginação, ordenação configurável, sessões de leitura, progresso, páginas lidas, tempo de leitura, XP, GAME, Analytics, Dashboard e AI.
-- **Gate:** implementação condicionada ao Engineering Playbook, ao planejamento técnico autorizado e aos required Quality Gates.
+- **Autorização:** Sprint autorizada para RF-READ-001 e RF-READ-002 após aprovação da especificação funcional.
+- **Implementação:** READ-001 entregue com cadastro de livros, consulta da biblioteca pessoal e isolamento por `UserId`.
+- **Histórico:** quatro commits atômicos funcionais e documentais preservados.
+- **Integração:** PR #7 integrado por Rebase and Merge.
+- **Banco:** migration `0004_create_books_table` integrada como head.
+- **CI:** workflow da `main` aprovado após o merge.
+- **Escopo final:** RF-READ-001 e RF-READ-002 entregues; RF-READ-003+ não entregues.
+- **Próxima Sprint:** nenhuma autorizada.
+- **Pendência:** divergência global entre `/books` e `/api/v1` permanece não bloqueante.
 
 ## SPR-2.1: Consolidação de Governança - 2026-08-08
 - **Status:** ✅ Concluída.
