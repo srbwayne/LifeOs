@@ -14,10 +14,17 @@ from app.auth.domain.errors.user_errors import (
 from app.auth.presentation.api.fastapi.routers import router as auth_router
 from app.character.domain.errors.character_errors import CharacterNotFoundError
 from app.character.presentation.api.fastapi.routers import router as character_router
+from app.read.application.errors.book_errors import BookNotFoundError
 from app.read.domain.errors.book_errors import (
     InvalidBookAuthorError,
     InvalidBookTitleError,
     InvalidTotalPagesError,
+)
+from app.read.domain.errors.reading_session_errors import (
+    InvalidPageNumberError,
+    InvalidReadingRangeError,
+    InvalidReadingSessionTimeError,
+    ReadingBeyondBookError,
 )
 from app.read.presentation.api.fastapi.routers import router as read_router
 
@@ -51,6 +58,11 @@ def create_app() -> FastAPI:
         InvalidBookTitleError: status.HTTP_422_UNPROCESSABLE_ENTITY,
         InvalidBookAuthorError: status.HTTP_422_UNPROCESSABLE_ENTITY,
         InvalidTotalPagesError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        BookNotFoundError: status.HTTP_404_NOT_FOUND,
+        InvalidPageNumberError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        InvalidReadingRangeError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        ReadingBeyondBookError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        InvalidReadingSessionTimeError: status.HTTP_422_UNPROCESSABLE_ENTITY,
     }
     for error_type, status_code in error_statuses.items():
         app.add_exception_handler(

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -26,3 +28,24 @@ class BookResponse(BaseModel):
     cover: str | None
     genre: str | None
     language: str | None
+
+
+class CreateReadingSessionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    start_page: int
+    end_page: int
+    started_at: datetime
+    ended_at: datetime
+    notes: str | None = None
+
+
+class ReadingSessionResponse(BaseModel):
+    id: str
+    book_id: str
+    start_page: int
+    end_page: int
+    pages_read: int
+    started_at: datetime
+    ended_at: datetime
+    notes: str | None
