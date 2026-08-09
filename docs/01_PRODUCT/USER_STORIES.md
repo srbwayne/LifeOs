@@ -10,7 +10,7 @@
 | Capability | READ |
 | Feature | READ-001 — Cadastro de livros |
 | Requisitos Funcionais | RF-READ-001 e RF-READ-002 |
-| Status | Candidata à Sprint 03 — implementação não autorizada |
+| Status | Aprovada — Sprint 03 autorizada |
 
 ### Persona
 
