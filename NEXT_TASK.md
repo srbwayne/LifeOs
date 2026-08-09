@@ -8,20 +8,30 @@
 
 | Campo | Valor |
 |---|---|
-| ID | Sprint 03 |
-| Iniciativa | Sprint 03 — Reading Library |
-| Status | CONCLUÍDA |
+| ID | Sprint 04 |
+| Iniciativa | Sprint 04 — Reading Sessions |
+| Status | AUTORIZADA |
 | Tipo | Funcional |
 | Capability | READ |
-| Feature | READ-001 — Cadastro de livros e consulta da biblioteca |
-| User Story | US-READ-001-001 |
-| Requisitos Funcionais | RF-READ-001 e RF-READ-002 |
+| Feature | READ-002 — Reading Sessions |
+| User Story | US-READ-002-001 |
+| Requisito Funcional | RF-READ-003 |
+| Implementação | AINDA NÃO INICIADA |
+| Planejamento técnico | PENDENTE |
 
 ---
 
-# Objetivo Entregue
+# Objetivo Autorizado
 
-Permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e consulte exclusivamente os livros associados ao próprio Player.
+Permitir que o Player registre uma sessão de leitura referente a um livro existente em sua biblioteca.
+
+---
+
+# Princípio de Domínio
+
+- `Book` representa o Asset permanente da biblioteca.
+- `ReadingSession` representa um acontecimento real de leitura.
+- Progress permanece futuro e será derivado das sessões.
 
 ---
 
@@ -29,68 +39,64 @@ Permitir que o Player autenticado cadastre livros em sua biblioteca pessoal e co
 
 São obrigatórios:
 
-- título;
-- autor;
-- quantidade total de páginas.
+- book;
+- start_page;
+- end_page;
+- started_at;
+- ended_at.
 
-São opcionais:
+É opcional:
 
-- ISBN;
-- editora;
-- edição;
-- capa;
-- gênero;
-- idioma.
+- notes.
 
-Os campos opcionais podem ser informados, não influenciam regras de negócio nesta Sprint e sua ausência não bloqueia o cadastro.
+`pages_read` é calculado automaticamente por `end_page - start_page + 1` e não é informado pelo cliente.
 
 ---
 
-# Comportamentos Entregues
+# Regras Autorizadas
 
-- Cada livro pertence a um único Player.
-- Um Player não pode consultar livros de outro Player.
-- A consulta de uma biblioteca vazia é válida e retorna uma coleção vazia.
-- Nesta Sprint, biblioteca organizada significa pertencimento correto ao Player autenticado, retorno consistente da coleção e disponibilidade dos livros cadastrados para consulta.
+- O Book deve existir e pertencer ao usuário autenticado.
+- Não é permitido registrar ReadingSession para Book pertencente a outro usuário.
+- `start_page` deve ser maior ou igual a 1.
+- `end_page` deve ser maior ou igual a `start_page` e não pode superar `total_pages` do Book.
+- A sessão representa um único intervalo contínuo de páginas.
+- `notes` é opcional.
+- ReadingSession representa um fato histórico e não poderá ser editada nesta Feature.
 
 ---
 
 # Fora do Escopo
 
-- RF-READ-003 ou qualquer RF posterior;
-- filtros;
-- busca;
-- paginação;
-- ordenação configurável;
-- sessões de leitura;
-- progresso;
-- páginas lidas;
-- tempo de leitura;
+- RF-READ-004 ou posteriores;
+- ReadingProgress;
+- percentual concluído;
+- última página lida;
+- Book concluído;
+- tempo acumulado;
+- velocidade média;
+- streak;
 - XP;
+- Domain Events para GAME;
 - GAME;
 - Analytics;
 - Dashboard;
-- AI.
+- AI;
+- edição ou exclusão de ReadingSession;
+- anexos;
+- comentários sociais.
 
 Qualquer expansão do escopo exige nova autorização explícita do Product Owner.
 
 ---
 
-# Encerramento
+# Execução
 
-A implementação seguiu o Engineering Playbook, a governança vigente e os required Quality Gates da `main`.
-
-READ-001 foi integrada à `main` pelo PR #7, com CI aprovado e migration `0004` como head.
+A implementação ainda não foi iniciada. O planejamento técnico permanece pendente e deverá seguir o Engineering Playbook, a governança vigente e os required Quality Gates da `main`.
 
 ---
 
-# Estado Funcional Final
+# Regra Final
 
-- READ-001: ENTREGUE.
-- RF-READ-001: ENTREGUE.
-- RF-READ-002: ENTREGUE.
-- RF-READ-003+: NÃO ENTREGUES.
-- Sprint 03 — Reading Library: CONCLUÍDA.
-- Próxima Sprint: NÃO AUTORIZADA.
+Somente READ-002, RF-READ-003 e US-READ-002-001 estão autorizados para a Sprint 04 — Reading Sessions.
 
-Nenhuma Sprint funcional poderá ser iniciada sem autorização explícita do Product Owner.
+Nenhum RF posterior e nenhuma Sprint funcional adicional estão autorizados.

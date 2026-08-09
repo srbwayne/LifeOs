@@ -4986,7 +4986,7 @@ O sistema deverá permitir registrar uma sessão de leitura vinculada a um livro
 ## Critérios de Aceite
 
 - A sessão deverá compor o histórico do livro.
-- O evento deverá ser disponibilizado para a Game Engine.
+- Integração com GAME está fora do escopo atual.
 
 ---
 
@@ -4998,7 +4998,7 @@ READ
 
 ## Feature
 
-READ-003
+READ-002 — Reading Sessions
 
 ---
 
