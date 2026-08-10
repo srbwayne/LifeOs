@@ -8,12 +8,16 @@
 - Integrado o Playbook Permanente de Engenharia com AI Agent Workflow, Checklists e Incident Response.
 - Ativado o GitHub Actions com execução real em Python 3.10 e Quality Gates automatizados.
 - Adicionada a Reading Library pessoal com cadastro de livros e consulta autenticada da biblioteca do usuário.
+- Adicionadas Reading Sessions com registro autenticado por livro.
+- Adicionado o cálculo derivado de `pages_read` para intervalos contínuos de leitura.
 
 ### Changed
 - Validado o isolamento entre Capabilities e centralizada a identidade transversal no Shared Kernel.
 - Configurados três required status checks na proteção da `main`, preservando as demais regras de branch protection.
 - Integrada a migration `0004` para persistência de `books` com ownership por `UserId`.
 - Sincronizada a documentação técnica da Capability READ com a implementação de READ-001.
+- Integrada a migration `0005` e a persistência da tabela `reading_sessions`.
+- Sincronizada a documentação técnica da Capability READ com a implementação de READ-002.
 
 ## [0.2.0] - 2026-08-04
 

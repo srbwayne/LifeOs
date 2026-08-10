@@ -2,22 +2,37 @@
 
 ## Sprint 04 — Reading Sessions - 2026-08-09
 
-**Status:** AUTORIZADA — implementação ainda não iniciada
+**Status:** ✅ Concluída
 **Capability:** READ
 **Feature:** READ-002 — Reading Sessions
 **User Story:** US-READ-002-001
 **Requisito Funcional:** RF-READ-003
 
-### Objetivo autorizado
+### Entregas
 
-Permitir que o Player registre uma sessão de leitura referente a um Book existente em sua biblioteca.
+- READ-002 integrada com `ReadingSession` como Aggregate Root.
+- `ReadingSessionId` e `PageNumber` implementados.
+- Persistência de `reading_sessions` integrada pela migration `0005`.
+- Ownership por `UserId` e isolamento entre usuários preservados.
+- Registro autenticado por `POST /books/{book_id}/reading-sessions`.
+- `pages_read` calculado como valor derivado e não persistido.
+- Timestamps funcionais normalizados para UTC.
+- Documentação técnica sincronizada com a implementação.
+- CI da `main` aprovado após o merge do PR #10.
 
-### Estado
+### Estado funcional
 
-- READ-002 selecionada pelo Product Owner.
-- Planejamento técnico pendente.
-- Nenhuma implementação iniciada nesta etapa.
-- RF-READ-004+ permanecem fora do escopo.
+- READ-001: ENTREGUE.
+- READ-002: ENTREGUE.
+- RF-READ-001: ENTREGUE.
+- RF-READ-002: ENTREGUE.
+- RF-READ-003: ENTREGUE.
+- RF-READ-004+: NÃO ENTREGUES.
+- Próxima Sprint: NENHUMA AUTORIZADA.
+
+### Pendência
+
+- Divergência global de versionamento entre `/books` e `/api/v1`: PENDENTE — NÃO BLOQUEANTE.
 ## Sprint 03 — Reading Library - 2026-08-09
 
 **Status:** ✅ Concluída
