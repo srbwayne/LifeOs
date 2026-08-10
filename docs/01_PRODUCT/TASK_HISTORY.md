@@ -1,16 +1,16 @@
 # Task History
 
 ## Sprint 04: Reading Sessions - 2026-08-09
-- **Status:** AUTORIZADA — implementação ainda não iniciada.
-- **Decisão:** Product Owner selecionou READ-002 — Reading Sessions.
-- **Capability:** READ.
-- **Feature:** READ-002 — Reading Sessions.
-- **User Story:** US-READ-002-001.
-- **Escopo:** somente RF-READ-003.
-- **Objetivo:** registrar uma sessão de leitura referente a um Book existente na biblioteca do Player autenticado.
-- **Planejamento técnico:** pendente.
-- **Implementação:** nenhuma implementação iniciada nesta etapa.
-- **Fora do escopo:** RF-READ-004 ou posteriores e qualquer Sprint funcional adicional.
+- **Status:** ✅ Concluída.
+- **Autorização:** Product Owner autorizou READ-002 — Reading Sessions para RF-READ-003.
+- **Implementação:** READ-002 entregue com Aggregate, Application, persistência e endpoint autenticado.
+- **Histórico:** quatro commits atômicos funcionais e documentais preservados.
+- **Integração:** PR #10 integrado por Rebase and Merge.
+- **Banco:** migration `0005_create_reading_sessions_table` integrada como head.
+- **CI:** workflow da `main` aprovado após o merge.
+- **Escopo final:** RF-READ-003 entregue; RF-READ-004+ não entregues.
+- **Estado no encerramento:** nenhuma Sprint subsequente autorizada.
+- **Pendência:** divergência global entre `/books` e `/api/v1` permanece PENDENTE — NÃO BLOQUEANTE.
 ## Sprint 03: Reading Library - 2026-08-09
 - **Status:** ✅ Concluída.
 - **Capability:** READ.

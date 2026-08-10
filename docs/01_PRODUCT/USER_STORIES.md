@@ -179,7 +179,7 @@ Esta User Story especifica uma candidata funcional. Ela não autoriza o início 
 | Capability | READ |
 | Feature | READ-002 — Reading Sessions |
 | Requisito Funcional | RF-READ-003 |
-| Status | Aprovada — Sprint 04 autorizada |
+| Status | Entregue — Sprint 04 concluída |
 
 ### Persona
 
@@ -343,4 +343,4 @@ READ-002
 RF-READ-003
 ```
 
-Esta User Story formaliza exclusivamente o contrato funcional autorizado para a Sprint 04. A implementação ainda não foi iniciada.
+Esta User Story foi entregue com a conclusão da Sprint 04.
