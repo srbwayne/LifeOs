@@ -5002,45 +5002,54 @@ READ-002 — Reading Sessions
 
 ---
 
-# RF-READ-004 — Atualização do Progresso da Leitura
+# RF-READ-004 — Consulta do Progresso da Leitura
 
 ## Objetivo
 
-Permitir acompanhar o progresso da leitura de um livro.
+Permitir que o Player consulte o progresso atual de leitura de um Book de sua biblioteca.
 
 ---
 
 ## Descrição
 
-O sistema deverá atualizar o progresso do livro com base nas sessões registradas.
+O sistema deverá derivar o progresso exclusivamente das ReadingSessions registradas para o Book, sem persistir estado de progresso no Book.
 
 ---
 
 ## Pré-condições
 
-- Existência de sessão de leitura.
+- Player autenticado.
+- Book existente e pertencente ao Player autenticado.
 
 ---
 
 ## Fluxo Principal
 
-1. Registrar sessão.
-2. Calcular o novo progresso.
-3. Atualizar o livro.
-4. Persistir informações.
+1. O Player solicita o progresso de um Book de sua biblioteca.
+2. O sistema considera todas as ReadingSessions existentes do Book.
+3. O sistema consolida os intervalos e conta cada página coberta uma única vez.
+4. O sistema calcula o percentual de cobertura, identifica a maior página alcançada e determina se todas as páginas foram cobertas.
+5. O sistema apresenta o progresso derivado sem alterar ou persistir estado de progresso no Book.
 
 ---
 
 ## Pós-condições
 
-- Progresso atualizado.
+- Progresso atual calculado e apresentado sem estado redundante persistido no Book.
 
 ---
 
 ## Critérios de Aceite
 
-- O progresso deverá refletir todas as sessões registradas.
-- O progresso não poderá ser inferior ao anteriormente registrado.
+- Um Book sem ReadingSessions possui zero páginas únicas lidas, percentual de 0%, nenhuma maior página alcançada e não está concluído.
+- Páginas cobertas por sessões sobrepostas ou releituras são contadas uma única vez.
+- Sessões não contíguas são consolidadas pela cobertura real das páginas.
+- A ordem cronológica ou de registro das sessões não altera o resultado.
+- A maior página alcançada corresponde ao maior `end_page` das ReadingSessions e não implica cobertura das páginas anteriores.
+- O percentual corresponde a `(unique_pages_read / total_pages) * 100` e nunca excede 100%.
+- O Book é considerado concluído somente quando todas as suas páginas estiverem cobertas por pelo menos uma ReadingSession.
+- O Book deve pertencer ao Player autenticado, e o owner não integra o contrato público.
+- Nenhum estado de progresso é persistido no Book.
 
 ---
 
@@ -5052,7 +5061,7 @@ READ
 
 ## Feature
 
-READ-004
+READ-003 — Reading Progress
 
 ---
 

@@ -1,5 +1,17 @@
 # Task History
 
+## Autorização da Sprint 05: Reading Progress - 2026-08-10
+- **Decisão:** Product Owner aprovou conceitualmente READ-003 — Reading Progress.
+- **User Story:** US-READ-003-001 formalizada para consulta do progresso atual de leitura.
+- **RF autorizado:** RF-READ-004, como único requisito funcional da Sprint 05.
+- **Semântica aprovada:** progresso derivado das ReadingSessions por cobertura de páginas únicas, independente da ordem, sem persistência no Book.
+- **Sobreposição e releitura:** páginas repetidas são contadas uma única vez.
+- **Conclusão:** ocorre somente quando todas as páginas do Book estiverem cobertas.
+- **Autorização:** Sprint 05 autorizada documentalmente.
+- **Implementação:** ainda não iniciada.
+- **Planejamento técnico:** pendente.
+- **Escopo:** RF-READ-005+ e qualquer Sprint posterior permanecem fora do escopo.
+
 ## Sprint 04: Reading Sessions - 2026-08-09
 - **Status:** ✅ Concluída.
 - **Autorização:** Product Owner autorizou READ-002 — Reading Sessions para RF-READ-003.

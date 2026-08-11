@@ -344,3 +344,161 @@ RF-READ-003
 ```
 
 Esta User Story foi entregue com a conclusão da Sprint 04.
+
+## US-READ-003-001 — Consultar progresso de leitura
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-READ-003-001 |
+| Capability | READ |
+| Feature | READ-003 — Reading Progress |
+| Requisito Funcional | RF-READ-004 |
+| Status | Autorizada — Sprint 05; implementação não iniciada |
+
+### Persona
+
+Player autenticado.
+
+### Objetivo
+
+Como Player,
+quero consultar o progresso atual de leitura de um livro da minha biblioteca,
+para saber quanto do livro já li sem depender de um estado de progresso manualmente mantido.
+
+### Pré-condições
+
+- O Player está autenticado.
+- O Book existe e pertence à biblioteca do Player autenticado.
+- As ReadingSessions consideradas são intervalos válidos já registrados para o Book.
+
+### Semântica oficial
+
+- O progresso é derivado exclusivamente das ReadingSessions existentes do Book.
+- Nenhum estado de progresso é persistido no Book.
+- Cada página coberta é contada uma única vez, inclusive em sessões sobrepostas ou releituras.
+- A ordem cronológica ou de registro das sessões não altera o resultado.
+- A maior página alcançada corresponde ao maior `end_page` entre as sessões e é apenas informativa.
+- O percentual representa a cobertura real: `(unique_pages_read / total_pages) * 100`.
+- O Book está concluído somente quando todas as suas páginas estiverem cobertas por pelo menos uma ReadingSession.
+
+### Dados derivados
+
+| Campo | Definição |
+|---|---|
+| unique_pages_read | Quantidade de páginas distintas cobertas pelas ReadingSessions. |
+| percentage | Percentual de cobertura real das páginas do Book; nunca superior a 100%. |
+| highest_page_reached | Maior `end_page` entre as ReadingSessions; inexistente quando não existem sessões. |
+| completed | Verdadeiro somente quando todas as páginas do Book estiverem cobertas. |
+
+### Regras de negócio
+
+- **RN-01:** O Book deve pertencer ao Player autenticado.
+- **RN-02:** Books de outros usuários não podem ter seu progresso consultado.
+- **RN-03:** O owner não é exposto no contrato público.
+- **RN-04:** Sem sessões, `unique_pages_read` é 0, `percentage` é 0%, `highest_page_reached` é inexistente e `completed` é falso.
+- **RN-05:** Sessões sobrepostas ou repetidas não contam a mesma página mais de uma vez.
+- **RN-06:** Sessões não contíguas contribuem apenas com suas páginas efetivamente cobertas.
+- **RN-07:** A maior página alcançada não implica que as páginas anteriores tenham sido lidas.
+- **RN-08:** A ordem das sessões não altera o resultado.
+- **RN-09:** O percentual é calculado por `(unique_pages_read / total_pages) * 100` e não excede 100%.
+- **RN-10:** Conclusão exige cobertura de todas as páginas do Book.
+
+### Cenários
+
+#### Cenário 1 — Book sem sessões
+
+**Dado** um Book sem ReadingSessions
+**Quando** o Player consultar seu progresso
+**Então** as páginas únicas lidas serão 0
+**E** o percentual será 0%
+**E** não haverá maior página alcançada
+**E** o Book não estará concluído.
+
+#### Cenário 2 — Sessões sobrepostas
+
+**Dado** uma sessão de 1 a 20
+**E** outra sessão de 15 a 30
+**Quando** o progresso for consultado
+**Então** as páginas únicas lidas serão 30, e não 36.
+
+#### Cenário 3 — Sessões não contíguas
+
+**Dado** um Book de 100 páginas
+**E** sessões de 1 a 20, de 15 a 30 e de 50 a 60
+**Quando** o progresso for consultado
+**Então** as páginas únicas lidas serão 41
+**E** o percentual será 41%
+**E** a maior página alcançada será 60
+**E** o Book não estará concluído.
+
+#### Cenário 4 — Alcançar a última página sem concluir
+
+**Dado** um Book de 100 páginas
+**E** uma sessão de 90 a 100
+**Quando** o progresso for consultado
+**Então** a maior página alcançada será 100
+**E** o Book não estará concluído.
+
+#### Cenário 5 — Releitura
+
+**Dado** uma sessão de 1 a 10
+**E** outra sessão de 1 a 10
+**Quando** o progresso for consultado
+**Então** as páginas únicas lidas serão 10.
+
+#### Cenário 6 — Ordem das sessões
+
+**Dado** o mesmo conjunto de intervalos válidos registrado em ordens diferentes
+**Quando** o progresso for consultado
+**Então** o resultado será o mesmo.
+
+#### Cenário 7 — Conclusão
+
+**Dado** que as ReadingSessions cobrem todas as páginas do Book ao menos uma vez
+**Quando** o progresso for consultado
+**Então** o Book estará concluído.
+
+### Critérios de aceite
+
+- O progresso é calculado exclusivamente a partir das ReadingSessions do Book.
+- Nenhum estado de progresso é persistido no Book.
+- Sobreposições e releituras contam cada página uma única vez.
+- Sessões não contíguas produzem cobertura equivalente à união de seus intervalos.
+- A ordem das sessões não altera o resultado.
+- A maior página alcançada é informativa e não representa sozinha o progresso.
+- O percentual representa a cobertura real e nunca excede 100%.
+- A conclusão exige cobertura de todas as páginas do Book.
+- O progresso somente pode ser consultado pelo owner autenticado, sem exposição do owner.
+
+### Fora do escopo
+
+- persistência de páginas lidas, percentual, última página ou conclusão no Book;
+- edição ou exclusão de ReadingSession;
+- XP;
+- GAME;
+- Achievements;
+- Streaks;
+- Analytics;
+- Dashboard;
+- AI;
+- recomendações;
+- metas;
+- estatísticas de releitura;
+- histórico analítico;
+- RF-READ-005 ou posteriores.
+
+### Rastreabilidade
+
+```text
+US-READ-003-001
+↓
+READ-003
+↓
+RF-READ-004
+↓
+Sprint 05
+```
+
+Esta User Story autoriza somente a formalização funcional. A implementação permanece não iniciada e depende de planejamento técnico aprovado.

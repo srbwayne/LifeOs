@@ -8,35 +8,48 @@
 
 | Campo | Valor |
 |---|---|
-| ID | Sprint 04 |
-| Iniciativa | Sprint 04 — Reading Sessions |
-| Status | CONCLUÍDA |
+| ID | Sprint 05 |
+| Iniciativa | Sprint 05 — Reading Progress |
+| Status | AUTORIZADA |
 | Tipo | Funcional |
 | Capability | READ |
-| Feature | READ-002 — Reading Sessions |
-| User Story | US-READ-002-001 |
-| Requisito Funcional | RF-READ-003 |
-| Implementação | INTEGRADA |
-| CI | APROVADO |
+| Feature | READ-003 — Reading Progress |
+| User Story | US-READ-003-001 |
+| Requisito Funcional | RF-READ-004 |
+| Implementação | AINDA NÃO INICIADA |
+| Planejamento técnico | PENDENTE |
 
 ---
 
-# Entrega
+# Escopo Autorizado
+
+- READ-003 — Reading Progress.
+- RF-READ-004 — consulta do progresso atual de leitura.
+- O progresso será derivado exclusivamente das ReadingSessions existentes do Book.
+- Nenhum estado de progresso será persistido no Book nesta Feature.
+
+---
+
+# Estado das Entregas
 
 - READ-001: ENTREGUE.
 - READ-002: ENTREGUE.
+- READ-003: AUTORIZADA, IMPLEMENTAÇÃO AINDA NÃO INICIADA.
 - RF-READ-001: ENTREGUE.
 - RF-READ-002: ENTREGUE.
 - RF-READ-003: ENTREGUE.
-- RF-READ-004+: NÃO ENTREGUES.
+- RF-READ-004: AUTORIZADO.
+- RF-READ-005+: FORA DO ESCOPO.
 
 ---
 
-# Próxima Sprint
+# Próximos Gates
 
-NENHUMA AUTORIZADA.
+1. Integração da autorização documental.
+2. Planejamento técnico da READ-003.
+3. Implementação somente após aprovação do planejamento técnico.
 
-Nenhuma nova Sprint funcional, Feature ou RF está autorizada para implementação.
+Nenhuma Sprint posterior está autorizada.
 
 ---
 
