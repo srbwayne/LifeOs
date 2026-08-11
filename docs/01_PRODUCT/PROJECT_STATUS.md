@@ -1,5 +1,34 @@
 # Project Status
 
+## Sprint 05 — Reading Progress - 2026-08-10
+
+**Status:** AUTORIZADA
+**Capability:** READ
+**Feature:** READ-003 — Reading Progress
+**User Story:** US-READ-003-001
+**Requisito Funcional:** RF-READ-004
+
+### Escopo autorizado
+
+- Consulta do progresso atual de um Book da biblioteca do Player autenticado.
+- Progresso derivado exclusivamente das ReadingSessions existentes.
+- Cobertura por páginas únicas, sem persistência de progresso no Book.
+- Implementação ainda não iniciada.
+- Planejamento técnico pendente.
+
+### Estado
+
+- Sprint 04: CONCLUÍDA.
+- Sprint 05: AUTORIZADA.
+- READ-003: SELECIONADA.
+- RF-READ-004: ÚNICO RF AUTORIZADO.
+- RF-READ-005+: FORA DO ESCOPO.
+- Nenhuma Sprint posterior autorizada.
+
+### Pendência
+
+- Divergência global de versionamento entre `/books` e `/api/v1`: PENDENTE — NÃO BLOQUEANTE.
+
 ## Sprint 04 — Reading Sessions - 2026-08-09
 
 **Status:** ✅ Concluída
