@@ -5,9 +5,11 @@ from app.read.application.commands.create_book import CreateBookCommandHandler
 from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommandHandler,
 )
+from app.read.application.queries.get_reading_progress import GetReadingProgressQueryHandler
 from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
 from app.read.domain.ports.book_repository import IBookRepository
 from app.read.domain.ports.reading_session_repository import IReadingSessionRepository
+from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
 )
@@ -55,4 +57,15 @@ def get_create_reading_session_handler(
         book_repository,
         reading_session_repository,
         unit_of_work,
+    )
+
+
+def get_reading_progress_handler(
+    book_repository: IBookRepository = Depends(get_book_repository),
+    reading_session_repository: IReadingSessionRepository = Depends(get_reading_session_repository),
+) -> GetReadingProgressQueryHandler:
+    return GetReadingProgressQueryHandler(
+        book_repository,
+        reading_session_repository,
+        ReadingProgressCalculator(),
     )

@@ -49,3 +49,12 @@ class ReadingSessionResponse(BaseModel):
     started_at: datetime
     ended_at: datetime
     notes: str | None
+
+
+class ReadingProgressResponse(BaseModel):
+    book_id: str
+    total_pages: int
+    unique_pages_read: int
+    highest_page_reached: int | None
+    percentage: float
+    completed: bool

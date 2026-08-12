@@ -10,7 +10,12 @@ from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommandHandler,
 )
 from app.read.application.dtos.book_dto import BookDTO
+from app.read.application.dtos.reading_progress_dto import ReadingProgressDTO
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
+from app.read.application.queries.get_reading_progress import (
+    GetReadingProgressQuery,
+    GetReadingProgressQueryHandler,
+)
 from app.read.application.queries.list_my_books import (
     ListMyBooksQuery,
     ListMyBooksQueryHandler,
@@ -19,12 +24,14 @@ from app.read.dependencies import (
     get_create_book_handler,
     get_create_reading_session_handler,
     get_list_my_books_handler,
+    get_reading_progress_handler,
 )
 from app.read.domain.value_objects.book_id import BookId
 from app.read.presentation.api.fastapi.schemas import (
     BookResponse,
     CreateBookRequest,
     CreateReadingSessionRequest,
+    ReadingProgressResponse,
     ReadingSessionResponse,
 )
 from app.shared.domain.identifiers.user_id import UserId
@@ -57,6 +64,17 @@ def _to_reading_session_response(session: ReadingSessionDTO) -> ReadingSessionRe
         started_at=session.started_at,
         ended_at=session.ended_at,
         notes=session.notes,
+    )
+
+
+def _to_reading_progress_response(progress: ReadingProgressDTO) -> ReadingProgressResponse:
+    return ReadingProgressResponse(
+        book_id=progress.book_id,
+        total_pages=progress.total_pages,
+        unique_pages_read=progress.unique_pages_read,
+        highest_page_reached=progress.highest_page_reached,
+        percentage=float(progress.percentage),
+        completed=progress.completed,
     )
 
 
@@ -125,3 +143,21 @@ def create_reading_session(
         )
     )
     return _to_reading_session_response(session)
+
+
+@router.get(
+    "/{book_id}/progress",
+    response_model=ReadingProgressResponse,
+)
+def get_reading_progress(
+    book_id: str,
+    user_id: UserId = Depends(get_current_user_id),
+    handler: GetReadingProgressQueryHandler = Depends(get_reading_progress_handler),
+) -> ReadingProgressResponse:
+    progress = handler(
+        GetReadingProgressQuery(
+            owner_id=user_id,
+            book_id=_parse_book_id(book_id),
+        )
+    )
+    return _to_reading_progress_response(progress)
