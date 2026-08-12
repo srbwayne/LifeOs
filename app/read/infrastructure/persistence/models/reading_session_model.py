@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.shared.infrastructure.database import Base
@@ -17,6 +17,11 @@ class ReadingSessionModel(Base):
         CheckConstraint(
             "ended_at >= started_at",
             name="ck_reading_sessions_end_not_before_start_time",
+        ),
+        Index(
+            "ix_reading_sessions_user_book",
+            "user_id",
+            "book_id",
         ),
     )
 
