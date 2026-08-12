@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import cast
 
 import pytest
-from sqlalchemy import Table, create_engine, event, select
+from sqlalchemy import Table, create_engine, event, inspect, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -76,6 +76,23 @@ def make_reading_session(owner_id: UserId, book: Book, notes: str | None = None)
         ended_at=END,
         book_total_pages=book.total_pages,
         notes=notes,
+    )
+
+
+def make_session_range(
+    owner_id: UserId,
+    book: Book,
+    start_page: int,
+    end_page: int,
+) -> ReadingSession:
+    return ReadingSession.create(
+        owner_id=owner_id,
+        book_id=book.id,
+        start_page=start_page,
+        end_page=end_page,
+        started_at=START,
+        ended_at=END,
+        book_total_pages=book.total_pages,
     )
 
 
@@ -197,8 +214,74 @@ def test_foreign_keys_reject_missing_owner_or_book(session: Session) -> None:
     session.rollback()
 
 
-def test_model_has_no_secondary_indexes() -> None:
+def test_list_by_book_and_owner_is_scoped_rehydrated_and_deterministic(
+    session: Session,
+) -> None:
+    owner_id = UserId.new()
+    other_owner_id = UserId.new()
+    add_user(session, owner_id)
+    add_user(session, other_owner_id)
+    book = add_book(session, owner_id)
+    other_book = add_book(session, owner_id)
+    hidden_book = add_book(session, other_owner_id)
+    repository = SqlAlchemyReadingSessionRepository(session)
+    expected = (
+        make_session_range(owner_id, book, 20, 30),
+        make_session_range(owner_id, book, 1, 10),
+        make_session_range(owner_id, book, 1, 5),
+    )
+    excluded = (
+        make_session_range(owner_id, other_book, 2, 3),
+        make_session_range(other_owner_id, hidden_book, 4, 6),
+    )
+    for reading_session in (*expected, *excluded):
+        repository.save(reading_session)
+    session.commit()
+
+    restored = repository.list_by_book_and_owner(book.id, owner_id)
+
+    assert tuple(
+        (item.start_page.value, item.end_page.value, item.id.to_persistence()) for item in restored
+    ) == tuple(
+        sorted(
+            (item.start_page.value, item.end_page.value, item.id.to_persistence())
+            for item in expected
+        )
+    )
+    assert all(item.owner_id == owner_id and item.book_id == book.id for item in restored)
+    assert all(item.domain_events == [] for item in restored)
+    assert not session.new
+    assert not session.dirty
+
+
+def test_list_by_book_and_owner_returns_empty_for_absent_or_other_owner(
+    session: Session,
+) -> None:
+    owner_id = UserId.new()
+    other_owner_id = UserId.new()
+    add_user(session, owner_id)
+    add_user(session, other_owner_id)
+    book = add_book(session, owner_id)
+    repository = SqlAlchemyReadingSessionRepository(session)
+    repository.save(make_session_range(owner_id, book, 1, 10))
+    session.commit()
+
+    assert (
+        repository.list_by_book_and_owner(Book.create(owner_id, "Empty", "Author", 10).id, owner_id)
+        == ()
+    )
+    assert repository.list_by_book_and_owner(book.id, other_owner_id) == ()
+
+
+def test_model_has_only_approved_secondary_index(session: Session) -> None:
     indexes = cast(Table, ReadingSessionModel.__table__).indexes
 
-    assert indexes == set()
+    assert {(index.name, tuple(column.name for column in index.columns)) for index in indexes} == {
+        ("ix_reading_sessions_user_book", ("user_id", "book_id"))
+    }
+    assert session.bind is not None
+    database_indexes = inspect(session.bind).get_indexes("reading_sessions")
+    assert [(index["name"], tuple(index["column_names"])) for index in database_indexes] == [
+        ("ix_reading_sessions_user_book", ("user_id", "book_id"))
+    ]
     assert TotalPages(1).value == 1

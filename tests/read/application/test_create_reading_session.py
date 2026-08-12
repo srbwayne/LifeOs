@@ -54,6 +54,13 @@ class FakeReadingSessionRepository:
     def save(self, session: ReadingSession) -> None:
         self.saved.append(session)
 
+    def list_by_book_and_owner(
+        self,
+        book_id: BookId,
+        owner_id: UserId,
+    ) -> tuple[ReadingSession, ...]:
+        raise AssertionError("Reading session creation must not list sessions.")
+
 
 class FakeUnitOfWork:
     def __init__(self) -> None:
