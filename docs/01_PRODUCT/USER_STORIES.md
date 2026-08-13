@@ -502,3 +502,166 @@ Sprint 05
 ```
 
 Esta User Story foi entregue com a conclusão da Sprint 05.
+
+## US-READ-004-001 — Consultar Insights de Leitura
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-READ-004-001 |
+| Capability | READ |
+| Feature | READ-004 — Insights |
+| Requisito Funcional | RF-READ-011 |
+| Status | Autorizada — Sprint 06 |
+
+### Persona
+
+Player autenticado.
+
+### Necessidade
+
+Compreender o estado atual de leitura de um Book por meio de observações claras derivadas dos registros existentes.
+
+### Valor
+
+Tornar a cobertura do Book explicável sem progresso manual, AI ou análise cross-capability.
+
+### User Story
+
+Como Player autenticado,
+quero consultar Insights determinísticos sobre a cobertura atual de um livro da minha biblioteca,
+para compreender páginas restantes, lacunas e a relação entre página alcançada e cobertura integral.
+
+### Pré-condições
+
+- O Player está autenticado.
+- O Book existe e pertence à biblioteca do Player autenticado.
+- As ReadingSessions consideradas são válidas, pertencem ao mesmo Book e ao Player autenticado.
+
+### Regras de negócio
+
+- **RN-01:** Insights são derivados exclusivamente de Book, ReadingSessions e ReadingProgress.
+- **RN-02:** Nenhum Insight é persistido.
+- **RN-03:** Sobreposição e releitura não duplicam páginas na cobertura.
+- **RN-04:** Book sem ReadingSessions produz resultado válido.
+- **RN-05:** Lacunas são intervalos inclusivos dentro de `1..total_pages`.
+- **RN-06:** `highest_page_reached` não representa posição atual.
+- **RN-07:** Alcançar a última página não implica cobertura integral.
+- **RN-08:** Cobertura integral utiliza somente `ReadingProgress.completed`.
+- **RN-09:** Nenhum Insight recomenda ações.
+- **RN-10:** Nenhum Insight altera Book, ReadingSession, Character ou GAME.
+- **RN-11:** Book inexistente e Book pertencente a outro owner permanecem indistinguíveis publicamente.
+- **RN-12:** A V1 é exclusivamente por Book e all-time.
+
+### Insights da V1
+
+#### Cobertura restante
+
+Informa quanto do Book ainda não possui cobertura registrada a partir de `total_pages`, `unique_pages_read` e `percentage`. Releitura não altera o resultado e o Insight não é persistido.
+
+#### Lacunas de cobertura
+
+Informa os intervalos inclusivos do Book ainda sem cobertura, calculados como complemento da união das ReadingSessions dentro de `1..total_pages`. Overlaps e releituras não duplicam cobertura. As lacunas não representam `current_page`, `next_page` ou recomendação.
+
+#### Última página alcançada com lacunas
+
+É aplicável quando `highest_page_reached == total_pages` e `completed == false`, explicando que alcançar a página final não significa cobertura integral. Não recomenda ações e não é persistido.
+
+#### Cobertura integral confirmada
+
+Utiliza somente `ReadingProgress.completed == true` para explicar que todas as páginas possuem cobertura registrada. Não marca o Book como concluído, não persiste status, não gera evento e não antecipa RF-READ-005.
+
+### Cenários
+
+#### Cenário 1 — Book sem ReadingSessions
+
+**Dado** um Book do Player sem ReadingSessions
+**Quando** o Player consultar seus Insights
+**Então** a cobertura restante será igual a `total_pages`
+**E** haverá uma única lacuna inclusiva de `1..total_pages`
+**E** o Insight de última página alcançada com lacunas não será aplicável
+**E** a cobertura integral será falsa.
+
+#### Cenário 2 — Sessões sobrepostas
+
+**Dado** que as ReadingSessions possuem intervalos sobrepostos
+**Quando** os Insights forem calculados
+**Então** cada página será considerada apenas uma vez na cobertura.
+
+#### Cenário 3 — Sessões não contíguas
+
+**Dado** que existem intervalos válidos não contíguos
+**Quando** os Insights forem calculados
+**Então** as lacunas inclusivas entre os intervalos serão explicitadas.
+
+#### Cenário 4 — Última página alcançada sem cobertura integral
+
+**Dado** que `highest_page_reached` é igual a `total_pages`
+**E** `completed` é falso
+**Quando** os Insights forem consultados
+**Então** o sistema informará que existem lacunas
+**E** não recomendará uma ação.
+
+#### Cenário 5 — Cobertura integral
+
+**Dado** que todas as páginas possuem cobertura registrada
+**Quando** os Insights forem consultados
+**Então** a cobertura integral será confirmada
+**E** nenhuma conclusão será persistida no Book.
+
+#### Cenário 6 — Book inexistente ou pertencente a outro usuário
+
+**Dado** um Book inexistente ou pertencente a outro usuário
+**Quando** o Player solicitar seus Insights
+**Então** nenhum Insight será exposto
+**E** os dois casos permanecerão indistinguíveis publicamente.
+
+### Critérios de aceite
+
+- Os quatro Insights oficiais são calculados exclusivamente para um Book.
+- O período considerado é all-time.
+- Os resultados são determinísticos, explicáveis e reproduzíveis.
+- Nenhum Insight é persistido.
+- Book sem sessões produz resultado válido.
+- Cobertura restante e lacunas são calculadas corretamente.
+- Sobreposição e releitura não duplicam páginas.
+- Alcançar a última página não implica cobertura integral.
+- Cobertura integral utiliza somente `ReadingProgress.completed`.
+- Nenhum resultado recomenda ações ou usa AI, Analytics ou GAME.
+- Nenhum resultado altera Book, ReadingSession ou Character.
+- Ownership e indistinguibilidade pública são preservados.
+
+### Fora do escopo
+
+- visão consolidada da biblioteca;
+- períodos, dia, semana, mês ou intervalo informado;
+- comparação de períodos;
+- duração total, duração média ou sessão mais longa;
+- frequência ou tendências;
+- volume bruto de releitura;
+- análise de notes, análise semântica ou sumarização;
+- LLM, AI, recomendações ou coaching;
+- Analytics, KPIs, scores ou correlações;
+- GAME, XP, Level, Skills, Attributes, Rewards ou eventos;
+- Streaks ou Achievements;
+- Pesquisa;
+- Histórico completo ou paginação de ReadingSessions;
+- conclusão persistida de Book ou evento de conclusão;
+- RF-READ-005;
+- RF-READ-006..010;
+- alteração de Book ou ReadingSession.
+
+### Rastreabilidade
+
+```text
+US-READ-004-001
+↓
+READ-004 — Insights
+↓
+RF-READ-011
+↓
+Sprint 06
+```
+
+Esta User Story formaliza exclusivamente o contrato funcional autorizado para a Sprint 06. A implementação ainda não foi iniciada.
