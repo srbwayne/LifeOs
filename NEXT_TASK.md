@@ -16,8 +16,9 @@
 | Feature | READ-003 — Reading Progress |
 | User Story | US-READ-003-001 |
 | Requisito Funcional | RF-READ-004 |
-| Implementação | AINDA NÃO INICIADA |
-| Planejamento técnico | PENDENTE |
+| Implementação | CONCLUÍDA LOCALMENTE |
+| Integração | PENDENTE |
+| PR | AINDA NÃO ABERTO |
 
 ---
 
@@ -34,7 +35,7 @@
 
 - READ-001: ENTREGUE.
 - READ-002: ENTREGUE.
-- READ-003: AUTORIZADA, IMPLEMENTAÇÃO AINDA NÃO INICIADA.
+- READ-003: IMPLEMENTADA LOCALMENTE, AGUARDANDO AUDITORIA, PR E INTEGRAÇÃO.
 - RF-READ-001: ENTREGUE.
 - RF-READ-002: ENTREGUE.
 - RF-READ-003: ENTREGUE.
@@ -45,11 +46,15 @@
 
 # Próximos Gates
 
-1. Integração da autorização documental.
-2. Planejamento técnico da READ-003.
-3. Implementação somente após aprovação do planejamento técnico.
+1. Auditoria pré-PR.
+2. Push.
+3. PR.
+4. CI.
+5. Review.
+6. Merge.
+7. Fechamento da Sprint.
 
-Nenhuma Sprint posterior está autorizada.
+READ-003 continua sendo a única Feature funcional ativa. Nenhuma Sprint posterior está autorizada.
 
 ---
 

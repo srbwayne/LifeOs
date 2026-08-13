@@ -1,5 +1,18 @@
 # Task History
 
+## Implementação local da Sprint 05: Reading Progress - 2026-08-12
+- **Status:** READ-003 implementada e validada localmente; Sprint 05 ainda aberta.
+- **Domain:** `ReadingProgress` e `ReadingProgressCalculator` implementados para cobertura única de intervalos.
+- **Application:** Query, Handler, DTO e Port owner-scoped implementados.
+- **Infrastructure:** consulta owner-scoped de ReadingSessions implementada com reutilização do mapper existente.
+- **Presentation:** `GET /books/{book_id}/progress` implementado com autenticação e isolamento entre usuários.
+- **Banco:** migration `0006` adiciona somente o índice composto `ix_reading_sessions_user_book`.
+- **Documentação:** documentação técnica de DDD, API, índices e migrations sincronizada.
+- **Qualidade:** quality gates locais aprovados, com 307 testes e cobertura total de 97,77%.
+- **Commits:** `b1acd22 feat(read): model reading progress`; `fac6a01 feat(read): query reading progress`; `4398cf1 feat(read): expose reading progress API`; `914deb2 docs(read): document reading progress`.
+- **Integração:** PR ainda não aberto; merge e CI da `main` pendentes.
+- **Escopo:** RF-READ-005+ e qualquer Sprint posterior permanecem fora do escopo.
+
 ## Autorização da Sprint 05: Reading Progress - 2026-08-10
 - **Decisão:** Product Owner aprovou conceitualmente READ-003 — Reading Progress.
 - **User Story:** US-READ-003-001 formalizada para consulta do progresso atual de leitura.
@@ -8,8 +21,8 @@
 - **Sobreposição e releitura:** páginas repetidas são contadas uma única vez.
 - **Conclusão:** ocorre somente quando todas as páginas do Book estiverem cobertas.
 - **Autorização:** Sprint 05 autorizada documentalmente.
-- **Implementação:** ainda não iniciada.
-- **Planejamento técnico:** pendente.
+- **Implementação:** concluída localmente após a autorização; integração ainda pendente.
+- **Planejamento técnico:** executado no ciclo local da READ-003.
 - **Escopo:** RF-READ-005+ e qualquer Sprint posterior permanecem fora do escopo.
 
 ## Sprint 04: Reading Sessions - 2026-08-09
