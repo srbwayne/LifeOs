@@ -2,25 +2,25 @@
 
 ## Sprint 05 — Reading Progress - 2026-08-10
 
-**Status:** AUTORIZADA
+**Status:** IMPLEMENTADA LOCALMENTE — AGUARDANDO INTEGRAÇÃO
 **Capability:** READ
 **Feature:** READ-003 — Reading Progress
 **User Story:** US-READ-003-001
 **Requisito Funcional:** RF-READ-004
 
-### Escopo autorizado
+### Implementação local
 
-- Consulta do progresso atual de um Book da biblioteca do Player autenticado.
-- Progresso derivado exclusivamente das ReadingSessions existentes.
-- Cobertura por páginas únicas, sem persistência de progresso no Book.
-- Implementação ainda não iniciada.
-- Planejamento técnico pendente.
+- Domain, Application, Infrastructure e Presentation completas localmente.
+- Consulta autenticada implementada por `GET /books/{book_id}/progress`.
+- Progresso derivado das ReadingSessions por cobertura de páginas únicas, sem persistência de progresso.
+- Migration `0006` adiciona somente o índice composto `ix_reading_sessions_user_book`.
+- Testes e quality gates locais aprovados.
 
 ### Estado
 
 - Sprint 04: CONCLUÍDA.
-- Sprint 05: AUTORIZADA.
-- READ-003: SELECIONADA.
+- Sprint 05: ABERTA, AGUARDANDO PR, CI, REVIEW E INTEGRAÇÃO.
+- READ-003: IMPLEMENTADA LOCALMENTE, AINDA NÃO INTEGRADA NA `main`.
 - RF-READ-004: ÚNICO RF AUTORIZADO.
 - RF-READ-005+: FORA DO ESCOPO.
 - Nenhuma Sprint posterior autorizada.

@@ -10,6 +10,8 @@
 - Adicionada a Reading Library pessoal com cadastro de livros e consulta autenticada da biblioteca do usuário.
 - Adicionadas Reading Sessions com registro autenticado por livro.
 - Adicionado o cálculo derivado de `pages_read` para intervalos contínuos de leitura.
+- Adicionado Reading Progress derivado por páginas únicas, com tratamento de sobreposição e releitura, `highest_page_reached`, `percentage` e `completed`.
+- Adicionada a consulta autenticada `GET /books/{book_id}/progress`, restrita ao owner do Book.
 
 ### Changed
 - Validado o isolamento entre Capabilities e centralizada a identidade transversal no Shared Kernel.
@@ -18,6 +20,8 @@
 - Sincronizada a documentação técnica da Capability READ com a implementação de READ-001.
 - Integrada a migration `0005` e a persistência da tabela `reading_sessions`.
 - Sincronizada a documentação técnica da Capability READ com a implementação de READ-002.
+- Adicionado pela migration `0006` o índice composto `ix_reading_sessions_user_book` para consultas owner-scoped de ReadingSessions.
+- Sincronizada a documentação técnica da Capability READ com a implementação local de READ-003.
 
 ## [0.2.0] - 2026-08-04
 
