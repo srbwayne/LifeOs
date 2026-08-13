@@ -1286,7 +1286,17 @@ READ-002 autoriza somente o registro de sessões; não existe caso de uso de con
 |---|---|---|
 | Primary Key de `reading_sessions` | `id` | Identidade TSID da sessão. |
 
-Não existem índices secundários por `user_id`, `book_id`, `started_at` ou combinações dessas colunas. Índices para consultas futuras somente poderão ser introduzidos junto ao respectivo caso de uso autorizado.
+## Estado implementado — READ-003
+
+READ-003 adiciona exclusivamente o índice abaixo para suportar a consulta de Reading Progress owner-scoped:
+
+| Índice | Tabela | Colunas, em ordem | Tipo | Access pattern |
+|---|---|---|---|---|
+| `ix_reading_sessions_user_book` | `reading_sessions` | `user_id`, `book_id` | non-unique | `WHERE user_id = ? AND book_id = ?` |
+
+O índice foi criado especificamente para a consulta READ-003. Não foram implementados índices adicionais em `book_id` isolado, páginas, timestamps ou Analytics.
+
+Em READ-002 não existiam índices secundários por `user_id`, `book_id`, `started_at` ou combinações dessas colunas. READ-003 introduziu somente a combinação owner/book descrita acima; outros índices para consultas futuras somente poderão ser introduzidos junto ao respectivo caso de uso autorizado.
 
 ---
 

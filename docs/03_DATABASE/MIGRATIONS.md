@@ -247,7 +247,9 @@ A cadeia aplicada permanece linear:
 ↓
 0004_create_books_table
 ↓
-0005_create_reading_sessions_table (head)
+0005_create_reading_sessions_table
+↓
+0006_add_reading_sessions_user_book_index (head)
 ```
 
 A migration `0004_create_books_table.py` permanece inalterada e mantém a tabela `books`, sua Foreign Key de ownership, a constraint de `total_pages` e o índice `ix_books_user_id`.
@@ -265,6 +267,16 @@ A migration `0005_create_reading_sessions_table.py` possui:
 - nenhum índice secundário.
 
 O downgrade de `0005` remove a tabela `reading_sessions` e os objetos criados com ela.
+
+A migration `0006_add_reading_sessions_user_book_index.py` possui:
+
+- revision `0006`;
+- down revision `0005`;
+- finalidade: adicionar o índice owner/book de `reading_sessions`;
+- upgrade: cria `ix_reading_sessions_user_book` na tabela `reading_sessions`, nas colunas `(user_id, book_id)`, com `unique=False`;
+- downgrade: remove exclusivamente `ix_reading_sessions_user_book` da tabela `reading_sessions`.
+
+A migration `0006` não cria tabela, não cria coluna, não altera dados, não persiste progresso e não modifica migrations anteriores. Após READ-003, o Alembic head atual é `0006`.
 
 As migrations `0001`, `0002`, `0003` e `0004` permanecem inalteradas.
 

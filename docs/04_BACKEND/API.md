@@ -320,7 +320,67 @@ Erros:
 
 READ-002 não expõe consulta, edição ou exclusão de `ReadingSession`.
 
-> Divergência conhecida: as rotas READ implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001 ou READ-002.
+## 6.3 Estado implementado — READ-003
+
+### `GET /books/{book_id}/progress`
+
+- autenticação: obrigatória;
+- owner: derivado exclusivamente do usuário autenticado;
+- `book_id`: informado exclusivamente no path;
+- body: nenhum;
+- query parameters funcionais: nenhum.
+
+O cliente não envia `owner_id`, `user_id` ou `player_id`.
+
+Response `200 OK`:
+
+```json
+{
+  "book_id": "...",
+  "total_pages": 100,
+  "unique_pages_read": 41,
+  "highest_page_reached": 60,
+  "percentage": 41.0,
+  "completed": false
+}
+```
+
+O response contém exclusivamente `book_id`, `total_pages`, `unique_pages_read`, `highest_page_reached`, `percentage` e `completed`. Não expõe owner nem dados das ReadingSessions.
+
+O percentual é calculado no Domain com `Decimal`. A Presentation apenas converte o valor já calculado para JSON number; por isso `41.00` pode ser serializado como `41.0`. A Presentation não recalcula nem arredonda novamente o percentual.
+
+Um Book válido sem ReadingSessions retorna `200 OK`:
+
+```json
+{
+  "book_id": "...",
+  "total_pages": 100,
+  "unique_pages_read": 0,
+  "highest_page_reached": null,
+  "percentage": 0.0,
+  "completed": false
+}
+```
+
+Erros:
+
+| Status | Condição |
+|---|---|
+| `200 OK` | Progresso calculado, inclusive quando não existem ReadingSessions. |
+| `401 Unauthorized` | Autenticação ausente ou inválida. |
+| `404 Not Found` | Book inexistente ou pertencente a outro owner, sem diferenciação pública. |
+| `422 Unprocessable Entity` | `book_id` inválido. |
+
+READ-003 não cria erro específico de Reading Progress. Book inexistente e Book pertencente a outro usuário retornam o mesmo `404`, sem expor a existência de recursos alheios.
+
+Exemplos de regras calculadas:
+
+- sobreposição `1–20` e `15–30`: `unique_pages_read = 30`;
+- releitura `1–10` e `1–10`: `unique_pages_read = 10`;
+- intervalos `1–20`, `15–30` e `50–60` em um Book de 100 páginas: `unique_pages_read = 41`, `highest_page_reached = 60`, `percentage = 41.0` e `completed = false`;
+- intervalo `90–100`: `highest_page_reached = 100` e `completed = false`.
+
+> Divergência conhecida: as rotas READ implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001, READ-002 ou READ-003.
 
 ---
 
