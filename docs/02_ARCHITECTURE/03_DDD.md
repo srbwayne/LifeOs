@@ -330,13 +330,72 @@ Não existe `PageRange` Value Object. A consistência entre página inicial e fi
 ## Repository Ports
 
 - `IBookRepository`: inclui lookup obrigatório por `BookId` e `UserId` para preservar ownership;
-- `IReadingSessionRepository`: expõe somente `save(session)` em READ-002.
+- `IReadingSessionRepository`: além de `save(session)`, expõe em READ-003 a ampliação mínima owner-scoped:
+
+```python
+list_by_book_and_owner(
+    book_id: BookId,
+    owner_id: UserId,
+) -> tuple[ReadingSession, ...]
+```
+
+O ownership faz parte do próprio contrato do Port. Não existe método de listagem por Book sem o owner.
+
+## READ-003 — Reading Progress
+
+`ReadingProgress` não é Aggregate Root nem Entity: não possui identidade, não é persistido e representa um resultado de domínio derivado e imutável. Seus campos são:
+
+- `book_id`;
+- `total_pages`;
+- `unique_pages_read`;
+- `highest_page_reached`;
+- `percentage`;
+- `completed`.
+
+`ReadingProgressCalculator` é um Domain Service puro, stateless e determinístico. Não depende de Repository, banco ou autenticação, não produz efeitos colaterais e não publica Domain Events.
+
+O algoritmo:
+
+1. extrai os intervalos inclusivos `start_page..end_page` das ReadingSessions;
+2. ordena por `start_page` e `end_page`;
+3. funde intervalos sobrepostos;
+4. funde intervalos adjacentes;
+5. soma `end - start + 1` para obter `unique_pages_read`;
+6. obtém `highest_page_reached` pelo maior `end_page` ou `None` quando não há sessões;
+7. calcula o percentual;
+8. determina a conclusão.
+
+O tempo total é `O(n log n)` devido à ordenação, a consolidação é `O(n)` e a memória auxiliar é `O(n)`. O algoritmo não expande intervalos página por página.
+
+Sobreposições não duplicam páginas, releituras não aumentam o progresso e a ordem das ReadingSessions não altera o resultado. `highest_page_reached` é apenas a maior página alcançada historicamente e não representa posição atual.
+
+O Domain calcula `percentage` com `Decimal`, precisão de duas casas e `ROUND_HALF_UP`. A conclusão obedece exclusivamente a `completed = unique_pages_read == total_pages`; alcançar isoladamente a última página não conclui o Book.
+
+READ-003 não adiciona `progress`, `pages_read`, `percentage`, `completed` ou `highest_page_reached` ao `Book`. O progresso não é armazenado no Book. `ReadingSession` não sofreu alteração funcional: a Feature apenas utiliza os fatos históricos já registrados pelas sessões.
+
+O fluxo de consulta da Application é:
+
+```text
+GetReadingProgressQuery
+        ↓
+GetReadingProgressQueryHandler
+        ↓
+Book owner-scoped
+        ↓
+ReadingSessions owner-scoped
+        ↓
+ReadingProgressCalculator
+        ↓
+ReadingProgressDTO
+```
+
+Trata-se de uma Query: não utiliza Unit of Work, não executa `commit` nem `save`. O Handler reutiliza `BookNotFoundError`, mantendo Book inexistente e Book pertencente a outro owner indistinguíveis.
 
 ---
 
 ## Eventos
 
-READ-001 e READ-002 não publicam Domain Events. Não existe consumidor autorizado que justifique evento nas Features implementadas.
+READ-001, READ-002 e READ-003 não publicam Domain Events. Em particular, o cálculo de Reading Progress não cria evento algum.
 
 ---
 # Bounded Context — Therapy
