@@ -1,5 +1,38 @@
 # Project Status
 
+## Sprint 06 — Reading Insights - 2026-08-13
+
+**Status:** AUTORIZADA — IMPLEMENTAÇÃO NÃO INICIADA
+**Capability:** READ
+**Feature:** READ-004 — Insights
+**User Story:** US-READ-004-001
+**Requisito Funcional:** RF-READ-011
+
+### Escopo autorizado
+
+- Quatro Insights aprovados: cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
+- Consulta exclusivamente por Book e all-time.
+- Resultados determinísticos derivados de Book, ReadingSessions e ReadingProgress.
+- Operação read-only, sem persistência de Insights.
+- Sem AI, Analytics, GAME, Pesquisa, Histórico completo ou conclusão persistida de Book.
+
+### Estado
+
+- Sprint 05: CONCLUÍDA.
+- Sprint 06: AUTORIZADA.
+- READ-004: AUTORIZADA.
+- RF-READ-011: AUTORIZADO.
+- Implementação: NÃO INICIADA.
+- Planejamento técnico: PENDENTE.
+
+### Pendências fora da Sprint
+
+- RF-READ-005 — Conclusão de Livro associado a READ-005.
+- READ-005 divergente entre Pesquisa e Livros Concluídos no EPIC-READ.
+- READ-007 e READ-008 ausentes no Feature Catalog.
+- RF-READ-009 associado a READ-003.
+- Divergência global de versionamento entre `/books` e `/api/v1`: PENDENTE — NÃO BLOQUEANTE.
+
 ## Sprint 05 — Reading Progress - 2026-08-10
 
 **Status:** ✅ Concluída

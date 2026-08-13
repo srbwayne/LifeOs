@@ -5387,6 +5387,83 @@ READ-006
 
 ---
 
+# RF-READ-011 — Insights de Leitura
+
+## Objetivo
+
+Permitir que o Player compreenda o estado atual de leitura de um Book por meio de Insights claros, determinísticos e explicáveis.
+
+---
+
+## Descrição
+
+O sistema deverá derivar, exclusivamente para um Book e considerando todo o período disponível, quatro Insights a partir de Book, ReadingSessions e ReadingProgress: cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
+
+Os Insights serão somente leitura e não serão persistidos. Eles não produzirão recomendações, análises semânticas, Analytics, efeitos de GAME ou conclusão persistida do Book.
+
+---
+
+## Pré-condições
+
+- O Player está autenticado.
+- O Book existe e pertence ao Player autenticado.
+- As ReadingSessions consideradas são válidas e pertencem ao mesmo Book e owner.
+
+---
+
+## Fluxo Principal
+
+1. O Player seleciona um Book de sua biblioteca.
+2. O sistema obtém as ReadingSessions do Book no escopo do Player autenticado.
+3. O sistema deriva o ReadingProgress all-time.
+4. O sistema calcula a cobertura restante.
+5. O sistema calcula os intervalos inclusivos sem cobertura como complemento da união das ReadingSessions dentro de `1..total_pages`.
+6. O sistema identifica se a última página foi alcançada enquanto ainda existem lacunas.
+7. O sistema confirma cobertura integral somente quando `ReadingProgress.completed` for verdadeiro.
+8. O sistema apresenta os quatro Insights sem persistir resultados ou recomendar ações.
+
+---
+
+## Pós-condições
+
+- Os Insights do Book são apresentados ao Player autenticado.
+- Nenhum estado de Book, ReadingSession, Character ou GAME é alterado.
+- Nenhum Insight ou conclusão é persistido.
+- Nenhum evento é gerado.
+
+---
+
+## Critérios de Aceite
+
+- Apenas o Player autenticado poderá consultar Insights.
+- O Book deverá pertencer ao Player autenticado.
+- Book inexistente e Book pertencente a outro owner permanecerão indistinguíveis publicamente.
+- Os Insights serão exclusivamente por Book e all-time.
+- Os resultados serão determinísticos e derivados somente de Book, ReadingSessions e ReadingProgress.
+- Cobertura restante corresponderá a `total_pages - unique_pages_read`.
+- Lacunas corresponderão aos intervalos inclusivos sem cobertura dentro de `1..total_pages`.
+- Sobreposições e releituras não duplicarão páginas na cobertura.
+- Book sem ReadingSessions produzirá cobertura restante igual a `total_pages` e uma única lacuna `1..total_pages`.
+- O Insight de última página alcançada com lacunas será aplicável quando `highest_page_reached == total_pages` e `completed == false`.
+- O Insight de cobertura integral será confirmado somente quando `ReadingProgress.completed == true`.
+- Nenhum Insight representará `current_page`, `next_page` ou recomendação.
+- Nenhum Insight utilizará AI, Analytics ou regras de GAME.
+- Nenhum Insight persistirá conclusão ou alterará Book ou ReadingSession.
+
+---
+
+## Capability
+
+READ
+
+---
+
+## Feature
+
+READ-004 — Insights
+
+---
+
 # 24. Requisitos Funcionais — Therapy (RF-THER)
 
 A Capability **Therapy** é responsável pelo gerenciamento do acompanhamento terapêutico do Player.

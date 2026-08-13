@@ -33,11 +33,23 @@ A Capability Reading é responsável por:
 - READ-001 — Biblioteca de Livros;
 - READ-002 — Cadastro de Livro;
 - READ-003 — Sessão de Leitura;
-- READ-004 — Controle de Progresso;
+- READ-004 — Insights;
 - READ-005 — Livros Concluídos;
 - READ-006 — Histórico de Leitura;
 - READ-007 — Estatísticas de Leitura;
 - READ-008 — Evolução Intelectual.
+
+---
+
+## Pendências Documentais
+
+A correção direta de READ-004 para Insights torna esta Feature convergente com o Feature Catalog, o PRD e a Sprint 06. Permanecem fora do escopo deste saneamento:
+
+- RF-READ-005 — Conclusão de Livro associado a READ-005;
+- divergência de READ-005 entre Pesquisa no Feature Catalog e Livros Concluídos neste EPIC;
+- READ-007 ausente no Feature Catalog;
+- READ-008 ausente no Feature Catalog;
+- RF-READ-009 associado a READ-003.
 
 ---
 

@@ -1,5 +1,20 @@
 # Task History
 
+## Autorização da Sprint 06: Reading Insights - 2026-08-13
+
+- **Decisão:** Product Owner confirmou READ-004 — Insights como única Feature funcional da Sprint 06.
+- **V1 aprovada:** cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
+- **Escopo:** exclusivamente por Book, all-time, determinístico, derivado e read-only.
+- **Persistência:** nenhum Insight será persistido.
+- **Exclusões:** sem volume bruto de releitura, duração, frequência, notes, AI, Analytics, GAME, Pesquisa ou Histórico completo.
+- **Conclusão:** `ReadingProgress.completed` será apenas explicativo; não haverá conclusão persistida ou evento de conclusão.
+- **Rastreabilidade:** RF-READ-011 escolhido para preservar os identificadores RF-READ-005..010 já publicados.
+- **User Story:** US-READ-004-001 aprovada para formalização.
+- **Implementação:** ainda não iniciada.
+- **Planejamento técnico:** pendente.
+- **Pendências preservadas:** RF-READ-005 associado a READ-005; READ-005 divergente no EPIC; READ-007 e READ-008 ausentes no Feature Catalog; RF-READ-009 associado a READ-003.
+- **Pendência não bloqueante:** divergência global entre `/books` e `/api/v1`.
+
 ## Sprint 05: Reading Progress - 2026-08-12
 - **Status:** ✅ Concluída.
 - **Autorização:** READ-003 — Reading Progress e RF-READ-004 previamente autorizados pelo Product Owner.
