@@ -355,7 +355,7 @@ Esta User Story foi entregue com a conclusão da Sprint 04.
 | Capability | READ |
 | Feature | READ-003 — Reading Progress |
 | Requisito Funcional | RF-READ-004 |
-| Status | Implementada localmente — aguardando integração |
+| Status | Entregue — Sprint 05 concluída |
 
 ### Persona
 
@@ -501,4 +501,4 @@ RF-READ-004
 Sprint 05
 ```
 
-Esta User Story está implementada e validada localmente. A integração na `main` e o fechamento da Sprint 05 permanecem pendentes.
+Esta User Story foi entregue com a conclusão da Sprint 05.

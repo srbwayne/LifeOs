@@ -21,7 +21,7 @@
 - Integrada a migration `0005` e a persistência da tabela `reading_sessions`.
 - Sincronizada a documentação técnica da Capability READ com a implementação de READ-002.
 - Adicionado pela migration `0006` o índice composto `ix_reading_sessions_user_book` para consultas owner-scoped de ReadingSessions.
-- Sincronizada a documentação técnica da Capability READ com a implementação local de READ-003.
+- Sincronizada a documentação técnica da Capability READ com a implementação integrada de READ-003.
 
 ## [0.2.0] - 2026-08-04
 

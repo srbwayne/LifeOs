@@ -1,5 +1,20 @@
 # Task History
 
+## Sprint 05: Reading Progress - 2026-08-12
+- **Status:** ✅ Concluída.
+- **Autorização:** READ-003 — Reading Progress e RF-READ-004 previamente autorizados pelo Product Owner.
+- **Implementação:** READ-003 entregue integralmente em Domain, Application, Infrastructure e Presentation.
+- **Integração:** PR #13 integrado por Rebase and Merge na `main`.
+- **Commits na main:** `a9945e10915375638da9b1693ca6265d248c85a9` (`feat(read): model reading progress`), `3d48e9a30c9c916c5ea843e0555aa93e813a81cc` (`feat(read): query reading progress`), `55ad8eb589930e06156f279db4d4e097e9deb935` (`feat(read): expose reading progress API`), `f19fb6df04fcea9e59e2506f65567d8cb4dc0c31` (`docs(read): document reading progress`) e `766764d8f381db3f85703c70b0fc46a3f8a0a98e` (`docs(project): record Sprint 05 implementation status`).
+- **Banco:** migration `0006` integrada como head.
+- **Índice:** `ix_reading_sessions_user_book` integrado para a consulta owner-scoped.
+- **API:** `GET /books/{book_id}/progress` integrada.
+- **Ownership:** preservado pelo usuário autenticado.
+- **CI:** workflow Quality Gates da `main` aprovado após o merge, run `31659291646`.
+- **Validação:** 307 testes aprovados, cobertura de 97,77% e Alembic em `0006 (head)`.
+- **Escopo final:** RF-READ-004 entregue; RF-READ-005+ não entregues.
+- **Estado no encerramento:** nenhuma Sprint subsequente autorizada.
+- **Pendência:** divergência global entre `/books` e `/api/v1` permanece PENDENTE — NÃO BLOQUEANTE.
 ## Implementação local da Sprint 05: Reading Progress - 2026-08-12
 - **Status:** READ-003 implementada e validada localmente; Sprint 05 ainda aberta.
 - **Domain:** `ReadingProgress` e `ReadingProgressCalculator` implementados para cobertura única de intervalos.

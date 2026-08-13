@@ -2,28 +2,38 @@
 
 ## Sprint 05 — Reading Progress - 2026-08-10
 
-**Status:** IMPLEMENTADA LOCALMENTE — AGUARDANDO INTEGRAÇÃO
+**Status:** ✅ Concluída
 **Capability:** READ
 **Feature:** READ-003 — Reading Progress
 **User Story:** US-READ-003-001
 **Requisito Funcional:** RF-READ-004
 
-### Implementação local
+### Entregas
 
-- Domain, Application, Infrastructure e Presentation completas localmente.
-- Consulta autenticada implementada por `GET /books/{book_id}/progress`.
-- Progresso derivado das ReadingSessions por cobertura de páginas únicas, sem persistência de progresso.
-- Migration `0006` adiciona somente o índice composto `ix_reading_sessions_user_book`.
-- Testes e quality gates locais aprovados.
+- READ-003 integrada na `main`.
+- `ReadingProgress` derivado das ReadingSessions por cobertura de páginas únicas.
+- Sobreposições e releituras tratadas sem dupla contagem.
+- `highest_page_reached` mantido como informação, sem representar posição atual.
+- Percentual derivado e conclusão determinada somente por cobertura integral.
+- Nenhum estado de progresso persistido.
+- Consulta autenticada integrada por `GET /books/{book_id}/progress`.
+- Ownership preservado pelo usuário autenticado.
+- Migration `0006` e índice `ix_reading_sessions_user_book` integrados.
+- Documentação técnica sincronizada.
+- PR #13 integrado por Rebase and Merge.
+- CI da `main` aprovado após o merge.
 
-### Estado
+### Estado funcional
 
-- Sprint 04: CONCLUÍDA.
-- Sprint 05: ABERTA, AGUARDANDO PR, CI, REVIEW E INTEGRAÇÃO.
-- READ-003: IMPLEMENTADA LOCALMENTE, AINDA NÃO INTEGRADA NA `main`.
-- RF-READ-004: ÚNICO RF AUTORIZADO.
-- RF-READ-005+: FORA DO ESCOPO.
-- Nenhuma Sprint posterior autorizada.
+- READ-001: ENTREGUE.
+- READ-002: ENTREGUE.
+- READ-003: ENTREGUE.
+- RF-READ-001: ENTREGUE.
+- RF-READ-002: ENTREGUE.
+- RF-READ-003: ENTREGUE.
+- RF-READ-004: ENTREGUE.
+- RF-READ-005+: NÃO ENTREGUES.
+- Próxima Sprint: NENHUMA AUTORIZADA.
 
 ### Pendência
 
