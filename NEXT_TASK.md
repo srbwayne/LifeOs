@@ -10,16 +10,15 @@
 |---|---|
 | ID | Sprint 06 |
 | Iniciativa | Sprint 06 — Reading Insights |
-| Status | AUTORIZADA |
+| Status | CONCLUÍDA |
 | Tipo | Funcional |
 | Capability | READ |
 | Feature | READ-004 — Insights |
 | User Story | US-READ-004-001 |
 | Requisito Funcional | RF-READ-011 |
-| Implementação | CONCLUÍDA LOCALMENTE |
+| Implementação | INTEGRADA |
 | Planejamento técnico | APROVADO |
-| Integração | PENDENTE |
-| PR | AINDA NÃO ABERTO |
+| CI | APROVADO |
 
 ---
 
@@ -41,13 +40,15 @@
 - READ-001: ENTREGUE.
 - READ-002: ENTREGUE.
 - READ-003: ENTREGUE.
-- READ-004: IMPLEMENTADA LOCALMENTE — AGUARDANDO AUDITORIA, PR E INTEGRAÇÃO.
+- READ-004: ENTREGUE.
 - RF-READ-001: ENTREGUE.
 - RF-READ-002: ENTREGUE.
 - RF-READ-003: ENTREGUE.
 - RF-READ-004: ENTREGUE.
 - RF-READ-005..010: NÃO ENTREGUES.
-- RF-READ-011: IMPLEMENTADO LOCALMENTE — AINDA NÃO ENTREGUE.
+- RF-READ-011: ENTREGUE.
+
+> A numeração dos requisitos não implica ordem de entrega: RF-READ-011 está entregue, enquanto RF-READ-005..010 permanecem não entregues.
 
 ---
 
@@ -68,13 +69,22 @@
 
 # Pendências Documentais Fora da Sprint
 
-- RF-READ-005 — Conclusão de Livro permanece associado a READ-005.
-- READ-005 permanece divergente entre Pesquisa e Livros Concluídos no EPIC-READ.
-- READ-007 e READ-008 permanecem ausentes no Feature Catalog.
-- RF-READ-009 permanece associado a READ-003.
+- RF-READ-005: PENDENTE — Conclusão de Livro permanece associado a READ-005.
+- READ-005: DIVERGÊNCIA PENDENTE entre Pesquisa e Livros Concluídos no EPIC-READ.
+- READ-007: AUSENTE NO FEATURE CATALOG.
+- READ-008: AUSENTE NO FEATURE CATALOG.
+- RF-READ-009: ASSOCIAÇÃO PENDENTE a READ-003.
 
 ---
 
 # Pendência
 
 A divergência global de versionamento entre `/books` e `/api/v1` permanece PENDENTE — NÃO BLOQUEANTE.
+
+---
+
+# Próxima Sprint
+
+**NENHUMA AUTORIZADA.**
+
+Nenhuma nova Sprint funcional, Feature ou RF está autorizada para implementação.

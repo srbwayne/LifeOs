@@ -2,39 +2,53 @@
 
 ## Sprint 06 — Reading Insights - 2026-08-14
 
-**Status:** IMPLEMENTAÇÃO CONCLUÍDA LOCALMENTE — AGUARDANDO INTEGRAÇÃO
+**Status:** ✅ Concluída
 **Capability:** READ
 **Feature:** READ-004 — Insights
 **User Story:** US-READ-004-001
 **Requisito Funcional:** RF-READ-011
 
-### Implementação local
+### Entregas
 
-- Quatro Insights implementados: cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
+- READ-004 integrada na `main`.
+- Quatro Insights entregues: cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
 - Consulta exclusivamente por Book e all-time.
-- `ReadingCoverage` compartilhada por READ-003 e READ-004, sem alterar a semântica de Reading Progress.
+- Coverage intervalar compartilhada por READ-003 e READ-004, com `ReadingProgress` preservado como fonte da semântica de progresso.
 - Resultados determinísticos, derivados e read-only, sem persistência ou eventos.
-- `GET /books/{book_id}/insights` implementado com ownership pelo usuário autenticado.
-- Infrastructure e Repository Ports permanecem inalterados.
+- `GET /books/{book_id}/insights` integrado com ownership preservado pelo usuário autenticado.
+- Infrastructure e Repository Ports permaneceram inalterados.
 - Nenhuma migration foi criada; Alembic permanece em `0006 (head)`.
-- Validação local: 368 testes aprovados e cobertura total de 97,76%.
+- PR #16 integrado por Rebase and Merge em `2026-08-14T03:19:44Z`.
+- CI da `main` aprovado após o merge no run `31766473176`.
+- Validação final: 368 testes aprovados e cobertura total de 97,76%.
+- Documentação técnica sincronizada.
 
 ### Estado
 
 - Sprint 05: CONCLUÍDA.
-- Sprint 06: AUTORIZADA.
-- READ-004: IMPLEMENTADA LOCALMENTE — AGUARDANDO AUDITORIA, PR E INTEGRAÇÃO.
-- RF-READ-011: IMPLEMENTADO LOCALMENTE — AINDA NÃO ENTREGUE.
-- Implementação: CONCLUÍDA LOCALMENTE.
+- Sprint 06: CONCLUÍDA.
+- READ-001: ENTREGUE.
+- READ-002: ENTREGUE.
+- READ-003: ENTREGUE.
+- READ-004: ENTREGUE.
+- RF-READ-001: ENTREGUE.
+- RF-READ-002: ENTREGUE.
+- RF-READ-003: ENTREGUE.
+- RF-READ-004: ENTREGUE.
+- RF-READ-005..010: NÃO ENTREGUES.
+- RF-READ-011: ENTREGUE.
+- Implementação: INTEGRADA.
 - Planejamento técnico: APROVADO.
-- Integração: PENDENTE.
+- CI: APROVADO.
+- Próxima Sprint: NENHUMA AUTORIZADA.
 
 ### Pendências fora da Sprint
 
-- RF-READ-005 — Conclusão de Livro associado a READ-005.
-- READ-005 divergente entre Pesquisa e Livros Concluídos no EPIC-READ.
-- READ-007 e READ-008 ausentes no Feature Catalog.
-- RF-READ-009 associado a READ-003.
+- RF-READ-005 — Conclusão de Livro associado a READ-005: PENDENTE.
+- READ-005 divergente entre Pesquisa e Livros Concluídos no EPIC-READ: DIVERGÊNCIA PENDENTE.
+- READ-007: AUSENTE NO FEATURE CATALOG.
+- READ-008: AUSENTE NO FEATURE CATALOG.
+- RF-READ-009 associado a READ-003: ASSOCIAÇÃO PENDENTE.
 - Divergência global de versionamento entre `/books` e `/api/v1`: PENDENTE — NÃO BLOQUEANTE.
 ## Sprint 05 — Reading Progress - 2026-08-10
 

@@ -513,7 +513,7 @@ Esta User Story foi entregue com a conclusão da Sprint 05.
 | Capability | READ |
 | Feature | READ-004 — Insights |
 | Requisito Funcional | RF-READ-011 |
-| Status | Implementada localmente — aguardando integração |
+| Status | Entregue — Sprint 06 concluída |
 
 ### Persona
 
@@ -664,4 +664,4 @@ RF-READ-011
 Sprint 06
 ```
 
-Esta User Story foi implementada localmente e aguarda auditoria, PR e integração.
+Esta User Story foi entregue com a conclusão da Sprint 06.

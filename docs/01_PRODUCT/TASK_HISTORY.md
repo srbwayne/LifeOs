@@ -1,5 +1,24 @@
 # Task History
 
+## Sprint 06: Reading Insights - 2026-08-14
+
+- **Status:** ✅ Concluída.
+- **Feature:** READ-004 — Insights.
+- **Requisito Funcional:** RF-READ-011.
+- **User Story:** US-READ-004-001.
+- **Integração:** PR #16 integrado por Rebase and Merge em `2026-08-14T03:19:44Z`.
+- **Main funcional:** `d93d4ce37c40fdc9f35e62ea06590a95574db419`.
+- **Commits na main:** `f6fedb6128fe93f099de3661fd3ed03a0f06b601` (`refactor(read): extract reading coverage calculation`), `e952f8b5f9e9af0b87acbd910165e3122d209e7f` (`feat(read): model reading insights`), `127ca1e8ec0d83f8efe08d19eedfee58d6f1c519` (`feat(read): query reading insights`), `63fcdbaebb0d4b613c5ad29dac5d4b8dd75e3812` (`feat(read): expose reading insights API`), `a8ecb91c94450cab71065847e0ef0990ec4a71d3` (`docs(read): document reading insights`) e `d93d4ce37c40fdc9f35e62ea06590a95574db419` (`docs(project): record Sprint 06 implementation status`).
+- **Domain:** Coverage intervalar compartilhada, sem expansão por página; regressão de READ-003 aprovada.
+- **Entrega:** quatro Insights determinísticos integrados por `GET /books/{book_id}/insights`, com consulta owner-scoped.
+- **Infrastructure:** nenhuma Infrastructure nova e nenhuma migration; Alembic permanece em `0006 (head)`.
+- **CI:** workflow Quality Gates da `main`, run `31766473176`, aprovado após o merge.
+- **Validação:** 368 testes aprovados e cobertura total de 97,76%.
+- **Branch:** `feature/read-004-reading-insights` removida local e remotamente.
+- **Estado no encerramento:** Sprint 06 concluída; nenhuma Sprint subsequente autorizada.
+- **Pendências preservadas:** RF-READ-005 pendente; READ-005 divergente; READ-007 e READ-008 ausentes no Feature Catalog; associação de RF-READ-009 pendente.
+- **Pendência não bloqueante:** divergência global entre `/books` e `/api/v1` permanece PENDING NON-BLOCKING.
+
 ## Implementação local da Sprint 06: Reading Insights - 2026-08-14
 
 - **Architecture Review:** PASS; Technical Plan FROZEN.
