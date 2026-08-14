@@ -5,6 +5,7 @@ import pytest
 
 from app.read.domain.aggregates.book import Book
 from app.read.domain.aggregates.reading_session import ReadingSession
+from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_progress_calculator import (
     ReadingProgressCalculator,
 )
@@ -171,3 +172,27 @@ def test_calculation_does_not_create_domain_events() -> None:
     assert not hasattr(progress, "domain_events")
     assert book.domain_events == []
     assert session.domain_events == []
+
+
+@pytest.mark.parametrize(
+    "ranges",
+    [
+        (),
+        ((1, 1),),
+        ((1, 20), (15, 30), (50, 60)),
+        ((1, 10), (11, 20)),
+        ((1, 10), (1, 10)),
+        ((90, 100),),
+        ((1, 100),),
+    ],
+)
+def test_calculate_from_coverage_preserves_all_progress_fields(
+    ranges: tuple[tuple[int, int], ...],
+) -> None:
+    book = make_book()
+    sessions = tuple(make_session(book, start, end) for start, end in ranges)
+    coverage = ReadingCoverageCalculator.calculate(sessions)
+
+    assert ReadingProgressCalculator.calculate_from_coverage(
+        book, coverage
+    ) == ReadingProgressCalculator.calculate(book, sessions)
