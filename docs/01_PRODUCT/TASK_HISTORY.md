@@ -1,5 +1,20 @@
 # Task History
 
+## Implementação local da Sprint 06: Reading Insights - 2026-08-14
+
+- **Architecture Review:** PASS; Technical Plan FROZEN.
+- **Branch:** `feature/read-004-reading-insights`.
+- **Decisões técnicas:** `PageInterval` e `ReadingCoverage` derivados; coverage intervalar compartilhada; Reading Progress preservado; Reading Insights calculados a partir de Progress e Coverage.
+- **Commits locais:** `17a7c184be7832ac350e0d38eb4e0eb46d6432cc` (`refactor(read): extract reading coverage calculation`), `3db02582fad547e863ced5d164b465a06af1e7ff` (`feat(read): model reading insights`), `a4bf4536a3527a2609c59ca0b4586ec2627cd76e` (`feat(read): query reading insights`), `5d2b72f2c4ac1348417f04073d992a1abeaabb03` (`feat(read): expose reading insights API`) e `e08ba0dfcdfddc1d2338ef5b32bf134f399aaf9e` (`docs(read): document reading insights`).
+- **Domain:** coverage extraída sem expansão por página; quatro Insights determinísticos implementados sem persistência ou eventos.
+- **Regressão READ-003:** API e semântica de `ReadingProgressCalculator.calculate` preservadas e verificadas contra `calculate_from_coverage`.
+- **Application/API:** Query owner-scoped e `GET /books/{book_id}/insights` implementados; missing e foreign permanecem indistinguíveis.
+- **Infrastructure:** nenhuma alteração de Repository, SQLAlchemy, SQL ou índice.
+- **Banco:** nenhuma migration; Alembic permanece em `0006 (head)`.
+- **Validação local:** 368 testes aprovados, coverage total de 97,76%, Ruff, Format, Mypy e DeprecationWarning aprovados.
+- **Estado:** implementação local concluída; integração pendente; nenhum PR aberto.
+- **Pendência não bloqueante:** divergência global entre `/books` e `/api/v1`.
+
 ## Autorização da Sprint 06: Reading Insights - 2026-08-13
 
 - **Decisão:** Product Owner confirmou READ-004 — Insights como única Feature funcional da Sprint 06.

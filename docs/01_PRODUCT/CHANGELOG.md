@@ -12,6 +12,8 @@
 - Adicionado o cálculo derivado de `pages_read` para intervalos contínuos de leitura.
 - Adicionado Reading Progress derivado por páginas únicas, com tratamento de sobreposição e releitura, `highest_page_reached`, `percentage` e `completed`.
 - Adicionada a consulta autenticada `GET /books/{book_id}/progress`, restrita ao owner do Book.
+- Implementada localmente a coverage intervalar compartilhada e os quatro Insights determinísticos de READ-004, aguardando integração.
+- Implementada localmente a consulta autenticada `GET /books/{book_id}/insights`, por Book e all-time, sem persistência ou migration, aguardando integração.
 
 ### Changed
 - Validado o isolamento entre Capabilities e centralizada a identidade transversal no Shared Kernel.
