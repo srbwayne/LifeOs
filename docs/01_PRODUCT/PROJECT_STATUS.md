@@ -1,29 +1,33 @@
 # Project Status
 
-## Sprint 06 — Reading Insights - 2026-08-13
+## Sprint 06 — Reading Insights - 2026-08-14
 
-**Status:** AUTORIZADA — IMPLEMENTAÇÃO NÃO INICIADA
+**Status:** IMPLEMENTAÇÃO CONCLUÍDA LOCALMENTE — AGUARDANDO INTEGRAÇÃO
 **Capability:** READ
 **Feature:** READ-004 — Insights
 **User Story:** US-READ-004-001
 **Requisito Funcional:** RF-READ-011
 
-### Escopo autorizado
+### Implementação local
 
-- Quatro Insights aprovados: cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
+- Quatro Insights implementados: cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada.
 - Consulta exclusivamente por Book e all-time.
-- Resultados determinísticos derivados de Book, ReadingSessions e ReadingProgress.
-- Operação read-only, sem persistência de Insights.
-- Sem AI, Analytics, GAME, Pesquisa, Histórico completo ou conclusão persistida de Book.
+- `ReadingCoverage` compartilhada por READ-003 e READ-004, sem alterar a semântica de Reading Progress.
+- Resultados determinísticos, derivados e read-only, sem persistência ou eventos.
+- `GET /books/{book_id}/insights` implementado com ownership pelo usuário autenticado.
+- Infrastructure e Repository Ports permanecem inalterados.
+- Nenhuma migration foi criada; Alembic permanece em `0006 (head)`.
+- Validação local: 368 testes aprovados e cobertura total de 97,76%.
 
 ### Estado
 
 - Sprint 05: CONCLUÍDA.
 - Sprint 06: AUTORIZADA.
-- READ-004: AUTORIZADA.
-- RF-READ-011: AUTORIZADO.
-- Implementação: NÃO INICIADA.
-- Planejamento técnico: PENDENTE.
+- READ-004: IMPLEMENTADA LOCALMENTE — AGUARDANDO AUDITORIA, PR E INTEGRAÇÃO.
+- RF-READ-011: IMPLEMENTADO LOCALMENTE — AINDA NÃO ENTREGUE.
+- Implementação: CONCLUÍDA LOCALMENTE.
+- Planejamento técnico: APROVADO.
+- Integração: PENDENTE.
 
 ### Pendências fora da Sprint
 
@@ -32,7 +36,6 @@
 - READ-007 e READ-008 ausentes no Feature Catalog.
 - RF-READ-009 associado a READ-003.
 - Divergência global de versionamento entre `/books` e `/api/v1`: PENDENTE — NÃO BLOQUEANTE.
-
 ## Sprint 05 — Reading Progress - 2026-08-10
 
 **Status:** ✅ Concluída
