@@ -58,3 +58,16 @@ class ReadingProgressResponse(BaseModel):
     highest_page_reached: int | None
     percentage: float
     completed: bool
+
+
+class PageIntervalResponse(BaseModel):
+    start_page: int
+    end_page: int
+
+
+class ReadingInsightsResponse(BaseModel):
+    book_id: str
+    remaining_pages: int
+    gaps: list[PageIntervalResponse]
+    last_page_reached_with_gaps: bool
+    full_coverage_confirmed: bool

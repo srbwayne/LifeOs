@@ -10,8 +10,13 @@ from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommandHandler,
 )
 from app.read.application.dtos.book_dto import BookDTO
+from app.read.application.dtos.reading_insights_dto import ReadingInsightsDTO
 from app.read.application.dtos.reading_progress_dto import ReadingProgressDTO
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
+from app.read.application.queries.get_reading_insights import (
+    GetReadingInsightsQuery,
+    GetReadingInsightsQueryHandler,
+)
 from app.read.application.queries.get_reading_progress import (
     GetReadingProgressQuery,
     GetReadingProgressQueryHandler,
@@ -24,6 +29,7 @@ from app.read.dependencies import (
     get_create_book_handler,
     get_create_reading_session_handler,
     get_list_my_books_handler,
+    get_reading_insights_handler,
     get_reading_progress_handler,
 )
 from app.read.domain.value_objects.book_id import BookId
@@ -31,6 +37,8 @@ from app.read.presentation.api.fastapi.schemas import (
     BookResponse,
     CreateBookRequest,
     CreateReadingSessionRequest,
+    PageIntervalResponse,
+    ReadingInsightsResponse,
     ReadingProgressResponse,
     ReadingSessionResponse,
 )
@@ -75,6 +83,19 @@ def _to_reading_progress_response(progress: ReadingProgressDTO) -> ReadingProgre
         highest_page_reached=progress.highest_page_reached,
         percentage=float(progress.percentage),
         completed=progress.completed,
+    )
+
+
+def _to_reading_insights_response(insights: ReadingInsightsDTO) -> ReadingInsightsResponse:
+    return ReadingInsightsResponse(
+        book_id=insights.book_id,
+        remaining_pages=insights.remaining_pages,
+        gaps=[
+            PageIntervalResponse(start_page=gap.start_page, end_page=gap.end_page)
+            for gap in insights.gaps
+        ],
+        last_page_reached_with_gaps=insights.last_page_reached_with_gaps,
+        full_coverage_confirmed=insights.full_coverage_confirmed,
     )
 
 
@@ -161,3 +182,21 @@ def get_reading_progress(
         )
     )
     return _to_reading_progress_response(progress)
+
+
+@router.get(
+    "/{book_id}/insights",
+    response_model=ReadingInsightsResponse,
+)
+def get_reading_insights(
+    book_id: str,
+    user_id: UserId = Depends(get_current_user_id),
+    handler: GetReadingInsightsQueryHandler = Depends(get_reading_insights_handler),
+) -> ReadingInsightsResponse:
+    insights = handler(
+        GetReadingInsightsQuery(
+            owner_id=user_id,
+            book_id=_parse_book_id(book_id),
+        )
+    )
+    return _to_reading_insights_response(insights)
