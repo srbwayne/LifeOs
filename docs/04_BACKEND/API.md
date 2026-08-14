@@ -380,7 +380,51 @@ Exemplos de regras calculadas:
 - intervalos `1–20`, `15–30` e `50–60` em um Book de 100 páginas: `unique_pages_read = 41`, `highest_page_reached = 60`, `percentage = 41.0` e `completed = false`;
 - intervalo `90–100`: `highest_page_reached = 100` e `completed = false`.
 
-> Divergência conhecida: as rotas READ implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001, READ-002 ou READ-003.
+## 6.4 Estado implementado — READ-004
+
+### `GET /books/{book_id}/insights`
+
+- autenticação: obrigatória;
+- owner: derivado exclusivamente do usuário autenticado;
+- `book_id`: informado exclusivamente no path;
+- body: nenhum;
+- query parameters funcionais: nenhum.
+
+Response `200 OK`:
+
+```json
+{
+  "book_id": "...",
+  "remaining_pages": 59,
+  "gaps": [
+    {
+      "start_page": 31,
+      "end_page": 49
+    },
+    {
+      "start_page": 61,
+      "end_page": 100
+    }
+  ],
+  "last_page_reached_with_gaps": false,
+  "full_coverage_confirmed": false
+}
+```
+
+O response contém exclusivamente os quatro Insights derivados e o `book_id`. As lacunas são intervalos inclusivos, disjuntos e ordenados. Não são expostos owner, sessões, notes, `total_pages`, percentual, posição atual, próxima página, mensagens ou recomendações.
+
+Erros:
+
+| Status | Condição |
+|---|---|
+| `200 OK` | Insights calculados, inclusive quando não existem ReadingSessions. |
+| `401 Unauthorized` | Autenticação ausente ou inválida. |
+| `404 Not Found` | Book inexistente ou pertencente a outro owner, sem diferenciação pública. |
+| `422 Unprocessable Entity` | `book_id` inválido. |
+
+READ-004 é all-time, por Book, determinística e read-only. Não persiste Insights ou conclusão, não publica eventos e não antecipa AI, Analytics ou GAME.
+
+> Divergência conhecida: as rotas READ implantadas ainda não utilizam o prefixo normativo `/api/v1`. A decisão global de versionamento permanece pendente e não é alterada por READ-001, READ-002, READ-003 ou READ-004.
 
 ---
 
