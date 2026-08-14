@@ -393,9 +393,55 @@ Trata-se de uma Query: não utiliza Unit of Work, não executa `commit` nem `sav
 
 ---
 
+## READ-004 — Reading Insights
+
+READ-004 reutiliza a semântica de cobertura introduzida por READ-003 sem alterar os Aggregates `Book` e `ReadingSession`.
+
+`PageInterval` é um modelo derivado, imutável e inclusivo, usado exclusivamente para representar cobertura consolidada e lacunas. Ele não substitui `PageNumber`, não representa a faixa original de uma `ReadingSession` e não transfere para fora do Aggregate as invariantes de `start_page`, `end_page` e `book_total_pages`.
+
+`ReadingCoverage` armazena somente `covered_intervals`, uma tupla ordenada de intervalos disjuntos e não adjacentes. `unique_pages_read` e `highest_page_reached` são propriedades derivadas. O modelo não possui identidade, não é persistido e não conhece Book, owner ou HTTP.
+
+`ReadingCoverageCalculator` é um Domain Service puro e stateless. Ele ordena os intervalos das ReadingSessions, funde overlap e adjacência e produz a cobertura consolidada em `O(n log n)` de tempo e `O(n)` de memória. Não existe expansão página por página, `set(range(...))` ou bitmap proporcional ao total de páginas.
+
+`ReadingProgressCalculator.calculate(book, sessions)` preserva sua API pública e a semântica de READ-003. Internamente, delega a consolidação ao `ReadingCoverageCalculator` e expõe `calculate_from_coverage(book, coverage)` para que Progress continue sendo a fonte oficial de `total_pages`, `unique_pages_read`, `highest_page_reached`, `percentage` e `completed`.
+
+`ReadingInsights` é um resultado derivado e imutável, sem identidade ou persistência, com exatamente:
+
+- `book_id`;
+- `remaining_pages`;
+- `gaps`;
+- `last_page_reached_with_gaps`;
+- `full_coverage_confirmed`.
+
+`ReadingInsightsCalculator` recebe `ReadingProgress` e `ReadingCoverage`. Ele calcula as lacunas pelo complemento intervalar da cobertura dentro de `1..total_pages`, usando cursor em `O(m)`, sem expansão por página. Os quatro Insights são cobertura restante, lacunas de cobertura, última página alcançada com lacunas e cobertura integral confirmada. O cálculo não recomenda ações, não persiste conclusão e não publica eventos.
+
+O fluxo de consulta da Application é:
+
+```text
+GetReadingInsightsQuery
+        ↓
+GetReadingInsightsQueryHandler
+        ↓
+Book owner-scoped
+        ↓
+ReadingSessions owner-scoped
+        ↓
+ReadingCoverageCalculator
+        ↓
+ReadingProgressCalculator.calculate_from_coverage
+        ↓
+ReadingInsightsCalculator
+        ↓
+ReadingInsightsDTO
+```
+
+Trata-se de uma Query read-only, sem Unit of Work, `save`, `commit` ou eventos. READ-004 não altera Ports, Infrastructure, SQL, índices ou migrations.
+
+---
+
 ## Eventos
 
-READ-001, READ-002 e READ-003 não publicam Domain Events. Em particular, o cálculo de Reading Progress não cria evento algum.
+READ-001, READ-002, READ-003 e READ-004 não publicam Domain Events. Em particular, os cálculos de Reading Progress e Reading Insights não criam evento algum.
 
 ---
 # Bounded Context — Therapy
