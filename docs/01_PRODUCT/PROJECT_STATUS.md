@@ -1,5 +1,22 @@
 # Project Status
 
+## Implementação local da Sprint 07: Reading History - 2026-08-15
+
+**Status:** IMPLEMENTAÇÃO FUNCIONAL CONCLUÍDA LOCALMENTE — AGUARDANDO AUDITORIA, PUBLICAÇÃO E INTEGRAÇÃO
+**Feature:** READ-006 — Histórico
+**RF:** RF-READ-006
+**US:** US-READ-006-001
+
+- Product Spec: FROZEN.
+- Planejamento técnico: APROVADO.
+- GET /reading-sessions implementado localmente como query owner-scoped,
+  all-time, paginada e read-only.
+- Read-side port dedicado, projection join sem N+1, UTC preservado e migration
+  0007 com índice (user_id, started_at, id).
+- RF-READ-010 permanece OUT OF SCOPE.
+- Nenhuma publicação, PR, integração na main ou CI da main ocorreu.
+- Sprint 07, READ-006 e RF-READ-006 permanecem NÃO ENTREGUES.
+
 ## Sprint 07 — Reading History - 2026-08-14
 
 **Status:** ESPECIFICAÇÃO FUNCIONAL APROVADA — AGUARDANDO PLANEJAMENTO TÉCNICO

@@ -17,8 +17,8 @@
 | User Story | US-READ-006-001 |
 | Requisito Funcional | RF-READ-006 |
 | Especificação funcional | APROVADA |
-| Implementação | NÃO INICIADA |
-| Planejamento técnico | PENDENTE |
+| Implementação | CONCLUÍDA LOCALMENTE — AGUARDANDO AUDITORIA E INTEGRAÇÃO |
+| Planejamento técnico | APROVADO |
 
 ---
 
@@ -39,10 +39,10 @@
 - READ-002: ENTREGUE.
 - READ-003: ENTREGUE.
 - READ-004: ENTREGUE.
-- READ-006: AUTORIZADA — NÃO IMPLEMENTADA.
+- READ-006: IMPLEMENTADA LOCALMENTE — NÃO ENTREGUE.
 - RF-READ-001..004: ENTREGUES.
 - RF-READ-005: NÃO ENTREGUE.
-- RF-READ-006: AUTORIZADO — NÃO IMPLEMENTADO.
+- RF-READ-006: IMPLEMENTADO LOCALMENTE — NÃO ENTREGUE.
 - RF-READ-007..010: NÃO ENTREGUES.
 - RF-READ-011: ENTREGUE.
 
@@ -76,6 +76,7 @@
 
 # Próximo Gate
 
-Planejamento técnico de READ-006 após integração desta autorização documental.
+Auditoria integral da implementação local de READ-006 antes de publicação.
 
-Nenhuma implementação está autorizada neste estado.
+A implementação funcional está concluída somente na branch local. Sprint 07,
+READ-006 e RF-READ-006 não estão entregues nem integrados na main.
