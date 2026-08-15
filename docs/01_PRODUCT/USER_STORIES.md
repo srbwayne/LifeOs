@@ -676,7 +676,7 @@ Esta User Story foi entregue com a conclusão da Sprint 06.
 | Capability | READ |
 | Feature | READ-006 — Histórico |
 | Requisito Funcional | RF-READ-006 |
-| Status | Especificação aprovada — implementação não iniciada |
+| Status | Entregue — Sprint 07 concluída |
 
 ### Persona
 
@@ -845,4 +845,4 @@ Não são expostos owner, timestamps técnicos, duração, Progress, Insights, c
     ↓
     Sprint 07
 
-Esta User Story possui especificação aprovada e implementação não iniciada.
+Esta User Story foi entregue com a conclusão da Sprint 07.

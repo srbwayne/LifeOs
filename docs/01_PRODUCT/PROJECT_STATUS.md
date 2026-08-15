@@ -1,5 +1,43 @@
 # Project Status
 
+## Sprint 07 — Reading History - 2026-08-15
+
+**Status:** ✅ Concluída
+**Capability:** READ
+**Feature:** READ-006 — Histórico
+**User Story:** US-READ-006-001
+**Requisito Funcional:** RF-READ-006
+
+### Entregas
+
+- READ-006 integrada na `main` por `GET /reading-sessions`.
+- Histórico global, all-time, owner-scoped e read-only, com paginação `page`/`size`.
+- Ordenação determinística por `started_at DESC, id DESC`.
+- `book_title` atual obtido pelo read model dedicado, sem novo Aggregate e sem N+1.
+- Semântica UTC preservada.
+- Migration `0007` e índice `ix_reading_sessions_user_started_id` integrados.
+- Índice `ix_reading_sessions_user_book` preservado.
+
+### Integração e validação
+
+- PR #19 integrado por Rebase and Merge em `2026-08-15T13:54:11Z`.
+- Main funcional: `54b024cc24b491aaa28ad2b97b0230f82a101cc8`.
+- CI da `main`: run `31888455360` — SUCCESS.
+- Validação: 390 testes aprovados, cobertura de 97,87% e Alembic `0007 (head)`.
+- Branch `feature/read-006-reading-history` removida local e remotamente.
+
+### Estado
+
+- Sprint 07: CONCLUÍDA.
+- READ-006: ENTREGUE.
+- RF-READ-006: ENTREGUE.
+- US-READ-006-001: ENTREGUE.
+- Implementação: INTEGRADA.
+- Product Spec: FROZEN.
+- Planejamento técnico: APROVADO.
+- CI: APROVADO.
+- Próxima Sprint: NENHUMA AUTORIZADA.
+
 ## Implementação local da Sprint 07: Reading History - 2026-08-15
 
 **Status:** IMPLEMENTAÇÃO FUNCIONAL CONCLUÍDA LOCALMENTE — AGUARDANDO AUDITORIA, PUBLICAÇÃO E INTEGRAÇÃO

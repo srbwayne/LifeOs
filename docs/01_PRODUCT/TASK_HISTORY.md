@@ -1,5 +1,27 @@
 # Task History
 
+## Sprint 07: Reading History - 2026-08-15
+
+- **Status:** ✅ Concluída.
+- **Feature:** READ-006 — Histórico.
+- **RF:** RF-READ-006.
+- **User Story:** US-READ-006-001.
+- **Integração:** PR #19 integrado por Rebase and Merge em `2026-08-15T13:54:11Z`.
+- **Main funcional:** `54b024cc24b491aaa28ad2b97b0230f82a101cc8`.
+- **Commits na main:**
+  - `c46014896a65fb63425599784cfecd1f719c952d` — `feat(read): define reading history query`;
+  - `5f6af7ffbb77746a2c8b109f7ef64e5ba697b166` — `feat(read): implement reading history read repository`;
+  - `d2b24c1d516300caf201d9e90f00263e3f77daf4` — `feat(read): expose reading history API`;
+  - `d8077e37b5403ba00a99765ae423836421bf9240` — `docs(read): document reading history`;
+  - `54b024cc24b491aaa28ad2b97b0230f82a101cc8` — `docs(project): record Sprint 07 implementation status`.
+- **Arquitetura:** read-side dedicado entre Application e Infrastructure, sem novo Aggregate.
+- **Consulta:** `GET /reading-sessions`, owner-scoped, paginada no banco, com zero N+1 e UTC canonicalizado.
+- **Banco:** migration `0007` e índice `ix_reading_sessions_user_started_id` integrados; `ix_reading_sessions_user_book` preservado.
+- **CI da main:** run `31888455360` — PASS, com 390 testes, cobertura de 97,87% e Alembic `0007 (head)`.
+- **Branch funcional:** `feature/read-006-reading-history` removida local e remotamente.
+- **Estado no encerramento:** Sprint 07 concluída; READ-006, RF-READ-006 e US-READ-006-001 entregues.
+- **Próximo escopo:** nenhuma Sprint subsequente autorizada.
+
 ## Implementação local da Sprint 07: Reading History - 2026-08-15
 
 - **Estado:** implementação funcional concluída somente localmente; aguardando

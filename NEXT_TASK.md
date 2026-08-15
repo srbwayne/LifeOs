@@ -10,15 +10,16 @@
 |---|---|
 | ID | Sprint 07 |
 | Iniciativa | Sprint 07 — Reading History |
-| Status | AUTORIZADA |
+| Status | CONCLUÍDA |
 | Tipo | Funcional |
 | Capability | READ |
 | Feature | READ-006 — Histórico |
 | User Story | US-READ-006-001 |
 | Requisito Funcional | RF-READ-006 |
-| Especificação funcional | APROVADA |
-| Implementação | CONCLUÍDA LOCALMENTE — AGUARDANDO AUDITORIA E INTEGRAÇÃO |
+| Especificação funcional | APROVADA / FROZEN |
+| Implementação | INTEGRADA |
 | Planejamento técnico | APROVADO |
+| CI | APROVADO |
 
 ---
 
@@ -39,10 +40,10 @@
 - READ-002: ENTREGUE.
 - READ-003: ENTREGUE.
 - READ-004: ENTREGUE.
-- READ-006: IMPLEMENTADA LOCALMENTE — NÃO ENTREGUE.
+- READ-006: ENTREGUE.
 - RF-READ-001..004: ENTREGUES.
 - RF-READ-005: NÃO ENTREGUE.
-- RF-READ-006: IMPLEMENTADO LOCALMENTE — NÃO ENTREGUE.
+- RF-READ-006: ENTREGUE.
 - RF-READ-007..010: NÃO ENTREGUES.
 - RF-READ-011: ENTREGUE.
 
@@ -76,7 +77,8 @@
 
 # Próximo Gate
 
-Auditoria integral da implementação local de READ-006 antes de publicação.
+PRODUCT DECISION — NEXT SCOPE
 
-A implementação funcional está concluída somente na branch local. Sprint 07,
-READ-006 e RF-READ-006 não estão entregues nem integrados na main.
+NENHUMA NOVA SPRINT AUTORIZADA. Nenhuma nova Feature ou RF está autorizada
+automaticamente; READ-005, READ-007, READ-008 e os demais escopos permanecem
+dependentes de decisão explícita de Produto.
