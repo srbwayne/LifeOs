@@ -26,6 +26,7 @@ from app.read.domain.errors.reading_session_errors import (
     InvalidReadingSessionTimeError,
     ReadingBeyondBookError,
 )
+from app.read.presentation.api.fastapi.routers import history_router
 from app.read.presentation.api.fastapi.routers import router as read_router
 
 
@@ -46,6 +47,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(character_router)
     app.include_router(read_router)
+    app.include_router(history_router)
 
     error_statuses = {
         UserAlreadyExistsError: status.HTTP_409_CONFLICT,

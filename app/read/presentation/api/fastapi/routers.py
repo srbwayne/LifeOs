@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.composition_root import get_current_user_id
 from app.read.application.commands.create_book import (
@@ -10,6 +10,10 @@ from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommandHandler,
 )
 from app.read.application.dtos.book_dto import BookDTO
+from app.read.application.dtos.reading_history_dto import (
+    ReadingHistoryItemDTO,
+    ReadingHistoryPageDTO,
+)
 from app.read.application.dtos.reading_insights_dto import ReadingInsightsDTO
 from app.read.application.dtos.reading_progress_dto import ReadingProgressDTO
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
@@ -25,10 +29,15 @@ from app.read.application.queries.list_my_books import (
     ListMyBooksQuery,
     ListMyBooksQueryHandler,
 )
+from app.read.application.queries.list_reading_history import (
+    ListReadingHistoryQuery,
+    ListReadingHistoryQueryHandler,
+)
 from app.read.dependencies import (
     get_create_book_handler,
     get_create_reading_session_handler,
     get_list_my_books_handler,
+    get_list_reading_history_handler,
     get_reading_insights_handler,
     get_reading_progress_handler,
 )
@@ -38,6 +47,8 @@ from app.read.presentation.api.fastapi.schemas import (
     CreateBookRequest,
     CreateReadingSessionRequest,
     PageIntervalResponse,
+    ReadingHistoryItemResponse,
+    ReadingHistoryPageResponse,
     ReadingInsightsResponse,
     ReadingProgressResponse,
     ReadingSessionResponse,
@@ -45,6 +56,7 @@ from app.read.presentation.api.fastapi.schemas import (
 from app.shared.domain.identifiers.user_id import UserId
 
 router = APIRouter(prefix="/books", tags=["Reading Library"])
+history_router = APIRouter(tags=["Reading History"])
 
 
 def _to_response(book: BookDTO) -> BookResponse:
@@ -72,6 +84,34 @@ def _to_reading_session_response(session: ReadingSessionDTO) -> ReadingSessionRe
         started_at=session.started_at,
         ended_at=session.ended_at,
         notes=session.notes,
+    )
+
+
+def _to_reading_history_item_response(
+    item: ReadingHistoryItemDTO,
+) -> ReadingHistoryItemResponse:
+    return ReadingHistoryItemResponse(
+        id=item.id,
+        book_id=item.book_id,
+        book_title=item.book_title,
+        start_page=item.start_page,
+        end_page=item.end_page,
+        pages_read=item.pages_read,
+        started_at=item.started_at,
+        ended_at=item.ended_at,
+        notes=item.notes,
+    )
+
+
+def _to_reading_history_page_response(
+    page: ReadingHistoryPageDTO,
+) -> ReadingHistoryPageResponse:
+    return ReadingHistoryPageResponse(
+        items=[_to_reading_history_item_response(item) for item in page.items],
+        page=page.page,
+        size=page.size,
+        total_items=page.total_items,
+        total_pages=page.total_pages,
     )
 
 
@@ -200,3 +240,23 @@ def get_reading_insights(
         )
     )
     return _to_reading_insights_response(insights)
+
+
+@history_router.get(
+    "/reading-sessions",
+    response_model=ReadingHistoryPageResponse,
+)
+def list_reading_history(
+    page: int = Query(default=1, ge=1),
+    size: int = Query(default=20, ge=1, le=100),
+    user_id: UserId = Depends(get_current_user_id),
+    handler: ListReadingHistoryQueryHandler = Depends(get_list_reading_history_handler),
+) -> ReadingHistoryPageResponse:
+    result = handler(
+        ListReadingHistoryQuery(
+            owner_id=user_id,
+            page=page,
+            size=size,
+        )
+    )
+    return _to_reading_history_page_response(result)

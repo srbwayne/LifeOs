@@ -5,9 +5,15 @@ from app.read.application.commands.create_book import CreateBookCommandHandler
 from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommandHandler,
 )
+from app.read.application.ports.reading_history_repository import (
+    IReadingHistoryReadRepository,
+)
 from app.read.application.queries.get_reading_insights import GetReadingInsightsQueryHandler
 from app.read.application.queries.get_reading_progress import GetReadingProgressQueryHandler
 from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
+from app.read.application.queries.list_reading_history import (
+    ListReadingHistoryQueryHandler,
+)
 from app.read.domain.ports.book_repository import IBookRepository
 from app.read.domain.ports.reading_session_repository import IReadingSessionRepository
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
@@ -15,6 +21,9 @@ from app.read.domain.services.reading_insights_calculator import ReadingInsights
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
+)
+from app.read.infrastructure.persistence.repositories.reading_history_repository import (
+    SqlAlchemyReadingHistoryReadRepository,
 )
 from app.read.infrastructure.persistence.repositories.reading_session_repository import (
     SqlAlchemyReadingSessionRepository,
@@ -32,6 +41,12 @@ def get_reading_session_repository(
     db: Session = Depends(get_db),
 ) -> IReadingSessionRepository:
     return SqlAlchemyReadingSessionRepository(db)
+
+
+def get_reading_history_repository(
+    db: Session = Depends(get_db),
+) -> IReadingHistoryReadRepository:
+    return SqlAlchemyReadingHistoryReadRepository(db)
 
 
 def get_book_uow(db: Session = Depends(get_db)) -> SqlAlchemyUnitOfWork:
@@ -85,3 +100,9 @@ def get_reading_insights_handler(
         ReadingProgressCalculator(),
         ReadingInsightsCalculator(),
     )
+
+
+def get_list_reading_history_handler(
+    repository: IReadingHistoryReadRepository = Depends(get_reading_history_repository),
+) -> ListReadingHistoryQueryHandler:
+    return ListReadingHistoryQueryHandler(repository)
