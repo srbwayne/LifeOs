@@ -51,6 +51,26 @@ class ReadingSessionResponse(BaseModel):
     notes: str | None
 
 
+class ReadingHistoryItemResponse(BaseModel):
+    id: str
+    book_id: str
+    book_title: str
+    start_page: int
+    end_page: int
+    pages_read: int
+    started_at: datetime
+    ended_at: datetime
+    notes: str | None
+
+
+class ReadingHistoryPageResponse(BaseModel):
+    items: list[ReadingHistoryItemResponse]
+    page: int
+    size: int
+    total_items: int
+    total_pages: int
+
+
 class ReadingProgressResponse(BaseModel):
     book_id: str
     total_pages: int

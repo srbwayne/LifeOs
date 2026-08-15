@@ -364,10 +364,10 @@ def test_request_forbids_client_controlled_or_derived_fields(
     assert response.status_code == 422
 
 
-def test_no_reading_session_query_or_mutation_routes_are_exposed(app: FastAPI) -> None:
+def test_only_approved_reading_session_routes_are_exposed(app: FastAPI) -> None:
     paths = app.openapi()["paths"]
     session_path = "/books/{book_id}/reading-sessions"
 
     assert set(paths[session_path]) == {"post"}
-    assert "/reading-sessions" not in paths
+    assert set(paths["/reading-sessions"]) == {"get"}
     assert "/reading-sessions/{id}" not in paths
