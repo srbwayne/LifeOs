@@ -1,5 +1,19 @@
 # Task History
 
+## Implementação local da Sprint 07: Reading History - 2026-08-15
+
+- **Estado:** implementação funcional concluída somente localmente; aguardando
+  auditoria, publicação e integração.
+- **Branch:** feature/read-006-reading-history.
+- **Product Spec:** FROZEN; **Technical Plan:** APROVADO.
+- **Implementação:** read model owner-scoped, GET /reading-sessions, paginação
+  no banco, ordering determinístico, UTC e zero N+1.
+- **Banco:** migration 0007 e índice ix_reading_sessions_user_started_id.
+- **RF-READ-010:** OUT OF SCOPE; reconciliação pendente.
+- **Entrega:** Sprint 07, READ-006 e RF-READ-006 NÃO ENTREGUES.
+- **Publicação:** nenhum push, PR, merge ou CI da main.
+- **Pendências históricas:** preservadas, inclusive /api/v1 PENDING NON-BLOCKING.
+
 ## Autorização da Sprint 07: Reading History - 2026-08-14
 
 - **Decisão do Product Owner:** READ-006 — Histórico selecionada.

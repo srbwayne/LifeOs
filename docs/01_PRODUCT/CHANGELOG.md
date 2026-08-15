@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 ### Added
+- Implementado localmente, em [Unreleased], o histórico global owner-scoped
+  GET /reading-sessions de READ-006, ainda não publicado ou integrado.
+- Adicionada localmente a migration 0007 com o índice
+  ix_reading_sessions_user_started_id para paginação ordenada no banco.
 - Consolidada a baseline de governança e estabelecidas as políticas oficiais de engenharia.
 - Adotados Ruff e Mypy como ferramentas oficiais de qualidade.
 - Integrado o Playbook Permanente de Engenharia com AI Agent Workflow, Checklists e Incident Response.
