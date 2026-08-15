@@ -1,9 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from app.read.domain.aggregates.reading_session import ReadingSession
 from app.read.domain.value_objects.book_id import BookId
 from app.read.domain.value_objects.page_number import PageNumber
 from app.read.domain.value_objects.reading_session_id import ReadingSessionId
+from app.read.infrastructure.persistence.datetime import canonicalize_utc_datetime
 from app.read.infrastructure.persistence.models.reading_session_model import (
     ReadingSessionModel,
 )
@@ -39,6 +40,4 @@ class ReadingSessionMapper:
 
     @staticmethod
     def _as_utc(value: datetime) -> datetime:
-        if value.tzinfo is None or value.utcoffset() is None:
-            return value.replace(tzinfo=timezone.utc)
-        return value.astimezone(timezone.utc)
+        return canonicalize_utc_datetime(value)

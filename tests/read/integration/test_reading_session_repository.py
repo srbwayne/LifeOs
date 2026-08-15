@@ -277,11 +277,13 @@ def test_model_has_only_approved_secondary_index(session: Session) -> None:
     indexes = cast(Table, ReadingSessionModel.__table__).indexes
 
     assert {(index.name, tuple(column.name for column in index.columns)) for index in indexes} == {
-        ("ix_reading_sessions_user_book", ("user_id", "book_id"))
+        ("ix_reading_sessions_user_book", ("user_id", "book_id")),
+        ("ix_reading_sessions_user_started_id", ("user_id", "started_at", "id")),
     }
     assert session.bind is not None
     database_indexes = inspect(session.bind).get_indexes("reading_sessions")
-    assert [(index["name"], tuple(index["column_names"])) for index in database_indexes] == [
-        ("ix_reading_sessions_user_book", ("user_id", "book_id"))
-    ]
+    assert {(index["name"], tuple(index["column_names"])) for index in database_indexes} == {
+        ("ix_reading_sessions_user_book", ("user_id", "book_id")),
+        ("ix_reading_sessions_user_started_id", ("user_id", "started_at", "id")),
+    }
     assert TotalPages(1).value == 1

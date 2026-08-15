@@ -23,6 +23,12 @@ class ReadingSessionModel(Base):
             "user_id",
             "book_id",
         ),
+        Index(
+            "ix_reading_sessions_user_started_id",
+            "user_id",
+            "started_at",
+            "id",
+        ),
     )
 
     id: Mapped[str] = mapped_column(String(26), primary_key=True)
