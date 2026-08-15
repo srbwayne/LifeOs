@@ -8,30 +8,28 @@
 
 | Campo | Valor |
 |---|---|
-| ID | Sprint 06 |
-| Iniciativa | Sprint 06 — Reading Insights |
-| Status | CONCLUÍDA |
+| ID | Sprint 07 |
+| Iniciativa | Sprint 07 — Reading History |
+| Status | AUTORIZADA |
 | Tipo | Funcional |
 | Capability | READ |
-| Feature | READ-004 — Insights |
-| User Story | US-READ-004-001 |
-| Requisito Funcional | RF-READ-011 |
-| Implementação | INTEGRADA |
-| Planejamento técnico | APROVADO |
-| CI | APROVADO |
+| Feature | READ-006 — Histórico |
+| User Story | US-READ-006-001 |
+| Requisito Funcional | RF-READ-006 |
+| Especificação funcional | APROVADA |
+| Implementação | NÃO INICIADA |
+| Planejamento técnico | PENDENTE |
 
 ---
 
 # Escopo Autorizado
 
-- Quatro Insights determinísticos sobre a cobertura atual de um único Book:
-  - cobertura restante;
-  - lacunas de cobertura;
-  - última página alcançada com lacunas;
-  - cobertura integral confirmada.
-- Escopo exclusivamente por Book e all-time.
-- Dados derivados de Book, ReadingSessions e ReadingProgress.
-- Operação read-only, sem persistência de Insights.
+- Histórico global e all-time do Player autenticado, formado por suas ReadingSessions.
+- Consulta read-only por `GET /reading-sessions`.
+- Paginação por `page` e `size`, defaults 1 e 20, com `size` máximo 100.
+- Ordenação por `started_at DESC` e `id DESC`.
+- Itens com exatamente `id`, `book_id`, `book_title`, `start_page`, `end_page`, `pages_read`, `started_at`, `ended_at` e `notes`.
+- Histórico vazio retorna 200 com coleção vazia; nenhum filtro funcional integra a V1.
 
 ---
 
@@ -41,50 +39,43 @@
 - READ-002: ENTREGUE.
 - READ-003: ENTREGUE.
 - READ-004: ENTREGUE.
-- RF-READ-001: ENTREGUE.
-- RF-READ-002: ENTREGUE.
-- RF-READ-003: ENTREGUE.
-- RF-READ-004: ENTREGUE.
-- RF-READ-005..010: NÃO ENTREGUES.
+- READ-006: AUTORIZADA — NÃO IMPLEMENTADA.
+- RF-READ-001..004: ENTREGUES.
+- RF-READ-005: NÃO ENTREGUE.
+- RF-READ-006: AUTORIZADO — NÃO IMPLEMENTADO.
+- RF-READ-007..010: NÃO ENTREGUES.
 - RF-READ-011: ENTREGUE.
 
-> A numeração dos requisitos não implica ordem de entrega: RF-READ-011 está entregue, enquanto RF-READ-005..010 permanecem não entregues.
+> A numeração dos requisitos não implica ordem de entrega.
 
 ---
 
 # Fora do Escopo
 
-- visão consolidada da biblioteca;
-- períodos, comparações, duração, frequência ou tendências;
-- volume bruto de releitura;
-- análise de notes, AI, LLM, recomendações ou coaching;
-- Analytics, KPIs, scores ou correlações;
-- GAME, XP, Level, Skills, Attributes, Rewards ou eventos;
-- Pesquisa ou Histórico completo;
-- conclusão persistida de Book ou evento de conclusão;
-- RF-READ-005..010;
-- alteração de Book ou ReadingSession.
+- RF-READ-010 — Jornada Consolidada;
+- READ-005, RF-READ-005, READ-007, READ-008 e RF-READ-009;
+- Progress ou Insights agregados;
+- filtros, busca, Analytics, AI, GAME ou conclusão persistida;
+- edição ou exclusão de ReadingSession;
+- versionamento isolado em `/api/v1`;
+- implementação antes da aprovação do planejamento técnico.
 
 ---
 
 # Pendências Documentais Fora da Sprint
 
-- RF-READ-005: PENDENTE — Conclusão de Livro permanece associado a READ-005.
-- READ-005: DIVERGÊNCIA PENDENTE entre Pesquisa e Livros Concluídos no EPIC-READ.
+- READ-005: DIVERGÊNCIA PENDENTE.
+- RF-READ-005: PENDENTE.
 - READ-007: AUSENTE NO FEATURE CATALOG.
 - READ-008: AUSENTE NO FEATURE CATALOG.
-- RF-READ-009: ASSOCIAÇÃO PENDENTE a READ-003.
+- RF-READ-009: ASSOCIAÇÃO PENDENTE.
+- RF-READ-010: FORA DA SPRINT 07 — RECONCILIAÇÃO PENDENTE.
+- `/api/v1`: PENDING NON-BLOCKING.
 
 ---
 
-# Pendência
+# Próximo Gate
 
-A divergência global de versionamento entre `/books` e `/api/v1` permanece PENDENTE — NÃO BLOQUEANTE.
+Planejamento técnico de READ-006 após integração desta autorização documental.
 
----
-
-# Próxima Sprint
-
-**NENHUMA AUTORIZADA.**
-
-Nenhuma nova Sprint funcional, Feature ou RF está autorizada para implementação.
+Nenhuma implementação está autorizada neste estado.
