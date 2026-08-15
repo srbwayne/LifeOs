@@ -5124,40 +5124,97 @@ READ-005
 
 ## Objetivo
 
-Permitir que o Player consulte seu histórico de leitura.
+Permitir que o Player autenticado consulte cronologicamente seu histórico global de ReadingSessions.
 
 ---
 
 ## Descrição
 
-O sistema deverá apresentar todas as sessões de leitura registradas.
+O sistema deverá apresentar, de forma paginada e read-only, todas as ReadingSessions pertencentes ao Player autenticado. A V1 é global por Player, all-time e não é restrita a um Book.
+
+---
+
+## Contrato funcional
+
+- GET /reading-sessions, autenticação obrigatória, sem path parameters.
+- Query parameters exclusivamente de paginação: page e size.
+- Defaults: page = 1 e size = 20.
+- Limites: page >= 1 e 1 <= size <= 100.
+- Nenhum filtro funcional.
+- Ordenação: started_at DESC e, em empate, id DESC.
+
+Cada item possui exatamente: id, book_id, book_title, start_page, end_page, pages_read, started_at, ended_at e notes.
+
+book_title é o título atual do Book associado à ReadingSession retornada, pertencente ao mesmo contexto autorizado do Player autenticado. Ele integra somente o read model da consulta: não é snapshot histórico, não é persistido na ReadingSession e não duplica o Book. pages_read preserva a derivação da ReadingSession. notes é nullable e apresentado sem interpretação.
+
+O response possui exatamente items, page, size, total_items e total_pages. total_items representa a quantidade total de ReadingSessions pertencentes ao Player autenticado antes do recorte da página solicitada, independentemente da quantidade de items retornados na página atual. total_pages = ceil(total_items / size) e é zero quando total_items é zero.
+
+Não são expostos owner, timestamps técnicos, duração, Progress, Insights, conclusão, recomendações, scores ou dados GAME.
 
 ---
 
 ## Pré-condições
 
-- Existência de registros.
+- Player autenticado.
 
 ---
 
 ## Fluxo Principal
 
-1. Acessar Histórico.
-2. Recuperar registros.
-3. Apresentar informações.
+1. O Player acessa o Histórico.
+2. O sistema valida page e size.
+3. O sistema recupera somente ReadingSessions do Player autenticado.
+4. O sistema ordena por started_at DESC e id DESC.
+5. O sistema apresenta os itens e metadados da página solicitada.
 
 ---
 
 ## Pós-condições
 
-- Histórico apresentado.
+- Histórico apresentado sem alteração de ReadingSession ou Book.
+
+---
+
+## Empty state
+
+Player autenticado sem ReadingSessions recebe 200 OK, items vazio, total_items 0 e total_pages 0. Histórico vazio não produz 404, 204 ou erro de domínio.
+
+---
+
+## Status HTTP
+
+- 200 OK: histórico retornado, inclusive vazio.
+- 401 Unauthorized: autenticação ausente ou inválida.
+- 422 Unprocessable Entity: paginação inválida.
+- 403 e 404 não integram esta consulta global.
 
 ---
 
 ## Critérios de Aceite
 
-- O histórico deverá preservar todos os registros.
-- As sessões deverão respeitar a ordem cronológica.
+- Histórico global e all-time do Player autenticado.
+- Somente ReadingSessions pertencentes ao Player autenticado são retornadas.
+- Cada item contém exatamente os nove campos aprovados.
+- notes é opcional e não sofre análise semântica.
+- Ordenação por started_at DESC e id DESC.
+- Paginação e metadados obedecem aos defaults, limites e fórmulas aprovados.
+- Histórico vazio retorna 200 OK.
+- Não existem filtros funcionais.
+- A consulta não realiza escrita nem exige evento novo.
+- RF-READ-010, /api/v1, Analytics, AI e GAME permanecem fora do escopo.
+
+---
+
+## Fora do Escopo
+
+- READ-005, RF-READ-005 e RF-READ-010;
+- READ-007, READ-008 e RF-READ-009;
+- Progress ou Insights agregados;
+- filtros, busca ou intervalo temporal configurável;
+- Analytics, AI, LLM, recomendações, GAME, XP, Achievements ou Streaks;
+- conclusão persistida de Book;
+- edição ou exclusão de ReadingSession;
+- versionamento isolado em /api/v1.
 
 ---
 

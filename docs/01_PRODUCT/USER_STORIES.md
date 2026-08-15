@@ -665,3 +665,184 @@ Sprint 06
 ```
 
 Esta User Story foi entregue com a conclusão da Sprint 06.
+
+## US-READ-006-001 — Consultar Histórico de Leitura
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-READ-006-001 |
+| Capability | READ |
+| Feature | READ-006 — Histórico |
+| Requisito Funcional | RF-READ-006 |
+| Status | Especificação aprovada — implementação não iniciada |
+
+### Persona
+
+Player autenticado.
+
+### Necessidade
+
+Consultar cronologicamente as ReadingSessions já registradas em seu histórico pessoal de leitura.
+
+### Valor
+
+Permitir acesso ao histórico completo de atividades de leitura sem transformá-lo em Analytics, Progress ou jornada consolidada.
+
+### User Story
+
+Como Player autenticado,
+quero consultar meu histórico de sessões de leitura,
+para revisar cronologicamente as atividades de leitura que registrei.
+
+### Pré-condições
+
+- O Player está autenticado.
+- As ReadingSessions retornadas pertencem ao Player autenticado.
+
+### Regras de negócio
+
+- **RN-01:** O histórico é formado exclusivamente por ReadingSessions pertencentes ao Player autenticado.
+- **RN-02:** A consulta é global ao Player e não é restrita a um Book.
+- **RN-03:** O período da V1 é all-time.
+- **RN-04:** As sessões são ordenadas por started_at DESC e id DESC.
+- **RN-05:** A consulta é paginada por page e size.
+- **RN-06:** page inicia em 1.
+- **RN-07:** size possui default 20 e máximo 100.
+- **RN-08:** Cada item possui exatamente id, book_id, book_title, start_page, end_page, pages_read, started_at, ended_at e notes.
+- **RN-09:** notes é apenas exposto como valor original opcional, sem análise semântica.
+- **RN-10:** owner_id não é exposto.
+- **RN-11:** Histórico vazio é resultado válido e retorna 200 com coleção vazia.
+- **RN-12:** A V1 não possui filtros funcionais.
+- **RN-13:** A consulta não altera ReadingSession ou Book.
+- **RN-14:** READ-006 não inclui RF-READ-010.
+- **RN-15:** A consulta não produz Progress, Insights, Analytics, AI ou GAME.
+- **RN-16:** Somente sessões do Player autenticado podem ser retornadas.
+
+### Contrato do item
+
+| Campo | Definição |
+|---|---|
+| id | Identificador da ReadingSession. |
+| book_id | Identificador do Book associado. |
+| book_title | Título atual do Book associado à ReadingSession retornada, pertencente ao mesmo contexto autorizado do Player autenticado; integra somente o read model e não é snapshot nem dado persistido na sessão. |
+| start_page | Página inicial da sessão. |
+| end_page | Página final da sessão. |
+| pages_read | Valor derivado de end_page - start_page + 1. |
+| started_at | Timestamp funcional de início. |
+| ended_at | Timestamp funcional de término. |
+| notes | Valor original opcional da sessão. |
+
+Não são expostos owner, timestamps técnicos, duração, Progress, Insights, conclusão, recomendações ou dados GAME.
+
+### Paginação e ordenação
+
+- page: default 1 e mínimo 1.
+- size: default 20, mínimo 1 e máximo 100.
+- Response: items, page, size, total_items e total_pages.
+- total_items representa o total de ReadingSessions owner-scoped do Player autenticado antes do recorte da página atual, independentemente da quantidade de items retornados nessa página.
+- total_pages = ceil(total_items / size); sem itens, total_pages é 0.
+- Ordenação: started_at DESC e, em empate, id DESC.
+
+### HTTP
+
+- GET /reading-sessions, com autenticação obrigatória.
+- Sem path parameters e sem filtros funcionais.
+- 200 OK: histórico retornado, inclusive vazio.
+- 401 Unauthorized: autenticação ausente ou inválida.
+- 422 Unprocessable Entity: paginação inválida.
+- 403 e 404 não integram esta consulta global.
+
+### Cenários
+
+#### Cenário 1 — Histórico vazio
+
+**Dado** um Player autenticado sem ReadingSessions
+**Quando** consultar GET /reading-sessions
+**Então** receberá 200
+**E** items será vazio
+**E** total_items e total_pages serão 0.
+
+#### Cenário 2 — Histórico com múltiplos livros
+
+**Dado** ReadingSessions de Books diferentes
+**Quando** consultar o histórico
+**Então** elas poderão aparecer na mesma coleção
+**E** cada item incluirá book_id e book_title.
+
+#### Cenário 3 — Ordenação
+
+**Dado** sessões com diferentes started_at
+**Quando** consultar o histórico
+**Então** a mais recente aparecerá primeiro
+**E** empates serão ordenados por id DESC.
+
+#### Cenário 4 — Paginação
+
+**Dado** mais registros que size
+**Quando** consultar uma página
+**Então** somente seus itens serão retornados
+**E** os metadados serão coerentes.
+
+#### Cenário 5 — Notes
+
+**Dado** sessão com notes
+**Então** o valor será retornado sem transformação
+**E**, quando ausente, notes será null.
+
+#### Cenário 6 — Ownership
+
+**Dado** ReadingSessions de outro Player
+**Quando** o Player autenticado consultar seu histórico
+**Então** nenhum dado alheio será retornado.
+
+#### Cenário 7 — Paginação inválida
+
+**Dado** page < 1, size < 1 ou size > 100
+**Quando** consultar o histórico
+**Então** receberá 422.
+
+#### Cenário 8 — Não autenticado
+
+**Dado** um cliente não autenticado
+**Quando** consultar o histórico
+**Então** receberá 401.
+
+### Critérios de aceite
+
+- Consulta global, all-time e owner-scoped, usando ReadingSessions como fonte.
+- Somente RF-READ-006 integra a Sprint 07.
+- Nenhum owner é exposto.
+- Nove campos exatos por item, incluindo book_title e notes nullable sem análise.
+- Ordenação started_at DESC e id DESC.
+- Paginação page/size, defaults 1 e 20, size máximo 100; total_items conta todas as ReadingSessions owner-scoped antes do recorte da página e os metadados permanecem coerentes.
+- Histórico vazio retorna 200 com coleção vazia.
+- Não existem filtros funcionais.
+- GET /reading-sessions suporta 200, 401 e 422.
+- Nenhuma escrita, alteração de Book/ReadingSession ou evento novo.
+- RF-READ-010 e /api/v1 permanecem fora do escopo.
+- Nenhum Analytics, AI ou GAME.
+
+### Fora do escopo
+
+- READ-005, RF-READ-005 e RF-READ-010;
+- READ-007, READ-008 e RF-READ-009;
+- Progress ou Insights agregados;
+- filtros, busca ou janela temporal configurável;
+- Analytics, KPIs, AI, LLM, recomendações, GAME, XP, Achievements ou Streaks;
+- conclusão persistida de Book;
+- edição ou exclusão de ReadingSession;
+- /api/v1.
+
+### Rastreabilidade
+
+    US-READ-006-001
+    ↓
+    READ-006 — Histórico
+    ↓
+    RF-READ-006
+    ↓
+    Sprint 07
+
+Esta User Story possui especificação aprovada e implementação não iniciada.

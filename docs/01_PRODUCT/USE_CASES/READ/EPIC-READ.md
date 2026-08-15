@@ -43,6 +43,18 @@ A Capability Reading é responsável por:
 
 ## Pendências Documentais
 
+### Sprint 07 — Reading History
+
+- READ-006 permanece Histórico de Leitura.
+- Sprint 07 inclui exclusivamente RF-READ-006.
+- V1 global e all-time do Player autenticado, baseada em ReadingSessions.
+- Contrato read-only, paginado por page/size, ordenado por started_at DESC e id DESC e exposto por GET /reading-sessions.
+- Itens: id, book_id, book_title, start_page, end_page, pages_read, started_at, ended_at e notes.
+- RF-READ-010 não integra a Sprint 07; reconciliação pendente.
+- Implementação não iniciada; planejamento técnico pendente.
+
+### Pendências anteriores preservadas
+
 A correção direta de READ-004 para Insights torna esta Feature convergente com o Feature Catalog, o PRD e a Sprint 06. Permanecem fora do escopo deste saneamento:
 
 - RF-READ-005 — Conclusão de Livro associado a READ-005;
@@ -50,6 +62,8 @@ A correção direta de READ-004 para Insights torna esta Feature convergente com
 - READ-007 ausente no Feature Catalog;
 - READ-008 ausente no Feature Catalog;
 - RF-READ-009 associado a READ-003.
+- RF-READ-010 fora da Sprint 07, com reconciliação pendente.
+- divergência global /api/v1 PENDING NON-BLOCKING.
 
 ---
 

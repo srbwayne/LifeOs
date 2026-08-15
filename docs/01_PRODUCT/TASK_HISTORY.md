@@ -1,5 +1,19 @@
 # Task History
 
+## Autorização da Sprint 07: Reading History - 2026-08-14
+
+- **Decisão do Product Owner:** READ-006 — Histórico selecionada.
+- **Escopo exclusivo:** RF-READ-006 — Consulta ao Histórico de Leitura.
+- **User Story:** US-READ-006-001 formalizada.
+- **Specification freeze:** histórico global, all-time, owner-scoped e read-only.
+- **Contrato:** nove campos, notes original, started_at DESC e id DESC, paginação page/size, empty state 200 e GET /reading-sessions.
+- **RF-READ-010:** OUT OF SCOPE; reconciliação preservada.
+- **Implementação:** não iniciada.
+- **Planejamento técnico:** pendente.
+- **Baseline:** 7abbb29b61a2a62a84669405207918aa37170409.
+- **Pendências:** READ-005, RF-READ-005, READ-007, READ-008 e RF-READ-009 preservadas.
+- **/api/v1:** PENDING NON-BLOCKING.
+
 ## Sprint 06: Reading Insights - 2026-08-14
 
 - **Status:** ✅ Concluída.

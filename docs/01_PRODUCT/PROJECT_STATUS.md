@@ -1,5 +1,34 @@
 # Project Status
 
+## Sprint 07 — Reading History - 2026-08-14
+
+**Status:** ESPECIFICAÇÃO FUNCIONAL APROVADA — AGUARDANDO PLANEJAMENTO TÉCNICO
+**Capability:** READ
+**Feature:** READ-006 — Histórico
+**User Story:** US-READ-006-001
+**Requisito Funcional:** RF-READ-006
+
+### Autorização
+
+- Product Owner selecionou READ-006 e exclusivamente RF-READ-006.
+- Specification freeze concluído.
+- Histórico global, all-time, owner-scoped e read-only, baseado em ReadingSessions.
+- Nove campos aprovados, incluindo book_title e notes original.
+- GET /reading-sessions, paginação page/size e ordenação started_at DESC, id DESC.
+- Histórico vazio retorna 200 OK; não existem filtros funcionais.
+- RF-READ-010 está fora da Sprint 07.
+- Implementação não iniciada e planejamento técnico pendente.
+- Sprint 06 permanece concluída; nenhuma alteração funcional ocorreu.
+
+### Pendências preservadas
+
+- READ-005: DIVERGÊNCIA PENDENTE.
+- RF-READ-005: PENDENTE.
+- READ-007 e READ-008: AUSENTES NO FEATURE CATALOG.
+- RF-READ-009: ASSOCIAÇÃO PENDENTE.
+- RF-READ-010: FORA DA SPRINT 07 — RECONCILIAÇÃO PENDENTE.
+- /api/v1: PENDING NON-BLOCKING.
+
 ## Sprint 06 — Reading Insights - 2026-08-14
 
 **Status:** ✅ Concluída
