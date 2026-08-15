@@ -1,5 +1,12 @@
 # INDEXES
 
+## READ-006
+
+ix_reading_sessions_user_started_id is a non-unique index on
+reading_sessions(user_id, started_at, id). It supports the owner predicate and
+deterministic started_at DESC, id DESC history ordering. The existing
+ix_reading_sessions_user_book index is preserved.
+
 ## LifeOS
 
 **Versão:** 1.0  

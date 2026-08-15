@@ -1,5 +1,12 @@
 # MIGRATIONS
 
+## 0007 — Reading History Index
+
+Revision 0007, based on 0006, creates only
+ix_reading_sessions_user_started_id on
+reading_sessions(user_id, started_at, id). Downgrade removes only this index.
+No table, column, or constraint is added.
+
 ## LifeOS
 
 **Versão:** 1.0  

@@ -2,6 +2,14 @@
 
 # Domain-Driven Design
 
+## READ-006 — Reading History
+
+Reading History is a read model/query projection over existing ReadingSession
+and Book data. It introduces no Aggregate, Entity, Value Object, Domain
+Service, or Domain Event. The Application owns IReadingHistoryReadRepository
+and immutable projection DTOs; Infrastructure implements the owner-scoped
+join and database pagination without restoring Aggregates.
+
 ## LifeOS
 
 **Versão:** 1.0

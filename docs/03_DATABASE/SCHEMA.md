@@ -1,5 +1,12 @@
 # SCHEMA
 
+## READ-006 — Reading Sessions Index Inventory
+
+The reading_sessions table preserves ix_reading_sessions_user_book(user_id,
+book_id) and adds ix_reading_sessions_user_started_id(user_id, started_at, id).
+READ-006 adds no table or column; book_title and pages_read remain query
+projection values rather than persisted ReadingSession state.
+
 ## LifeOS
 
 **Versão:** 1.0  

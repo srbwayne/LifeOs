@@ -1,5 +1,15 @@
 # API
 
+## READ-006 — GET /reading-sessions
+
+Authenticated, global, all-time and read-only history with page (default 1,
+minimum 1) and size (default 20, range 1..100). Items expose exactly id,
+book_id, book_title, start_page, end_page, pages_read, started_at, ended_at,
+and notes. The page exposes exactly items, page, size, total_items, and
+total_pages, ordered by started_at DESC and id DESC. Empty and beyond-last
+pages return 200; authentication failure returns 401; invalid pagination
+returns 422. No functional filters or /api/v1 prefix are introduced.
+
 ## LifeOS
 
 **Versão:** 1.0  
