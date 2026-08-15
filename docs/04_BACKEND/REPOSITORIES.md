@@ -1,5 +1,13 @@
 # REPOSITORIES
 
+## READ-006 — Reading History Read Repository
+
+IReadingHistoryReadRepository is an Application read-side port implemented by
+SqlAlchemyReadingHistoryReadRepository. It performs one owner-scoped count and
+one paginated projection query joining ReadingSession and Book with ownership
+predicates on both tables. It restores no Aggregates, performs no writes, and
+has zero N+1 queries.
+
 ## LifeOS
 
 **Versão:** 1.0  

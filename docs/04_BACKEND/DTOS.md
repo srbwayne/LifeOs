@@ -1,5 +1,15 @@
 # DTOs
 
+## READ-006 — History DTOs
+
+- ReadingHistoryItemDTO is an immutable Application projection with the nine
+  public fields, inclusive pages_read, and UTC-aware timestamps.
+- ReadingHistoryPageDTO contains items, page, size, total_items, total_pages.
+- ReadingHistoryItemResponse and ReadingHistoryPageResponse expose exactly
+  the frozen public contract.
+
+ReadingSessionDTO and ReadingSessionResponse remain unchanged.
+
 ## LifeOS
 
 **Versão:** 1.0  

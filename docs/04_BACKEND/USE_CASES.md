@@ -1,5 +1,12 @@
 # USE_CASES
 
+## READ-006 — ListReadingHistory
+
+ListReadingHistoryQuery contains owner_id, page, and size.
+ListReadingHistoryQueryHandler obtains total_items, translates page/size to
+offset/limit, retrieves the projected page, and calculates total_pages. It is
+read-only and uses no Unit of Work, EventBus, save, or commit.
+
 ## LifeOS
 
 **Versão:** 1.0  
