@@ -128,6 +128,7 @@ Responsável pela representação do Player.
 | READ-004 | Insights |
 | READ-005 | Pesquisa |
 | READ-006 | Histórico |
+| READ-007 | Estatísticas de Leitura |
 
 ---
 

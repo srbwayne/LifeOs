@@ -1,3 +1,135 @@
+## US-READ-007-001 — Consultar Estatísticas de Leitura
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-READ-007-001 |
+| Capability | READ |
+| Feature | READ-007 — Estatísticas de Leitura |
+| Requisito Funcional | RF-READ-007 |
+| Status | Especificação aprovada — implementação não iniciada |
+
+### Persona
+
+Player autenticado.
+
+### Necessidade
+
+Consultar estatísticas descritivas consolidadas da própria atividade de leitura.
+
+### Valor
+
+Acompanhar quantitativamente a utilização da biblioteca e o histórico de leitura.
+
+### User Story
+
+Como Player autenticado,
+quero consultar estatísticas consolidadas da minha atividade de leitura,
+para acompanhar quantitativamente minha utilização da biblioteca e meu histórico de leitura.
+
+### Pré-condições
+
+- O Player está autenticado.
+- Books e ReadingSessions podem existir ou não; o estado vazio é válido.
+
+### Regras de negócio
+
+- As estatísticas são globais, all-time e exclusivamente owner-scoped.
+- O cliente não fornece owner_id, user_id ou identificador equivalente.
+- As únicas fontes são Book e ReadingSession.
+- A resposta possui exatamente os cinco campos V1.
+- `total_books` conta Books do Player.
+- `books_with_reading_sessions` conta Books distintos com ao menos uma sessão do mesmo Player.
+- `total_reading_sessions` conta todas as sessões do Player.
+- `total_pages_read` soma `end_page - start_page + 1` de cada sessão.
+- Releituras e intervalos sobrepostos contam novamente; páginas não são deduplicadas.
+- `average_pages_per_session` é a divisão do total de páginas pelo total de sessões; sem sessões, é `"0.00"`.
+- A média é representada como decimal string com exatamente duas casas e ROUND_HALF_UP.
+- O resultado é derivado on demand e não é persistido.
+- READ-007 não retorna nem recalcula Progress, Insights, Analytics, ANLT, evolução intelectual, tendências, correlações, predições, scores ou completion.
+
+### Cenários
+
+#### Cenário 1 — Player sem Books e sem sessões
+
+**Dado** que o Player está autenticado e não possui Books nem ReadingSessions
+**Quando** consultar `/reading-statistics`
+**Então** o sistema deverá retornar 200 com os cinco campos zerados e `average_pages_per_session` igual a `"0.00"`.
+
+#### Cenário 2 — Books sem sessões
+
+**Dado** que o Player possui Books e nenhuma ReadingSession
+**Quando** consultar as estatísticas
+**Então** `total_books` deverá refletir os Books, os demais totais deverão ser zero e a média deverá ser `"0.00"`.
+
+#### Cenário 3 — Uma sessão
+
+**Dado** que existe uma ReadingSession de 1 a 10
+**Quando** consultar as estatísticas
+**Então** `total_reading_sessions` deverá ser 1, `total_pages_read` 10 e a média `"10.00"`.
+
+#### Cenário 4 — Múltiplas sessões do mesmo Book
+
+**Dado** que o mesmo Book possui múltiplas ReadingSessions
+**Quando** consultar as estatísticas
+**Então** o Book deverá contar uma vez em `books_with_reading_sessions` e todas as sessões deverão contar no total.
+
+#### Cenário 5 — Sessões de vários Books
+
+**Dado** que existem sessões pertencentes a vários Books do Player
+**Quando** consultar as estatísticas
+**Então** Books distintos e todas as sessões deverão ser contabilizados conforme suas definições.
+
+#### Cenário 6 — Releitura ou intervalo sobreposto
+
+**Dado** que existem sessões 1..10 e 5..10
+**Quando** consultar as estatísticas
+**Então** `total_pages_read` deverá ser 16, sem deduplicação.
+
+#### Cenário 7 — Média fracionária
+
+**Dado** que a divisão entre páginas totais e sessões produz fração
+**Quando** consultar as estatísticas
+**Então** a média deverá ser serializada com exatamente duas casas e ROUND_HALF_UP.
+
+#### Cenário 8 — Isolamento de ownership
+
+**Dado** que existem dados de Players diferentes
+**Quando** o Player autenticado consultar as estatísticas
+**Então** somente seus Books e ReadingSessions deverão entrar nos cálculos.
+
+#### Cenário 9 — Requisição não autenticada
+
+**Dado** que a requisição não possui autenticação válida
+**Quando** consultar `/reading-statistics`
+**Então** o sistema deverá retornar 401.
+
+#### Cenário 10 — Resposta sem outras métricas
+
+**Dado** que a consulta autenticada foi realizada
+**Quando** o sistema retornar os indicadores
+**Então** a resposta não deverá conter campos de Progress, Insights ou ANLT.
+
+### Critérios de aceite
+
+- `GET /reading-statistics` é global, all-time e owner-scoped.
+- A resposta 200 possui exatamente os cinco campos V1.
+- Os cálculos são determinísticos e usam somente Book e ReadingSession.
+- Empty state retorna 200.
+- Releituras e sobreposições contam novamente.
+- Média e serialização seguem duas casas e ROUND_HALF_UP.
+- Não existem filtros ou parâmetros temporais.
+- Requisição sem autenticação retorna 401.
+- Não existe persistência estatística.
+- Não são retornadas métricas de Progress, Insights ou ANLT.
+
+### Fora do escopo
+
+- READ-003 Progress, READ-004 Insights, READ-008 Evolução Intelectual, ANLT e GAME.
+- Estatísticas por Book, sessão ou período, agrupamentos, filtros, drill-down, tendências, correlações, predições, scores e completion.
+- Novo estado estatístico persistido, migration, snapshot, cache persistido ou `/api/v1`.
+
 # User Stories
 
 ## US-READ-001-001 — Cadastro de livros e consulta da biblioteca pessoal
