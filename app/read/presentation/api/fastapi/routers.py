@@ -17,6 +17,7 @@ from app.read.application.dtos.reading_history_dto import (
 from app.read.application.dtos.reading_insights_dto import ReadingInsightsDTO
 from app.read.application.dtos.reading_progress_dto import ReadingProgressDTO
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
+from app.read.application.dtos.reading_statistics_dto import ReadingStatisticsDTO
 from app.read.application.queries.get_reading_insights import (
     GetReadingInsightsQuery,
     GetReadingInsightsQueryHandler,
@@ -24,6 +25,10 @@ from app.read.application.queries.get_reading_insights import (
 from app.read.application.queries.get_reading_progress import (
     GetReadingProgressQuery,
     GetReadingProgressQueryHandler,
+)
+from app.read.application.queries.get_reading_statistics import (
+    GetReadingStatisticsQuery,
+    GetReadingStatisticsQueryHandler,
 )
 from app.read.application.queries.list_my_books import (
     ListMyBooksQuery,
@@ -40,6 +45,7 @@ from app.read.dependencies import (
     get_list_reading_history_handler,
     get_reading_insights_handler,
     get_reading_progress_handler,
+    get_reading_statistics_handler,
 )
 from app.read.domain.value_objects.book_id import BookId
 from app.read.presentation.api.fastapi.schemas import (
@@ -52,11 +58,13 @@ from app.read.presentation.api.fastapi.schemas import (
     ReadingInsightsResponse,
     ReadingProgressResponse,
     ReadingSessionResponse,
+    ReadingStatisticsResponse,
 )
 from app.shared.domain.identifiers.user_id import UserId
 
 router = APIRouter(prefix="/books", tags=["Reading Library"])
 history_router = APIRouter(tags=["Reading History"])
+statistics_router = APIRouter(tags=["Reading Statistics"])
 
 
 def _to_response(book: BookDTO) -> BookResponse:
@@ -136,6 +144,18 @@ def _to_reading_insights_response(insights: ReadingInsightsDTO) -> ReadingInsigh
         ],
         last_page_reached_with_gaps=insights.last_page_reached_with_gaps,
         full_coverage_confirmed=insights.full_coverage_confirmed,
+    )
+
+
+def _to_reading_statistics_response(
+    statistics: ReadingStatisticsDTO,
+) -> ReadingStatisticsResponse:
+    return ReadingStatisticsResponse(
+        total_books=statistics.total_books,
+        books_with_reading_sessions=statistics.books_with_reading_sessions,
+        total_reading_sessions=statistics.total_reading_sessions,
+        total_pages_read=statistics.total_pages_read,
+        average_pages_per_session=format(statistics.average_pages_per_session, ".2f"),
     )
 
 
@@ -260,3 +280,15 @@ def list_reading_history(
         )
     )
     return _to_reading_history_page_response(result)
+
+
+@statistics_router.get(
+    "/reading-statistics",
+    response_model=ReadingStatisticsResponse,
+)
+def get_reading_statistics(
+    user_id: UserId = Depends(get_current_user_id),
+    handler: GetReadingStatisticsQueryHandler = Depends(get_reading_statistics_handler),
+) -> ReadingStatisticsResponse:
+    statistics = handler(GetReadingStatisticsQuery(owner_id=user_id))
+    return _to_reading_statistics_response(statistics)
