@@ -28,6 +28,23 @@
 
 # Project Status
 
+## Sprint 08 — Reading Statistics — Implementation Authorization - 2026-08-16
+
+**Product Specification:** INTEGRATED / FROZEN
+**Architecture Review:** APPROVED
+**Technical Plan:** APPROVED / FROZEN
+**Migration:** NOT REQUIRED
+**Alembic target:** 0007
+**Implementation Readiness:** READY
+**Implementation Authorization:** YES — HUMAN DECISION
+**Implementation:** NOT STARTED
+**Next:** FUNCTIONAL IMPLEMENTATION
+
+READ-007 remains a derived, owner-scoped CQRS read model with no domain
+changes, no persisted statistics state, no UoW/events, and two fixed SQL
+SELECTs. Implementation must follow the frozen Technical Plan and allowlist.
+
+
 ## Sprint 07 — Reading History - 2026-08-15
 
 **Status:** ✅ Concluída
