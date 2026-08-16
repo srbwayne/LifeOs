@@ -16,6 +16,25 @@
 
 # Task History
 
+## Human Implementation Authorization — Sprint 08 Reading Statistics - 2026-08-16
+
+- Architecture Review: PASS.
+- Technical Plan Review: PASS.
+- Architecture: APPROVED.
+- Technical Plan: APPROVED / FROZEN.
+- Product Contract: PRESERVED.
+- Owner isolation: APPROVED.
+- SQL Plan: 2 FIXED SELECTS.
+- Numeric semantics: Decimal + ROUND_HALF_UP.
+- Migration: NOT REQUIRED.
+- Alembic target: 0007.
+- BLOCKER: 0.
+- MAJOR: 0.
+- MINOR: 0.
+- Human Implementation Authorization: APPROVED.
+- Implementation: NOT STARTED.
+
+
 ## Sprint 07: Reading History - 2026-08-15
 
 - **Status:** ✅ Concluída.
