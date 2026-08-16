@@ -1,3 +1,17 @@
+## Product Decision PD-READ-005 — 2026-08-16
+
+- **Product Owner:** APPROVED.
+- **READ-005:** canonicalized as Livros Concluídos.
+- **RF-READ-005:** remains Conclusão de Livro.
+- The Feature Catalog conflict with Pesquisa was resolved.
+- Pesquisa was removed from the implicit READ-005 scope; no replacement
+  Feature ID was created.
+- Completion semantics remain pending Product Specification.
+- No code, migration or architecture changes were made.
+- READ-008, RF-READ-009, RF-READ-010 and `/api/v1` remain deferred/pending.
+- Sprint 09 is not authorized.
+- **Next gate:** Product Specification — READ-005 Livros Concluídos.
+
 ## Sprint 08: Reading Statistics - 2026-08-16
 
 - **Status:** ✅ Concluída.

@@ -126,7 +126,7 @@ Responsável pela representação do Player.
 | READ-002 | Registro de leitura |
 | READ-003 | Progresso |
 | READ-004 | Insights |
-| READ-005 | Pesquisa |
+| READ-005 | Livros Concluídos |
 | READ-006 | Histórico |
 | READ-007 | Estatísticas de Leitura |
 

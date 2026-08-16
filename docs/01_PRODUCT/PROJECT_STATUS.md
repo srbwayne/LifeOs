@@ -1,3 +1,24 @@
+## Product Decision PD-READ-005 — 2026-08-16
+
+**Status:** APPROVED
+**Capability:** READ
+**Feature:** READ-005 — Livros Concluídos
+**RF:** RF-READ-005 — Conclusão de Livro
+
+### Decisão
+
+- READ-005 é canonicamente Livros Concluídos.
+- A entrada “Pesquisa” no Feature Catalog era divergência documental e foi
+  substituída.
+- Pesquisa não possui Feature ID, RF ou User Story autorizado por esta decisão.
+- Completion semantics permanecem pendentes de Product Specification.
+- READ-008, RF-READ-009 e RF-READ-010 permanecem deferred.
+
+### Estado
+
+- Sprint 09: NOT AUTHORIZED.
+- Next Gate: PRODUCT SPECIFICATION — READ-005 LIVROS CONCLUÍDOS.
+
 ## Sprint 08 — Reading Statistics - 2026-08-16
 
 **Status:** ✅ Concluída
