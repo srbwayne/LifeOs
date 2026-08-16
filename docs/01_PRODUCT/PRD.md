@@ -5118,6 +5118,15 @@ READ
 
 READ-005
 
+## Rastreabilidade
+
+- Feature: READ-005 — Livros Concluídos.
+- RF: RF-READ-005 — Conclusão de Livro.
+- Product Decision: PD-READ-005 — APPROVED.
+- Pesquisa não pertence ao escopo de READ-005. Uma eventual Pesquisa futura
+  dependerá de Feature ID, RF e User Story próprios.
+- Completion Semantics: PENDING PRODUCT SPECIFICATION.
+
 ---
 
 # RF-READ-006 — Consulta ao Histórico de Leitura

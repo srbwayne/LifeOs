@@ -68,9 +68,10 @@ A Capability Reading é responsável por:
 
 A correção direta de READ-004 para Insights torna esta Feature convergente com o Feature Catalog, o PRD e a Sprint 06. Permanecem fora do escopo deste saneamento:
 
-- RF-READ-005 — Conclusão de Livro associado a READ-005;
-- divergência de READ-005 entre Pesquisa no Feature Catalog e Livros Concluídos neste EPIC;
-- READ-005 permanece divergente e READ-007 é formalizada na Sprint 08;
+- READ-005 — Livros Concluídos;
+- RF-READ-005 — Conclusão de Livro;
+- Pesquisa deixou de ser escopo implícito de READ-005;
+- Product Specification de READ-005 permanece pendente;
 - READ-008 ausente no Feature Catalog;
 - RF-READ-009 associado a READ-003.
 - RF-READ-010 fora da Sprint 07, com reconciliação pendente.
