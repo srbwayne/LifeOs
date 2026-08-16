@@ -1,3 +1,19 @@
+## Autorização da Sprint 08: Reading Statistics - 2026-08-15
+
+- **Decisão do Product Owner:** READ-007 — Estatísticas de Leitura selecionada.
+- **RF:** RF-READ-007 — Visualização de Estatísticas de Leitura.
+- **User Story:** US-READ-007-001 formalizada.
+- **Contrato V1:** global, all-time, owner-scoped, derived on demand.
+- **Fontes:** Book e ReadingSession.
+- **Estatísticas congeladas:** `total_books`, `books_with_reading_sessions`, `total_reading_sessions`, `total_pages_read` e `average_pages_per_session`.
+- **Contrato HTTP:** `GET /reading-statistics`, sem parâmetros; 200 e 401.
+- **Semântica:** volume bruto de páginas, releituras e sobreposições contam novamente; média com duas casas e ROUND_HALF_UP.
+- **Product Specification:** APPROVED / FROZEN.
+- **Implementação:** não iniciada e não autorizada.
+- **Architecture Review:** pendente.
+- **Technical Plan:** pendente.
+- **Outros itens READ:** DEFERRED BY PO DECISION — REVISIT AT READ CYCLE RECONCILIATION.
+
 # Task History
 
 ## Sprint 07: Reading History - 2026-08-15

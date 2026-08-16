@@ -5208,7 +5208,7 @@ Player autenticado sem ReadingSessions recebe 200 OK, items vazio, total_items 0
 ## Fora do Escopo
 
 - READ-005, RF-READ-005 e RF-READ-010;
-- READ-007, READ-008 e RF-READ-009;
+- READ-008 e RF-READ-009;
 - Progress ou Insights agregados;
 - filtros, busca ou intervalo temporal configurável;
 - Analytics, AI, LLM, recomendações, GAME, XP, Achievements ou Streaks;
@@ -5234,55 +5234,73 @@ READ-006
 
 ## Objetivo
 
-Permitir acompanhar estatísticas relacionadas à leitura.
-
----
+Permitir que o Player autenticado consulte estatísticas descritivas consolidadas da própria atividade de leitura, acompanhando quantitativamente a utilização da biblioteca e do histórico de leitura.
 
 ## Descrição
 
-O sistema deverá consolidar informações provenientes da biblioteca e do histórico de leitura para geração de indicadores.
-
----
+READ-007 consolida exclusivamente dados oficiais de `Book` e `ReadingSession`, em escopo global do Player autenticado e para todo o período disponível. As estatísticas são derivadas sob demanda e não representam Insights, Progress, Analytics, evolução intelectual, tendências, correlações, predições, scores ou completion.
 
 ## Pré-condições
 
-- Existência de registros.
-
----
+- O Player está autenticado.
+- Não é necessária a existência de Book ou ReadingSession; o estado vazio é válido.
 
 ## Fluxo Principal
 
-1. Acessar Estatísticas.
-2. Consolidar informações.
-3. Apresentar indicadores.
+1. O Player autenticado solicita `GET /reading-statistics`.
+2. O sistema seleciona somente Books e ReadingSessions pertencentes ao Player.
+3. O sistema calcula as cinco estatísticas V1.
+4. O sistema apresenta a resposta sem filtros, agrupamentos ou drill-down.
 
----
+## Estatísticas V1
+
+- `total_books`: quantidade atual de Books pertencentes ao Player.
+- `books_with_reading_sessions`: quantidade distinta de Books do Player com pelo menos uma ReadingSession do mesmo Player.
+- `total_reading_sessions`: quantidade total de ReadingSessions pertencentes ao Player.
+- `total_pages_read`: soma de `end_page - start_page + 1` para todas as ReadingSessions; releituras e intervalos sobrepostos contam novamente.
+- `average_pages_per_session`: `total_pages_read / total_reading_sessions` quando há sessões; caso contrário `0.00`. A representação possui exatamente duas casas decimais e ROUND_HALF_UP.
+
+## Contrato HTTP
+
+- Método: `GET`.
+- Path: `/reading-statistics`.
+- Path params, query params e body: nenhum.
+- Autenticação: obrigatória.
+- Resposta 200 possui exatamente os cinco campos das estatísticas V1.
+- Status funcionais: `200 OK` e `401 Unauthorized`.
 
 ## Pós-condições
 
-- Estatísticas apresentadas.
-
----
+- Estatísticas descritivas apresentadas para o Player autenticado.
+- Nenhum estado estatístico é persistido.
+- Nenhum Book, ReadingSession, Progress, Insight, Character ou estado GAME é alterado.
 
 ## Critérios de Aceite
 
-- Os indicadores deverão utilizar apenas dados oficiais da plataforma.
-- As informações deverão permanecer consistentes com o histórico.
+- A consulta é global, all-time e owner-scoped.
+- A resposta contém exatamente `total_books`, `books_with_reading_sessions`, `total_reading_sessions`, `total_pages_read` e `average_pages_per_session`.
+- Player sem Books e sem ReadingSessions recebe 200 com os cinco valores zerados e média `"0.00"`.
+- Books sem sessões contam em `total_books`, mas não em `books_with_reading_sessions`.
+- Releituras e sobreposições contam novamente em `total_pages_read`.
+- A média é determinística, decimal string com duas casas e ROUND_HALF_UP.
+- Não há filtros, parâmetros temporais ou agrupamentos.
+- A consulta sem autenticação recebe 401.
+- A resposta não expõe campos de Progress, Insights, ANLT, Analytics, completion, tendências, scores ou metadados adicionais.
+- As estatísticas são derivadas on demand, sem novo estado estatístico persistido.
 
----
+## Fora do Escopo
+
+- READ-003 Progress, READ-004 Insights, READ-008 Evolução Intelectual, ANLT e GAME.
+- Estatísticas por Book, sessão ou período; filtros; drill-down; tendências; correlações; previsões; scores; KPIs analíticos.
+- Novo estado persistido, snapshot, cache persistido, migration ou versionamento `/api/v1`.
 
 ## Capability
 
 READ
 
----
-
 ## Feature
 
 READ-007
-
----
-
 # RF-READ-008 — Visualização da Evolução Intelectual
 
 ## Objetivo

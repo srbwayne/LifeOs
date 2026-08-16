@@ -41,6 +41,17 @@ A Capability Reading é responsável por:
 
 ---
 
+## READ-007 — Estatísticas de Leitura
+
+- **Objetivo:** permitir ao Player autenticado consultar estatísticas descritivas consolidadas da própria atividade de leitura.
+- **Escopo V1:** global por Player, all-time, owner-scoped, sem agrupamento, filtro ou drill-down.
+- **Fontes:** exclusivamente Book e ReadingSession.
+- **Persistência:** derivada sob demanda; nenhum estado estatístico é persistido.
+- **Contrato:** `GET /reading-statistics`, sem parâmetros, com 200 e 401 como estados funcionais.
+- **Resposta:** exatamente `total_books`, `books_with_reading_sessions`, `total_reading_sessions`, `total_pages_read` e `average_pages_per_session`.
+- **Semântica:** páginas são calculadas por `end_page - start_page + 1`; releituras e sobreposições contam novamente; média com duas casas decimais e ROUND_HALF_UP; zero sessões retorna `"0.00"`.
+- **Fronteiras:** não retorna Progress, Insights, evolução intelectual, Analytics, ANLT, tendências, correlações, predições, scores ou completion.
+
 ## Pendências Documentais
 
 ### Sprint 07 — Reading History
@@ -59,7 +70,7 @@ A correção direta de READ-004 para Insights torna esta Feature convergente com
 
 - RF-READ-005 — Conclusão de Livro associado a READ-005;
 - divergência de READ-005 entre Pesquisa no Feature Catalog e Livros Concluídos neste EPIC;
-- READ-007 ausente no Feature Catalog;
+- READ-005 permanece divergente e READ-007 é formalizada na Sprint 08;
 - READ-008 ausente no Feature Catalog;
 - RF-READ-009 associado a READ-003.
 - RF-READ-010 fora da Sprint 07, com reconciliação pendente.

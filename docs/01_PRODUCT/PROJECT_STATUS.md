@@ -1,3 +1,31 @@
+## Sprint 08 — Reading Statistics - 2026-08-15
+
+**Status:** AUTORIZADA — PRODUCT SPEC APPROVED / FROZEN
+**Capability:** READ
+**Feature:** READ-007 — Estatísticas de Leitura
+**RF:** RF-READ-007
+**US:** US-READ-007-001
+
+### Decisão e contrato
+
+- Product Owner aprovou READ-007 e o contrato V1.
+- Product Contract: FROZEN.
+- Estatísticas globais, all-time, owner-scoped e derivadas on demand.
+- Fontes exclusivas: Book e ReadingSession.
+- `GET /reading-statistics`, sem parâmetros, com cinco campos exatos.
+- `total_pages_read` é volume bruto; releituras e sobreposições contam novamente.
+- `average_pages_per_session` usa duas casas decimais e ROUND_HALF_UP.
+- Empty state retorna 200; requisição sem autenticação retorna 401.
+
+### Estado
+
+- Implementação: NOT STARTED.
+- Architecture Review: PENDING.
+- Technical Plan: PENDING.
+- Implementation Authorization: NO.
+- Sprint 07 permanece concluída.
+- Outros itens READ permanecem deferidos para reconciliação posterior.
+
 # Project Status
 
 ## Sprint 07 — Reading History - 2026-08-15
