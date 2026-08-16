@@ -8,8 +8,14 @@ from app.read.application.commands.create_reading_session import (
 from app.read.application.ports.reading_history_repository import (
     IReadingHistoryReadRepository,
 )
+from app.read.application.ports.reading_statistics_repository import (
+    IReadingStatisticsReadRepository,
+)
 from app.read.application.queries.get_reading_insights import GetReadingInsightsQueryHandler
 from app.read.application.queries.get_reading_progress import GetReadingProgressQueryHandler
+from app.read.application.queries.get_reading_statistics import (
+    GetReadingStatisticsQueryHandler,
+)
 from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
 from app.read.application.queries.list_reading_history import (
     ListReadingHistoryQueryHandler,
@@ -27,6 +33,9 @@ from app.read.infrastructure.persistence.repositories.reading_history_repository
 )
 from app.read.infrastructure.persistence.repositories.reading_session_repository import (
     SqlAlchemyReadingSessionRepository,
+)
+from app.read.infrastructure.persistence.repositories.reading_statistics_repository import (
+    SqlAlchemyReadingStatisticsReadRepository,
 )
 from app.shared.application.event_bus import InMemoryEventBus
 from app.shared.infrastructure.database import get_db
@@ -47,6 +56,18 @@ def get_reading_history_repository(
     db: Session = Depends(get_db),
 ) -> IReadingHistoryReadRepository:
     return SqlAlchemyReadingHistoryReadRepository(db)
+
+
+def get_reading_statistics_repository(
+    db: Session = Depends(get_db),
+) -> IReadingStatisticsReadRepository:
+    return SqlAlchemyReadingStatisticsReadRepository(db)
+
+
+def get_reading_statistics_handler(
+    repository: IReadingStatisticsReadRepository = Depends(get_reading_statistics_repository),
+) -> GetReadingStatisticsQueryHandler:
+    return GetReadingStatisticsQueryHandler(repository)
 
 
 def get_book_uow(db: Session = Depends(get_db)) -> SqlAlchemyUnitOfWork:

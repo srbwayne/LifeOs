@@ -91,3 +91,11 @@ class ReadingInsightsResponse(BaseModel):
     gaps: list[PageIntervalResponse]
     last_page_reached_with_gaps: bool
     full_coverage_confirmed: bool
+
+
+class ReadingStatisticsResponse(BaseModel):
+    total_books: int
+    books_with_reading_sessions: int
+    total_reading_sessions: int
+    total_pages_read: int
+    average_pages_per_session: str
