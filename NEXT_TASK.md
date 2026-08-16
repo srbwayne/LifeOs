@@ -10,17 +10,18 @@
 |---|---|
 | ID | Sprint 08 |
 | Iniciativa | Sprint 08 — Reading Statistics |
-| Status | AUTORIZADA — IMPLEMENTATION AUTHORIZED |
+| Status | CONCLUÍDA |
 | Tipo | Funcional |
 | Capability | READ |
 | Feature | READ-007 — Estatísticas de Leitura |
 | User Story | US-READ-007-001 |
 | Requisito Funcional | RF-READ-007 |
 | Product Specification | APROVADA / FROZEN |
-| Implementação | NÃO INICIADA |
+| Implementação | INTEGRADA |
 | Architecture Review | APPROVED |
 | Technical Plan | APPROVED / FROZEN |
 | Implementation Authorization | YES |
+| CI | APROVADO |
 
 ---
 
@@ -47,11 +48,11 @@
 - READ-003: ENTREGUE.
 - READ-004: ENTREGUE.
 - READ-006: ENTREGUE.
-- READ-007: ESPECIFICAÇÃO FROZEN / IMPLEMENTAÇÃO AUTORIZADA / NÃO INICIADA.
+- READ-007: ENTREGUE.
 - RF-READ-001..004: ENTREGUES.
 - RF-READ-005: NÃO ENTREGUE.
 - RF-READ-006: ENTREGUE.
-- RF-READ-007: ESPECIFICAÇÃO FROZEN / IMPLEMENTAÇÃO AUTORIZADA / NÃO INICIADA.
+- RF-READ-007: ENTREGUE.
 - RF-READ-008..010: NÃO ENTREGUES.
 - RF-READ-011: ENTREGUE.
 
@@ -117,11 +118,14 @@ MODIFY:
 
 NO CHANGE: `app/read/domain/**`, existing READ repositories, `migrations/**`, Product Specification docs, Architecture docs, `CHANGELOG.md`, `pyproject.toml` and `requirements*`.
 
-Implementation must follow only this frozen Technical Plan and allowlist.
+Integrated implementation followed only this frozen Technical Plan and allowlist.
 
 # Próximo Gate
 
-FUNCTIONAL IMPLEMENTATION — SPRINT 08 READ-007 READING STATISTICS
+PRODUCT DECISION — NEXT SCOPE
 
-Este gate somente poderá ocorrer após auditoria, publicação, PR, review,
-merge e CI da main da formalização documental.
+NENHUMA NOVA SPRINT AUTORIZADA.
+
+Nenhuma Feature, RF ou implementação subsequente está autorizada
+automaticamente pela conclusão da Sprint 08. READ-005, READ-008 e demais
+pendências permanecem dependentes de decisão explícita de Produto.
