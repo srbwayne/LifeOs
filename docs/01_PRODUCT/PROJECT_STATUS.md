@@ -1,3 +1,48 @@
+## Sprint 08 — Reading Statistics - 2026-08-16
+
+**Status:** ✅ Concluída
+**Capability:** READ
+**Feature:** READ-007 — Estatísticas de Leitura
+**User Story:** US-READ-007-001
+**Requisito Funcional:** RF-READ-007
+
+### Entregas
+
+- READ-007 integrada na `main` por `GET /reading-statistics`.
+- Consulta global por Player autenticado, all-time e owner-scoped.
+- Estatísticas derivadas on demand de Book + ReadingSession.
+- Exatamente cinco estatísticas entregues.
+- `total_pages_read` preserva gross activity: releituras e sobreposições contam novamente.
+- `average_pages_per_session` usa Decimal, ROUND_HALF_UP e string HTTP com duas casas.
+- Owner isolation preservado.
+- SQL executa dois SELECTs fixos, sem N+1.
+- Nenhum estado estatístico persistido.
+- Nenhuma migration criada.
+
+### Integração e validação
+
+- PR #23 integrado por Rebase and Merge em `2026-08-16T18:58:18Z`.
+- Main funcional: `9aa77f461fbbaded2f26d5c46a201674adcf686d`.
+- Commits funcionais na main:
+  - `7dce4eb6d849168a93d657d8151d11f66f5b8d37` — `feat(read): implement reading statistics read model`;
+  - `9aa77f461fbbaded2f26d5c46a201674adcf686d` — `feat(read): expose reading statistics API`.
+- CI da main: run `31966168701` — SUCCESS.
+- Validação: 407 testes aprovados, cobertura 97,95% e Alembic `0007 (head)`.
+- Branch `feature/read-007-reading-statistics` removida local e remotamente.
+
+### Estado
+
+- Sprint 08: CONCLUÍDA.
+- READ-007: ENTREGUE.
+- RF-READ-007: ENTREGUE.
+- US-READ-007-001: ENTREGUE.
+- Implementação: INTEGRADA.
+- Product Specification: FROZEN.
+- Architecture: APPROVED.
+- Technical Plan: APPROVED / FROZEN.
+- CI: APROVADO.
+- Migration: NONE.
+- Próxima Sprint: NENHUMA AUTORIZADA.
 ## Sprint 08 — Reading Statistics - 2026-08-15
 
 **Status:** AUTORIZADA — PRODUCT SPEC APPROVED / FROZEN

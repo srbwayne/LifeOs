@@ -1,3 +1,24 @@
+## Sprint 08: Reading Statistics - 2026-08-16
+
+- **Status:** ✅ Concluída.
+- **Feature:** READ-007 — Estatísticas de Leitura.
+- **RF:** RF-READ-007.
+- **User Story:** US-READ-007-001.
+- **Integração:** PR #23 integrado por Rebase and Merge em `2026-08-16T18:58:18Z`.
+- **Main funcional:** `9aa77f461fbbaded2f26d5c46a201674adcf686d`.
+- **Commits na main:**
+  - `7dce4eb6d849168a93d657d8151d11f66f5b8d37` — `feat(read): implement reading statistics read model`;
+  - `9aa77f461fbbaded2f26d5c46a201674adcf686d` — `feat(read): expose reading statistics API`.
+- **Contrato:** global, all-time, owner-scoped, derived on demand e cinco estatísticas.
+- **SQL:** dois SELECTs fixos, owner-consistent, zero N+1.
+- **Numeric:** Decimal + ROUND_HALF_UP.
+- **Segurança:** isolamento entre Players aprovado.
+- **Banco:** nenhuma migration; Alembic `0007 (head)`.
+- **CI:** run `31966168701` — PASS.
+- **Validação:** 407 testes e cobertura de 97,95%.
+- **Branch:** removida local e remotamente.
+- **Estado no encerramento:** Sprint 08 concluída; READ-007, RF-READ-007 e US-READ-007-001 entregues.
+- **Próximo escopo:** nenhuma Sprint subsequente autorizada.
 ## Autorização da Sprint 08: Reading Statistics - 2026-08-15
 
 - **Decisão do Product Owner:** READ-007 — Estatísticas de Leitura selecionada.

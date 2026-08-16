@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Added
+- Integrada a consulta autenticada `GET /reading-statistics` de READ-007, global, all-time, owner-scoped e derivada on demand, com cinco estatísticas descritivas de leitura.
+- Estatísticas de páginas preservam atividade bruta de ReadingSessions, incluindo releituras e sobreposições, com média Decimal `ROUND_HALF_UP`.
+
 - Integrado o histórico global owner-scoped `GET /reading-sessions` de READ-006.
 - Integrada a migration `0007` com o índice
   `ix_reading_sessions_user_started_id` para a consulta paginada e ordenada do histórico.

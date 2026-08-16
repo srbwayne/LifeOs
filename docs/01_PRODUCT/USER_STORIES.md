@@ -8,7 +8,7 @@
 | Capability | READ |
 | Feature | READ-007 — Estatísticas de Leitura |
 | Requisito Funcional | RF-READ-007 |
-| Status | Especificação aprovada — implementação não iniciada |
+| Status | Entregue — Sprint 08 concluída |
 
 ### Persona
 
