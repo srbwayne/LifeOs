@@ -1,3 +1,24 @@
+## Product Specification READ-005 — 2026-08-16
+
+- **Product Owner:** APPROVED.
+- **READ-005:** Livros Concluídos.
+- **RF-READ-005:** Conclusão de Livro.
+- **User Story:** US-READ-005-001 criada.
+- **Completion Model:** Automatic Completion Milestone.
+- **Regra:** 100% de cobertura de páginas únicas é obrigatório.
+- **Conclusão manual:** não suportada.
+- **Milestone:** único por Player + Book.
+- **Tempo funcional:** `completed_at` semanticamente congelado como o `ended_at` da sessão da primeira transição.
+- **Releituras:** não criam nem revogam conclusão.
+- **Book:** permanece disponível.
+- **Identificação:** Books concluídos devem ser identificáveis.
+- **Histórico:** representação funcional requerida.
+- **Ocorrência externa:** requerida; mecanismo não especificado.
+- **GAME:** efeitos deferred para RF-READ-009.
+- **Arquitetura:** nenhuma decisão tomada.
+- **Implementação:** não autorizada.
+- **Sprint 09:** não autorizada.
+- **Next Gate:** Architecture Review — READ-005 Livros Concluídos.
 ## Product Decision PD-READ-005 — 2026-08-16
 
 - **Product Owner:** APPROVED.

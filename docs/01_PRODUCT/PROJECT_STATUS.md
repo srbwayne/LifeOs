@@ -1,3 +1,32 @@
+## Product Specification READ-005 — 2026-08-16
+
+**Status:** APPROVED / FROZEN
+**Capability:** READ
+**Feature:** READ-005 — Livros Concluídos
+**RF:** RF-READ-005 — Conclusão de Livro
+**US:** US-READ-005-001
+**Product Decision:** PD-READ-005 — APPROVED
+
+### Contrato aprovado
+
+- Completion Model: AUTOMATIC COMPLETION MILESTONE.
+- A primeira cobertura integral de páginas únicas produz a conclusão automaticamente.
+- Overlaps e releituras não duplicam cobertura; lacunas impedem conclusão.
+- Não existe conclusão manual ou antecipada.
+- O milestone é único por Player + Book e historicamente estável.
+- `completed_at` é informação funcional e corresponde ao `ended_at` da sessão que provoca a primeira transição.
+- Releituras posteriores não alteram conclusão nem `completed_at`.
+- O Book permanece disponível e Books concluídos devem ser identificáveis pelo Player.
+- A conclusão deve ser historicamente representável e sua ocorrência disponibilizável externamente.
+- Efeitos GAME estão fora do escopo; RF-READ-009 permanece deferred.
+
+**Product Identity:** FROZEN
+**Product Specification:** FROZEN
+**Architecture Review:** PENDING
+**Technical Plan:** NOT AUTHORIZED
+**Implementation:** NOT AUTHORIZED
+**Sprint 09:** NOT AUTHORIZED
+**Next Gate:** ARCHITECTURE REVIEW — READ-005 LIVROS CONCLUÍDOS
 ## Product Decision PD-READ-005 — 2026-08-16
 
 **Status:** APPROVED
