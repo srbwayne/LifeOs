@@ -41,6 +41,24 @@ A Capability Reading é responsável por:
 
 ---
 
+## READ-005 — Livros Concluídos
+
+- **Modelo:** Automatic Completion Milestone.
+- **Conclusão:** ocorre automaticamente na primeira cobertura integral de todas as páginas válidas.
+- **Cobertura:** páginas únicas, união de ReadingSessions, overlaps e releituras deduplicados, lacunas impeditivas e ordem irrelevante.
+- **Milestone:** único por Player + Book e historicamente estável.
+- **Tempo funcional:** `completed_at` corresponde semanticamente ao `ended_at` da sessão que provoca a primeira transição.
+- **Manualidade:** não existe conclusão manual ou antecipada.
+- **Disponibilidade:** o Book permanece na biblioteca e aceita novas ReadingSessions.
+- **Identificação:** Books concluídos devem ser distinguíveis na jornada do Player.
+- **Histórico:** a conclusão deve ser historicamente representável.
+- **Integração:** a ocorrência funcional deve ser disponibilizável externamente, sem mecanismo definido.
+- **Fronteira:** efeitos GAME estão fora do escopo; READ é autoridade sobre o fato.
+
+**Product Specification:** APPROVED / FROZEN.
+**Architecture Review:** PENDING.
+**Implementation:** NOT AUTHORIZED.
+**Sprint 09:** NOT AUTHORIZED.
 ## READ-007 — Estatísticas de Leitura
 
 - **Objetivo:** permitir ao Player autenticado consultar estatísticas descritivas consolidadas da própria atividade de leitura.
@@ -71,7 +89,7 @@ A correção direta de READ-004 para Insights torna esta Feature convergente com
 - READ-005 — Livros Concluídos;
 - RF-READ-005 — Conclusão de Livro;
 - Pesquisa deixou de ser escopo implícito de READ-005;
-- Product Specification de READ-005 permanece pendente;
+- Product Specification de READ-005: APPROVED / FROZEN; Architecture Review: PENDING; Implementation: NOT AUTHORIZED; Sprint 09: NOT AUTHORIZED;
 - READ-008 ausente no Feature Catalog;
 - RF-READ-009 associado a READ-003.
 - RF-READ-010 fora da Sprint 07, com reconciliação pendente.

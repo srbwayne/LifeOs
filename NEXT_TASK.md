@@ -8,29 +8,36 @@
 
 | Campo | Valor |
 |---|---|
-| ID | PD-READ-005 |
-| Iniciativa | READ-005 Canonicalization |
-| Status | APPROVED |
+| ID | READ-005-PRODUCT-SPEC |
+| Iniciativa | READ-005 — Livros Concluídos |
+| Status | PRODUCT SPECIFICATION APPROVED / FROZEN |
 | Tipo | Produto / Documental |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
-| Product Decision | APPROVED |
-| Canonicalization | READ-005 = Livros Concluídos |
-| Product Specification | PENDING |
-| User Story | PENDING |
-| Completion Semantics | PENDING PRODUCT SPECIFICATION |
-| Architecture Review | NOT AUTHORIZED |
+| User Story | US-READ-005-001 |
+| Product Decision | PD-READ-005 — APPROVED |
+| Product Identity | FROZEN |
+| Completion Model | AUTOMATIC COMPLETION MILESTONE |
+| Completion Semantics | APPROVED / FROZEN |
+| Product Specification | APPROVED / FROZEN |
+| Architecture Review | PENDING |
+| Technical Plan | NOT AUTHORIZED |
 | Implementation Authorization | NO |
 | Sprint 09 | NOT AUTHORIZED |
 
-## Decisão de Produto
+## Especificação aprovada
 
-- READ-005 foi canonicalizada como **Livros Concluídos**.
-- RF-READ-005 permanece associado a READ-005 e aguarda Product Specification.
-- Pesquisa não faz parte de READ-005.
-- Pesquisa futura exige nova decisão de Produto, Feature ID, RF e User Story.
-- Completion Semantics: **PENDING PRODUCT SPECIFICATION**.
+- A conclusão ocorre automaticamente na primeira cobertura integral das páginas.
+- Cobertura significa páginas únicas cobertas pela união das ReadingSessions.
+- Não existe ação manual nem conclusão antecipada.
+- O milestone é único por Player + Book e historicamente estável.
+- `completed_at` é informação funcional obrigatória, derivada semanticamente do `ended_at` da sessão que provoca a primeira transição.
+- Releituras posteriores não alteram a conclusão nem `completed_at`.
+- O Book permanece disponível e pode receber novas ReadingSessions.
+- Books concluídos devem ser identificáveis pelo Player e historicamente representáveis.
+- A ocorrência funcional deve ser disponibilizável externamente; o mecanismo é decisão de arquitetura.
+- Efeitos GAME estão fora do escopo e RF-READ-009 permanece deferred.
 
 ## Entregas Existentes
 
@@ -47,23 +54,24 @@
 
 ## Pendências
 
-- READ-005: CANONICALIZED / PRODUCT SPECIFICATION PENDING.
-- RF-READ-005: PRODUCT SPECIFICATION PENDING.
+- READ-005: PRODUCT SPECIFICATION APPROVED / NOT DELIVERED.
+- RF-READ-005: PRODUCT SPECIFICATION APPROVED / NOT DELIVERED.
+- US-READ-005-001: APPROVED / NOT DELIVERED.
 - READ-008: DEFERRED.
 - RF-READ-009: ASSOCIAÇÃO PENDENTE / DEFERRED.
 - RF-READ-010: RECONCILIAÇÃO PENDENTE / DEFERRED.
 - `/api/v1`: PENDING NON-BLOCKING.
+- Pesquisa: OUTSIDE READ-005 / NO FEATURE AUTHORIZED.
 
 ## Product Specification Boundary
 
-A Product Specification deve definir o comportamento de conclusão antes de
-qualquer User Story, Architecture Review, Technical Plan, Implementation
-Authorization ou Sprint funcional. Este registro não decide estado derivado,
-estado explícito, persistência, comando, evento, endpoint ou integração com a
-Game Engine.
+Product Specification de READ-005 está aprovada e congelada. Persistência,
+representação técnica, endpoint, HTTP, eventos, arquitetura e Technical Plan
+permanecem decisões futuras de Architecture Review. Isto não autoriza
+Implementation nem Sprint 09.
 
 ## Próximo Gate
 
-PRODUCT SPECIFICATION — READ-005 LIVROS CONCLUÍDOS
+ARCHITECTURE REVIEW — READ-005 LIVROS CONCLUÍDOS
 
 THIS DOES NOT AUTHORIZE SPRINT 09.

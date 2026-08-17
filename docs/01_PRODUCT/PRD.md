@@ -5069,66 +5069,173 @@ READ-003 — Reading Progress
 
 ## Objetivo
 
-Permitir registrar a conclusão da leitura de um livro.
-
----
+Registrar automaticamente e preservar como marco histórico a primeira conclusão de um Book pertencente ao Player autenticado quando sua cobertura de leitura atingir integralmente todas as páginas.
 
 ## Descrição
 
-Quando o progresso atingir sua conclusão, o sistema deverá marcar o livro como concluído.
+READ-005 utiliza o modelo **Automatic Completion Milestone**. A conclusão ocorre automaticamente na primeira vez em que o ReadingProgress do Book atingir cobertura integral, sem ação manual do Player.
 
----
+## Ator
+
+Player autenticado.
 
 ## Pré-condições
 
-- Livro em leitura.
+- Player autenticado.
+- Book pertence ao Player.
+- Book possui `total_pages` válido e positivo conforme o contrato existente.
+- A ReadingSession considerada é válida e pertence ao mesmo Player e Book.
+- O milestone ainda não ocorreu para o Book.
 
----
+## Gatilho
 
-## Fluxo Principal
+Uma ReadingSession válida provoca a primeira transição funcional de `ReadingProgress.completed = false` para `ReadingProgress.completed = true`.
 
-1. Atualizar progresso.
-2. Verificar conclusão.
-3. Marcar livro como concluído.
-4. Registrar evento.
+## Condição de conclusão
 
----
+Todas as páginas no intervalo `1..total_pages` foram cobertas por pelo menos uma ReadingSession válida. A cobertura usa páginas únicas, união de intervalos, deduplicação de sobreposições e releituras, lacunas impeditivas e semântica independente da ordem das sessões. `highest_page_reached` sozinho não determina conclusão.
 
-## Pós-condições
+## Regras de negócio
 
-- Livro concluído.
+- A conclusão é automática; não existe comando funcional de conclusão.
+- Não existe conclusão manual ou antecipada abaixo de 100% de cobertura.
+- O milestone é único por Player + Book.
+- Um Book não possui múltiplas conclusões decorrentes de releitura.
+- Após a primeira conclusão, novas ReadingSessions e releituras são permitidas.
+- Novas ReadingSessions não removem a conclusão, não geram novo milestone e não alteram o momento funcional da conclusão.
+- Qualquer operação futura de reabrir, desfazer, corrigir ou invalidar a conclusão está fora do escopo de V1 e exige nova decisão de Produto.
+- A conclusão é owner-scoped; dados de outro Player não participam nem são expostos.
+- O Book permanece disponível na biblioteca pessoal.
+- READ é a autoridade sobre o fato de conclusão.
+- Efeitos de GAME, XP, recompensas e progressão de Character não pertencem a este RF.
 
----
+## Semântica temporal
 
-## Critérios de Aceite
+`completed_at` é informação funcional requerida. Seu valor corresponde ao `ended_at` da ReadingSession válida que provoca a primeira transição para cobertura integral. Sessões posteriores e releituras não alteram esse valor. A forma de representação ou persistência é decisão de Architecture Review.
 
-- O livro deverá permanecer disponível na biblioteca.
-- A conclusão deverá compor o histórico do Player.
-- O evento deverá ser disponibilizado para a Game Engine.
+## Resultado funcional
 
----
+- Book considerado concluído.
+- Milestone único e historicamente estável.
+- Momento funcional de conclusão conhecido.
+- Book permanece disponível para leitura.
+- Player consegue identificar o Book como concluído.
+- A conclusão é historicamente representável.
+- A ocorrência funcional da conclusão pode ser disponibilizada para consumidores autorizados, sem mecanismo técnico definido neste RF.
+
+## Cenários
+
+### Cenário 1 — Cobertura incompleta
+
+**Dado** um Book com páginas ainda sem cobertura
+**Quando** uma ReadingSession válida for registrada
+**Então** a cobertura permanece incompleta
+**E** nenhum milestone ocorre.
+
+### Cenário 2 — Última lacuna coberta
+
+**Dado** que existe uma única lacuna restante
+**Quando** uma ReadingSession válida cobrir essa lacuna
+**Então** a cobertura atinge 100%
+**E** ocorre automaticamente o primeiro milestone de conclusão.
+
+### Cenário 3 — Última página com lacunas
+
+**Dado** que `highest_page_reached == total_pages`
+**E** existem lacunas
+**Quando** o progresso for calculado
+**Então** o Book não é concluído.
+
+### Cenário 4 — Sobreposição e releitura
+
+**Dado** que sessões se sobrepõem ou repetem páginas
+**Quando** a cobertura for calculada
+**Então** cada página conta uma única vez.
+
+### Cenário 5 — Releitura após conclusão
+
+**Dado** um Book já concluído
+**Quando** uma nova ReadingSession for registrada
+**Então** nenhum novo milestone ocorre
+**E** `completed_at` não muda.
+
+### Cenário 6 — Tentativa abaixo de 100%
+
+**Dado** cobertura inferior a 100%
+**Quando** o Player tentar concluir o Book manualmente
+**Então** não existe conclusão manual disponível.
+
+### Cenário 7 — Book permanece disponível
+
+**Dado** um Book concluído
+**Quando** o Player consultar a biblioteca ou registrar nova atividade
+**Então** o Book permanece disponível.
+
+### Cenário 8 — Identificação de concluídos
+
+**Dado** Books concluídos e incompletos do mesmo Player
+**Quando** o Player consultar sua jornada
+**Então** deve ser possível distingui-los.
+
+### Cenário 9 — Isolamento entre Players
+
+**Dado** atividade de outro Player
+**Quando** o progresso ou conclusão for avaliado
+**Então** essa atividade não participa nem é exposta.
+
+### Cenário 10 — Ocorrência externa
+
+**Dado** que ocorre o primeiro milestone
+**Quando** consumidores autorizados forem considerados
+**Então** a ocorrência funcional deve ser disponibilizável, sem definir efeito GAME ou mecanismo técnico.
+
+## Critérios de aceite
+
+- A conclusão é automática e exige 100% de cobertura de páginas únicas.
+- Lacunas impedem conclusão; alcançar a última página não basta.
+- Overlaps e releituras não duplicam cobertura.
+- A primeira transição gera um único milestone por Player + Book.
+- `completed_at` usa semanticamente o `ended_at` da sessão que provoca a primeira transição.
+- Releituras posteriores não criam novo milestone nem alteram `completed_at`.
+- Não existe conclusão manual, antecipada ou reversão automática.
+- O Book permanece disponível e aceita novas ReadingSessions.
+- Books concluídos são identificáveis pelo Player owner-scoped.
+- A conclusão possui representação histórica funcional.
+- A ocorrência externa é requisito funcional, com mecanismo não especificado.
+- Nenhum efeito GAME, XP ou Character é definido.
+
+## Fora do escopo
+
+- conclusão manual ou antecipada;
+- desfazer, reabrir ou múltiplos ciclos de conclusão;
+- Pesquisa;
+- READ-008;
+- implementação de RF-READ-009;
+- reconciliação de RF-READ-010;
+- XP, Rewards, Achievements e efeitos GAME;
+- ANLT, AI e DASH;
+- desenho de API/HTTP e `/api/v1`;
+- arquitetura, persistência, schema, migration e transporte de eventos.
 
 ## Capability
 
 READ
 
----
-
 ## Feature
 
-READ-005
+READ-005 — Livros Concluídos
 
 ## Rastreabilidade
 
-- Feature: READ-005 — Livros Concluídos.
-- RF: RF-READ-005 — Conclusão de Livro.
-- Product Decision: PD-READ-005 — APPROVED.
-- Pesquisa não pertence ao escopo de READ-005. Uma eventual Pesquisa futura
-  dependerá de Feature ID, RF e User Story próprios.
-- Completion Semantics: PENDING PRODUCT SPECIFICATION.
+- PD-READ-005: APPROVED.
+- Product Specification: APPROVED / FROZEN.
+- User Story: US-READ-005-001.
+- Completion Model: AUTOMATIC COMPLETION MILESTONE.
+- Architecture: PENDING.
+- Implementation: NOT AUTHORIZED.
+- Sprint 09: NOT AUTHORIZED.
 
 ---
-
 # RF-READ-006 — Consulta ao Histórico de Leitura
 
 ## Objetivo

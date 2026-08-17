@@ -798,6 +798,158 @@ Sprint 06
 
 Esta User Story foi entregue com a conclusão da Sprint 06.
 
+## US-READ-005-001 — Reconhecer Livros Concluídos
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-READ-005-001 |
+| Capability | READ |
+| Feature | READ-005 — Livros Concluídos |
+| Requisito Funcional | RF-READ-005 — Conclusão de Livro |
+| Status | Product Specification APPROVED / Implementation NOT AUTHORIZED |
+
+### Persona
+
+Player autenticado.
+
+### Necessidade
+
+Ter um Book reconhecido automaticamente como concluído quando sua atividade de leitura cobrir todas as páginas e conseguir identificar essa conclusão na própria jornada de leitura.
+
+### Valor
+
+Registrar de forma objetiva, estável e historicamente significativa os Books efetivamente concluídos pelo Player sem depender de marcação manual.
+
+### User Story
+
+Como Player autenticado,
+quero que um livro seja reconhecido automaticamente como concluído quando minhas ReadingSessions cobrirem todas as suas páginas e que essa conclusão permaneça identificável na minha jornada,
+para registrar de forma estável os livros que concluí.
+
+### Pré-condições
+
+- O Player está autenticado.
+- O Book pertence ao Player.
+- O Book possui `total_pages` válido e positivo.
+- A ReadingSession considerada é válida e pertence ao mesmo Player e Book.
+
+### Regras de negócio
+
+- **RN-01:** O cálculo é owner-scoped.
+- **RN-02:** A conclusão é automática.
+- **RN-03:** 100% de cobertura de páginas únicas é obrigatória.
+- **RN-04:** Lacunas impedem conclusão.
+- **RN-05:** `highest_page_reached` sozinho não conclui.
+- **RN-06:** Overlaps e releituras não duplicam cobertura.
+- **RN-07:** A primeira transição para cobertura integral gera o milestone.
+- **RN-08:** Existe um único milestone por Player + Book.
+- **RN-09:** Não existe conclusão manual ou antecipada.
+- **RN-10:** `completed_at` funcional equivale ao `ended_at` da ReadingSession que provoca a primeira transição.
+- **RN-11:** Releituras posteriores não alteram conclusão nem `completed_at`.
+- **RN-12:** Não existe reversão automática.
+- **RN-13:** O Book permanece disponível.
+- **RN-14:** Novas ReadingSessions são permitidas após conclusão.
+- **RN-15:** Books concluídos devem ser identificáveis pelo Player.
+- **RN-16:** A conclusão deve ser historicamente representável.
+- **RN-17:** A ocorrência deve ser disponibilizável externamente.
+- **RN-18:** READ é autoridade sobre o fato de conclusão.
+- **RN-19:** Efeitos GAME não pertencem a esta User Story.
+- **RN-20:** Dados de outros Players não participam nem são expostos.
+
+### Cenários
+
+#### Cenário 1 — Cobertura incompleta
+
+**Dado** um Book com lacunas
+**Quando** atividade válida for registrada
+**Então** nenhum milestone ocorre.
+
+#### Cenário 2 — Última lacuna coberta
+
+**Dado** que a nova ReadingSession cobre a última lacuna
+**Quando** a cobertura atinge 100%
+**Então** a conclusão ocorre automaticamente.
+
+#### Cenário 3 — Última página com lacunas
+
+**Dado** que a última página foi alcançada, mas há lacunas
+**Quando** o progresso for avaliado
+**Então** o Book permanece incompleto.
+
+#### Cenário 4 — Releitura após conclusão
+
+**Dado** um Book concluído
+**Quando** nova atividade for registrada
+**Então** o milestone não se repete e `completed_at` não muda.
+
+#### Cenário 5 — Book disponível
+
+**Dado** um Book concluído
+**Quando** o Player consultar a biblioteca ou registrar atividade
+**Então** o Book permanece disponível.
+
+#### Cenário 6 — Isolamento de Player
+
+**Dado** atividade pertencente a outro Player
+**Quando** a conclusão for avaliada
+**Então** ela não participa do cálculo nem é exposta.
+
+#### Cenário 7 — Ocorrência externa
+
+**Dado** que o primeiro milestone ocorreu
+**Quando** consumidores autorizados forem considerados
+**Então** a ocorrência funcional pode ser disponibilizada sem definir mecanismo ou efeito GAME.
+
+### Critérios de aceite
+
+- A conclusão ocorre automaticamente apenas com 100% de cobertura única.
+- Não há conclusão manual, antecipada ou múltipla.
+- O milestone é único e historicamente estável.
+- `completed_at` usa o `ended_at` da sessão que provoca a primeira transição.
+- Releituras não criam novo milestone nem alteram `completed_at`.
+- O Book permanece disponível e aceita novas ReadingSessions.
+- O Player distingue Books concluídos de incompletos dentro do próprio ownership.
+- A conclusão é representável na jornada histórica.
+- A ocorrência externa é requisito conceitual, sem mecanismo definido.
+- Não há semântica de XP, GAME ou Character.
+
+### Fora do escopo
+
+- conclusão manual;
+- conclusão antecipada;
+- undo/reopen;
+- múltiplas conclusões;
+- Pesquisa;
+- READ-008;
+- RF-READ-009;
+- RF-READ-010;
+- XP e comportamento GAME;
+- ANLT, AI e DASH;
+- desenho de API/HTTP;
+- `/api/v1`;
+- arquitetura;
+- mecanismo de persistência;
+- transporte de eventos.
+
+### Rastreabilidade
+
+```text
+US-READ-005-001
+↓
+READ-005 — Livros Concluídos
+↓
+RF-READ-005 — Conclusão de Livro
+↓
+PD-READ-005
+↓
+Product Specification APPROVED / FROZEN
+```
+
+Implementation NOT AUTHORIZED.
+
+Sprint 09 NOT AUTHORIZED.
 ## US-READ-006-001 — Consultar Histórico de Leitura
 
 ### Identificação
