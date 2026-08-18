@@ -5111,7 +5111,18 @@ Todas as páginas no intervalo `1..total_pages` foram cobertas por pelo menos um
 
 ## Semântica temporal
 
-`completed_at` é informação funcional requerida. Seu valor corresponde ao `ended_at` da ReadingSession válida que provoca a primeira transição para cobertura integral. Sessões posteriores e releituras não alteram esse valor. A forma de representação ou persistência é decisão de Architecture Review.
+`completed_at` é informação funcional requerida. Seu valor corresponde ao `ended_at` da ReadingSession válida que provoca a primeira transição para cobertura integral. Sessões posteriores e releituras não alteram esse valor. A forma de representação ou persistência é definida pelo ADR-0042 e seus detalhes pertencem ao Technical Plan.
+
+## Dados preexistentes e sessões retroativas
+
+- Books com cobertura integral preexistente devem ser reconhecidos como concluídos.
+- O backfill é obrigatório.
+- Para ReadingSessions anteriores a READ-005, a ordem histórica é `ended_at` crescente.
+- `completed_at` é o primeiro `ended_at` em que a união cumulativa atinge 100% de `Book.total_pages`.
+- Empates de `ended_at` não alteram o timestamp resultante.
+- Um milestone existente nunca tem seu timestamp reescrito por sessão retroativa.
+- Uma sessão retroativa sem milestone pode criar a conclusão usando seu próprio `ended_at`.
+- Alteração posterior de `total_pages` não causa reversão automática.
 
 ## Resultado funcional
 
@@ -5231,7 +5242,9 @@ READ-005 — Livros Concluídos
 - Product Specification: APPROVED / FROZEN.
 - User Story: US-READ-005-001.
 - Completion Model: AUTOMATIC COMPLETION MILESTONE.
-- Architecture: PENDING.
+- Architecture: APPROVED / FROZEN.
+- Architecture Decision: ADR-0042 — Accepted.
+- Technical Plan: PENDING / NOT YET AUTHORIZED FOR EXECUTION.
 - Implementation: NOT AUTHORIZED.
 - Sprint 09: NOT AUTHORIZED.
 
