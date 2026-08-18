@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-ARCH-DECISION |
+| ID | READ-005-TECHNICAL-PLAN |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | ARCHITECTURE DECISION APPROVED / FROZEN |
-| Tipo | Arquitetura / Documental |
+| Status | TECHNICAL PLAN APPROVED / FROZEN |
+| Tipo | Technical Planning / Governance |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -25,7 +25,9 @@
 | Architecture Review | APPROVED |
 | Architecture Decision | ADR-0042 — ACCEPTED |
 | Architecture | APPROVED / FROZEN |
-| Technical Plan | PENDING |
+| Technical Plan | APPROVED / FROZEN |
+| Technical Plan Document | docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md |
+| Human Technical Review | APPROVED |
 | Implementation Authorization | NO |
 | Sprint 09 | NOT AUTHORIZED |
 
@@ -84,17 +86,14 @@
 
 ## Architecture Boundary
 
-Architecture Decision ADR-0042 está aceita e congelada. Nomes de tabela/coluna,
-SQL, ORM mapping, locking, retry, API, DTO, transporte de ocorrência e demais
-detalhes permanecem no Technical Plan. Isto não autoriza Implementation nem
-Sprint 09.
+Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
+aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
+Sua aprovação não autoriza Implementation nem Sprint 09.
 
 ## Próximo Gate
 
-TECHNICAL PLAN — READ-005 LIVROS CONCLUÍDOS
+IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 LIVROS CONCLUIDOS
 
-THIS DOES NOT AUTHORIZE SPRINT 09.
+TECHNICAL PLAN APPROVAL DOES NOT AUTHORIZE IMPLEMENTATION.
 
-TECHNICAL PLAN MAY START ONLY AFTER THIS ARCHITECTURE DECISION IS INTEGRATED AND VALIDATED IN MAIN.
-
-TECHNICAL PLAN DOES NOT AUTHORIZE IMPLEMENTATION.
+SPRINT 09 REMAINS NOT AUTHORIZED.

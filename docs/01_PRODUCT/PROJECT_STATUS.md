@@ -1,3 +1,27 @@
+## Technical Plan READ-005 — 2026-08-17
+
+**State:** APPROVED / FROZEN
+**Capability:** READ
+**Feature:** READ-005 — Livros Concluídos
+**RF:** RF-READ-005 — Conclusão de Livro
+**US:** US-READ-005-001
+**Human Technical Review:** APPROVED
+
+- ADR-0042 preserved.
+- BookCompletion dedicated and immutable; ownership derived through Book.
+- UNIQUE(book_id), SQLite BEGIN IMMEDIATE and mandatory SQLite FK enforcement.
+- foreign_key_check required before and after migration validation.
+- ReadingSession + Completion remain atomic.
+- Dedicated GET /book-completions read model.
+- Migration 0008 and deterministic backfill planned.
+- Best-effort in-process event seam; Outbox and GAME deferred.
+
+**Technical Plan:** APPROVED / FROZEN
+**Implementation:** NOT AUTHORIZED
+**Sprint 09:** NOT AUTHORIZED
+**Next Gate:** IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 LIVROS CONCLUÍDOS
+
+---
 ## Architecture Decision READ-005 — 2026-08-17
 
 **Human Decision:** APPROVED
@@ -18,10 +42,12 @@
 - Transporte externo durável deferred; GAME fora do escopo.
 
 **Product Clarification:** pre-existing completions + deterministic backfill approved.
-**Technical Plan:** PENDING
+**Technical Plan:** APPROVED / FROZEN
 **Implementation:** NOT AUTHORIZED
 **Sprint 09:** NOT AUTHORIZED
-**Next Gate:** TECHNICAL PLAN — READ-005 LIVROS CONCLUÍDOS
+**Technical Plan Document:** docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md
+**Human Technical Review:** APPROVED
+**Next Gate:** IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 LIVROS CONCLUÍDOS
 
 ## Product Specification READ-005 — 2026-08-16
 
