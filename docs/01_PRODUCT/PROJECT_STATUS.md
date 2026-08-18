@@ -1,3 +1,28 @@
+## Architecture Decision READ-005 — 2026-08-17
+
+**Human Decision:** APPROVED
+**ADR:** ADR-0042 — Accepted
+**Feature:** READ-005 — Livros Concluídos
+**Architecture:** APPROVED / FROZEN
+
+### Decisões congeladas
+
+- BookCompletion dedicado, separado de Book e ReadingProgress.
+- ReadingSession + BookCompletion atômicos no mesmo UoW e commit.
+- Single logical writer por Book e unicidade Player + Book.
+- `completed_at` persistido semanticamente a partir do `ended_at` disparador.
+- Read model dedicado; READ-006 e READ-007 permanecem inalterados.
+- Migration conceitualmente 0008 e backfill obrigatório.
+- Backfill por `ended_at` crescente; sessões retroativas seguem as regras aprovadas.
+- BookCompletion persistido é a fonte durável de verdade.
+- Transporte externo durável deferred; GAME fora do escopo.
+
+**Product Clarification:** pre-existing completions + deterministic backfill approved.
+**Technical Plan:** PENDING
+**Implementation:** NOT AUTHORIZED
+**Sprint 09:** NOT AUTHORIZED
+**Next Gate:** TECHNICAL PLAN — READ-005 LIVROS CONCLUÍDOS
+
 ## Product Specification READ-005 — 2026-08-16
 
 **Status:** APPROVED / FROZEN
@@ -22,7 +47,7 @@
 
 **Product Identity:** FROZEN
 **Product Specification:** FROZEN
-**Architecture Review:** PENDING
+**Architecture Review:** APPROVED / FROZEN
 **Technical Plan:** NOT AUTHORIZED
 **Implementation:** NOT AUTHORIZED
 **Sprint 09:** NOT AUTHORIZED

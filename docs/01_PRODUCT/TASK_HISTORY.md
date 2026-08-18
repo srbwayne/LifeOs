@@ -1,3 +1,25 @@
+## Architecture Decision READ-005 — 2026-08-17
+
+- **Human architecture decision:** APPROVED.
+- **ADR:** ADR-0042 — Accepted.
+- **BookCompletion:** registro dedicado, imutável e separado de Book e ReadingProgress.
+- **Atomicidade:** ReadingSession + Completion no mesmo UoW e commit.
+- **Concorrência:** single logical writer por Book e unicidade no banco.
+- **completed_at:** persistido semanticamente como `ended_at` da sessão disparadora.
+- **Read model:** direção dedicada para identificação e histórico de completion.
+- **Migration:** direção 0008.
+- **Backfill:** obrigatório para Books já completos, por `ended_at` crescente.
+- **Sessões retroativas:** regras de timestamp aprovadas e congeladas.
+- **Reversão automática:** não permitida.
+- **Fonte de verdade:** BookCompletion persistido.
+- **Outbox:** não requerida em READ-005 V1.
+- **GAME:** deferred para RF-READ-009.
+- **READ-003/004/006/007:** fronteiras preservadas.
+- **Technical Plan:** pendente.
+- **Implementação:** não autorizada.
+- **Sprint 09:** não autorizada.
+- **Next Gate:** Technical Plan — READ-005 Livros Concluídos.
+
 ## Product Specification READ-005 — 2026-08-16
 
 - **Product Owner:** APPROVED.

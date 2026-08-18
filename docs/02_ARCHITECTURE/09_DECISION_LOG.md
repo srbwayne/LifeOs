@@ -233,6 +233,14 @@ Os ADRs serão numerados sequencialmente.
 
 ---
 
+## Reading
+
+| ADR | Título | Status |
+|------|---------|--------|
+| ADR-0042 | READ-005 — Book Completion Milestone | Accepted |
+
+---
+
 # 9. Template Oficial de ADR
 
 ```markdown
