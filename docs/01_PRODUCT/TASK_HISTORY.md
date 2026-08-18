@@ -1,3 +1,16 @@
+## Technical Plan READ-005 — 2026-08-17
+
+- Human Technical Plan Review: APPROVED.
+- Technical Plan: APPROVED / FROZEN.
+- Findings: MAJOR-01, MAJOR-02, MINOR-01 and MINOR-02 resolved (4/4).
+- BookCompletion ownership is derived through Book; no persisted owner_id.
+- SQLite FK enforcement and foreign_key_check are mandatory implementation gates.
+- Session + Completion remain atomic; SQLite write serialization uses BEGIN IMMEDIATE.
+- Dedicated completion read model/API, migration 0008 and deterministic backfill are planned.
+- BookCompleted remains best-effort in-process; Outbox and GAME remain deferred.
+- Implementation: NOT AUTHORIZED.
+- Sprint 09: NOT AUTHORIZED.
+- Next Gate: Implementation Authorization Review — READ-005 Livros Concluídos.
 ## Architecture Decision READ-005 — 2026-08-17
 
 - **Human architecture decision:** APPROVED.
@@ -15,10 +28,13 @@
 - **Outbox:** não requerida em READ-005 V1.
 - **GAME:** deferred para RF-READ-009.
 - **READ-003/004/006/007:** fronteiras preservadas.
-- **Technical Plan:** pendente.
+- **Technical Plan:** APPROVED / FROZEN.
 - **Implementação:** não autorizada.
 - **Sprint 09:** não autorizada.
-- **Next Gate:** Technical Plan — READ-005 Livros Concluídos.
+- **Technical Plan Document:** docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
+**Human Technical Review:** APPROVED.
+**Findings:** 4/4 resolved.
+**Next Gate:** Implementation Authorization Review — READ-005 Livros Concluídos.
 
 ## Product Specification READ-005 — 2026-08-16
 

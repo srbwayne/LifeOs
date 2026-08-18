@@ -5244,7 +5244,8 @@ READ-005 — Livros Concluídos
 - Completion Model: AUTOMATIC COMPLETION MILESTONE.
 - Architecture: APPROVED / FROZEN.
 - Architecture Decision: ADR-0042 — Accepted.
-- Technical Plan: PENDING / NOT YET AUTHORIZED FOR EXECUTION.
+- Technical Plan: APPROVED / FROZEN.
+- Technical Plan reference: docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
 - Implementation: NOT AUTHORIZED.
 - Sprint 09: NOT AUTHORIZED.
 

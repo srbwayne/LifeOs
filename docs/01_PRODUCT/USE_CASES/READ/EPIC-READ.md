@@ -58,7 +58,8 @@ A Capability Reading é responsável por:
 **Product Specification:** APPROVED / FROZEN.
 **Architecture Review:** APPROVED / FROZEN.
 **Architecture Decision:** ADR-0042 — Accepted.
-**Technical Plan:** PENDING.
+**Technical Plan:** APPROVED / FROZEN.
+**Technical Plan document:** docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
 **Implementation:** NOT AUTHORIZED.
 **Sprint 09:** NOT AUTHORIZED.
 
@@ -102,7 +103,7 @@ A correção direta de READ-004 para Insights torna esta Feature convergente com
 - READ-005 — Livros Concluídos;
 - RF-READ-005 — Conclusão de Livro;
 - Pesquisa deixou de ser escopo implícito de READ-005;
-- Product Specification de READ-005: APPROVED / FROZEN; Architecture Review: APPROVED / FROZEN; ADR-0042: Accepted; Technical Plan: PENDING; Implementation: NOT AUTHORIZED; Sprint 09: NOT AUTHORIZED;
+- Product Specification de READ-005: APPROVED / FROZEN; Architecture Review: APPROVED / FROZEN; ADR-0042: Accepted; Technical Plan: APPROVED / FROZEN; Implementation: NOT AUTHORIZED; Sprint 09: NOT AUTHORIZED;
 - READ-008 ausente no Feature Catalog;
 - RF-READ-009 associado a READ-003.
 - RF-READ-010 fora da Sprint 07, com reconciliação pendente.
