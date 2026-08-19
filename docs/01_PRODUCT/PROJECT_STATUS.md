@@ -1,3 +1,23 @@
+## READ-005 Slice 1 Integration + Slice 2 Authorization — 2026-08-19
+
+**Slice 1:** IMPLEMENTED / PUBLISHED / FINAL REVIEW APPROVED / INTEGRATED
+**PR:** #31 — MERGED
+**Previous Main:** `a84900828908b5e1eb4cc6d9a04f36bd0784ab03`
+**Functional Main:** `700d7e9e6c66fb4716323c22ef5c4b3693c8d3de`
+**Main CI:** `32212825644` — SUCCESS
+**Local Validation:** 437 passed
+**Alembic:** 0007 (head)
+**Migration 0008:** NOT CREATED
+
+- Slice 2 Architectural / Implementation Authorization Review: PASS.
+- Human Slice 2 Authorization: APPROVED.
+- Current Executable Slice: SLICE 2 — SQLITE INTEGRITY FOUNDATION.
+- Only Slice 2 is executable; Sprint 09 authorization remains program-level.
+- Slices 3..8: GATED / INDIVIDUALLY GATED.
+
+**Next Gate:** SLICE 2 IMPLEMENTATION PRE-FLIGHT — READ-005 SQLITE INTEGRITY FOUNDATION
+
+---
 ## Implementation Authorization READ-005 - 2026-08-18
 
 **State:** APPROVED

@@ -1,3 +1,19 @@
+## READ-005 Slice 1 Integration + Slice 2 Authorization — 2026-08-19
+
+- Slice 1 integrated through PR #31 via Rebase and Merge.
+- Main SHA: `700d7e9e6c66fb4716323c22ef5c4b3693c8d3de`.
+- Main CI: `32212825644` — SUCCESS.
+- Local finalization: PASS.
+- Tests: 437 passed.
+- Alembic: 0007 (head).
+- Slice 2 Architectural / Implementation Authorization Review: PASS.
+- Human Slice 2 Authorization: APPROVED.
+- Slice 2 — SQLITE INTEGRITY FOUNDATION is the only executable slice.
+- Slices 3..8 remain GATED / INDIVIDUALLY GATED.
+- Migration 0008: NOT CREATED.
+- Next Gate: SLICE 2 IMPLEMENTATION PRE-FLIGHT — READ-005 SQLITE INTEGRITY FOUNDATION.
+
+---
 ## Implementation Authorization READ-005 - 2026-08-18
 
 - Human Decision: APPROVED.
