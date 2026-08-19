@@ -8,9 +8,9 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE-01 |
+| ID | READ-005-S09-SLICE-02 |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION AUTHORIZED - SLICE 1 READY |
+| Status | IMPLEMENTATION AUTHORIZED - SLICE 2 READY |
 | Tipo | Implementation |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
@@ -32,9 +32,10 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Slice | SLICE 1 - DOMAIN FOUNDATION |
-| Slice 1 Status | AUTHORIZED / NOT STARTED |
-| Slices 2..8 | NOT YET EXECUTABLE / INDIVIDUALLY GATED |
+| Current Executable Slice | SLICE 2 - SQLITE INTEGRITY FOUNDATION |
+| Slice 1 Status | INTEGRATED |
+| Slice 2 Status | AUTHORIZED / NOT STARTED |
+| Slices 3..8 | NOT YET EXECUTABLE / INDIVIDUALLY GATED |
 
 ## Especificação aprovada
 
@@ -83,31 +84,42 @@
 - Human Implementation Authorization Decision: APPROVED (2026-08-18).
 - Implementation Program: AUTHORIZED.
 - Sprint 09: AUTHORIZED at program level.
-- ONLY SLICE 1 IS AUTHORIZED FOR EXECUTION.
-- Slices 2..8 remain NOT YET EXECUTABLE / INDIVIDUALLY GATED.
-- Do not start Slice 2 until Slice 1 has completed its implementation, review and integration gates.
+- Slice 1 completed implementation, publication, final review and integration.
+- PR #31: MERGED via Rebase and Merge.
+- Main after Slice 1 integration: `700d7e9e6c66fb4716323c22ef5c4b3693c8d3de`.
+- Main CI run `32212825644`: SUCCESS.
+- Slice 2 Architectural / Implementation Authorization Review: PASS.
+- Human Slice 2 Authorization: APPROVED (2026-08-19).
+- ONLY SLICE 2 IS AUTHORIZED FOR EXECUTION.
+- Slices 3..8 remain NOT YET EXECUTABLE / INDIVIDUALLY GATED.
 - Sprint 09 authorization is not blanket permission to implement all slices in one branch or PR.
 
-### SLICE 1 - DOMAIN FOUNDATION
+### SLICE 2 - SQLITE INTEGRITY FOUNDATION
 
-Goal: introduce the pure READ domain foundation for BookCompletion.
+Goal: establish the frozen SQLite foreign-key integrity foundation at shared
+Engine/connection infrastructure level.
 
-Permitted scope when Slice 1 executes:
+Permitted scope when Slice 2 executes:
 
-- BookCompletionId using the TSID project convention;
-- dedicated immutable BookCompletion Aggregate Root/domain milestone;
-- state limited to id, book_id and completed_at;
-- domain invariants, creation factory, restore path if required by project patterns;
-- equality by BookCompletionId;
-- domain-only tests.
+- Engine-level SQLite connection enforcement;
+- `PRAGMA foreign_keys = ON`;
+- runtime SQLite connection coverage;
+- test SQLite connection coverage;
+- Alembic online SQLite connection coverage;
+- verification that `PRAGMA foreign_keys == 1`;
+- verification that invalid foreign-key writes are rejected;
+- verification of clean SQLite foreign-key integrity where appropriate;
+- unchanged behavior for non-SQLite databases;
+- infrastructure-level tests required by this slice.
 
-Slice 1 must not include owner_id, created_at as functional domain state, updated_at,
-manual completion, reopen, revocation, persistence, repository, ORM, migration, API,
-SQLite listener, BEGIN IMMEDIATE integration or event integration.
+Slice 2 must not include BookCompletion ORM models, persistence mappers or repositories;
+the `book_completions` table, UNIQUE(book_id), completion indexes, migration 0008 or
+backfill; BEGIN IMMEDIATE, retry or ReadingSession + Completion transaction integration;
+completion detection orchestration; API, GET /book-completions, BookCompleted, EventBus
+changes, GAME or any work from Slices 3..8.
 
 ### Deferred slices
 
-2. SQLite Integrity Foundation.
 3. Completion Persistence.
 4. Transactional Write + Concurrency.
 5. Dedicated Read Model / API.
@@ -117,9 +129,11 @@ SQLite listener, BEGIN IMMEDIATE integration or event integration.
 
 ## Pendências
 
-- READ-005: IMPLEMENTATION AUTHORIZED / NOT STARTED.
-- RF-READ-005: IMPLEMENTATION AUTHORIZED / NOT STARTED.
-- US-READ-005-001: IMPLEMENTATION AUTHORIZED / NOT STARTED.
+- READ-005: SLICE 1 INTEGRATED / SLICE 2 AUTHORIZED NOT STARTED.
+- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 AUTHORIZED NOT STARTED.
+- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 AUTHORIZED NOT STARTED.
+- Migration 0008: NOT CREATED.
+- Alembic: 0007 (head).
 - READ-008: DEFERRED.
 - RF-READ-009: ASSOCIAÇÃO PENDENTE / DEFERRED.
 - RF-READ-010: RECONCILIAÇÃO PENDENTE / DEFERRED.
@@ -130,14 +144,15 @@ SQLite listener, BEGIN IMMEDIATE integration or event integration.
 
 Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
 aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-A autorização humana é limitada à Slice 1; as demais slices permanecem individualmente gated.
+A autorização humana atual é limitada à Slice 2; as Slices 3..8 permanecem
+individualmente gated.
 
 ## Próximo Gate
 
-SLICE 1 IMPLEMENTATION PRE-FLIGHT - READ-005 DOMAIN FOUNDATION
+SLICE 2 IMPLEMENTATION PRE-FLIGHT — READ-005 SQLITE INTEGRITY FOUNDATION
 
-ONLY SLICE 1 IS AUTHORIZED FOR EXECUTION.
+ONLY SLICE 2 IS AUTHORIZED FOR EXECUTION.
 
-DO NOT START SLICE 2 UNTIL SLICE 1 HAS COMPLETED ITS OWN IMPLEMENTATION / REVIEW / INTEGRATION GATES.
+DO NOT START SLICE 3.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
