@@ -5246,8 +5246,10 @@ READ-005 — Livros Concluídos
 - Architecture Decision: ADR-0042 — Accepted.
 - Technical Plan: APPROVED / FROZEN.
 - Technical Plan reference: docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-- Implementation: NOT AUTHORIZED.
-- Sprint 09: NOT AUTHORIZED.
+- Implementation Authorization: APPROVED.
+- Sprint 09: AUTHORIZED.
+- Implementation: AUTHORIZED / NOT STARTED.
+- Current executable slice: SLICE 1 - DOMAIN FOUNDATION.
 
 ---
 # RF-READ-006 — Consulta ao Histórico de Leitura

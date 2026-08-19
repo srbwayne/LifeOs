@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-TECHNICAL-PLAN |
+| ID | READ-005-S09-SLICE-01 |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | TECHNICAL PLAN APPROVED / FROZEN |
-| Tipo | Technical Planning / Governance |
+| Status | IMPLEMENTATION AUTHORIZED - SLICE 1 READY |
+| Tipo | Implementation |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -28,8 +28,13 @@
 | Technical Plan | APPROVED / FROZEN |
 | Technical Plan Document | docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md |
 | Human Technical Review | APPROVED |
-| Implementation Authorization | NO |
-| Sprint 09 | NOT AUTHORIZED |
+| Implementation Authorization Review | PASS |
+| Human Implementation Authorization | APPROVED |
+| Implementation Program | AUTHORIZED |
+| Sprint 09 | AUTHORIZED |
+| Current Executable Slice | SLICE 1 - DOMAIN FOUNDATION |
+| Slice 1 Status | AUTHORIZED / NOT STARTED |
+| Slices 2..8 | NOT YET EXECUTABLE / INDIVIDUALLY GATED |
 
 ## Especificação aprovada
 
@@ -73,11 +78,48 @@
 - RF-READ-007: ENTREGUE.
 - RF-READ-011: ENTREGUE.
 
+## Implementation Authorization
+
+- Human Implementation Authorization Decision: APPROVED (2026-08-18).
+- Implementation Program: AUTHORIZED.
+- Sprint 09: AUTHORIZED at program level.
+- ONLY SLICE 1 IS AUTHORIZED FOR EXECUTION.
+- Slices 2..8 remain NOT YET EXECUTABLE / INDIVIDUALLY GATED.
+- Do not start Slice 2 until Slice 1 has completed its implementation, review and integration gates.
+- Sprint 09 authorization is not blanket permission to implement all slices in one branch or PR.
+
+### SLICE 1 - DOMAIN FOUNDATION
+
+Goal: introduce the pure READ domain foundation for BookCompletion.
+
+Permitted scope when Slice 1 executes:
+
+- BookCompletionId using the TSID project convention;
+- dedicated immutable BookCompletion Aggregate Root/domain milestone;
+- state limited to id, book_id and completed_at;
+- domain invariants, creation factory, restore path if required by project patterns;
+- equality by BookCompletionId;
+- domain-only tests.
+
+Slice 1 must not include owner_id, created_at as functional domain state, updated_at,
+manual completion, reopen, revocation, persistence, repository, ORM, migration, API,
+SQLite listener, BEGIN IMMEDIATE integration or event integration.
+
+### Deferred slices
+
+2. SQLite Integrity Foundation.
+3. Completion Persistence.
+4. Transactional Write + Concurrency.
+5. Dedicated Read Model / API.
+6. Migration 0008 + Backfill.
+7. Best-Effort Event Seam.
+8. Full Regression + Governance.
+
 ## Pendências
 
-- READ-005: PRODUCT SPECIFICATION APPROVED / NOT DELIVERED.
-- RF-READ-005: PRODUCT SPECIFICATION APPROVED / NOT DELIVERED.
-- US-READ-005-001: APPROVED / NOT DELIVERED.
+- READ-005: IMPLEMENTATION AUTHORIZED / NOT STARTED.
+- RF-READ-005: IMPLEMENTATION AUTHORIZED / NOT STARTED.
+- US-READ-005-001: IMPLEMENTATION AUTHORIZED / NOT STARTED.
 - READ-008: DEFERRED.
 - RF-READ-009: ASSOCIAÇÃO PENDENTE / DEFERRED.
 - RF-READ-010: RECONCILIAÇÃO PENDENTE / DEFERRED.
@@ -88,12 +130,14 @@
 
 Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
 aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-Sua aprovação não autoriza Implementation nem Sprint 09.
+A autorização humana é limitada à Slice 1; as demais slices permanecem individualmente gated.
 
 ## Próximo Gate
 
-IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 LIVROS CONCLUIDOS
+PRE-PR IMPLEMENTATION AUTHORIZATION AUDIT - READ-005 LIVROS CONCLUIDOS
 
-TECHNICAL PLAN APPROVAL DOES NOT AUTHORIZE IMPLEMENTATION.
+ONLY SLICE 1 IS AUTHORIZED FOR EXECUTION.
 
-SPRINT 09 REMAINS NOT AUTHORIZED.
+DO NOT START SLICE 2 UNTIL SLICE 1 HAS COMPLETED ITS OWN IMPLEMENTATION / REVIEW / INTEGRATION GATES.
+
+SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
