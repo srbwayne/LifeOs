@@ -1,3 +1,16 @@
+## PRE-SLICE-2 AUTH/CHARACTER FK Remediation Authorization — 2026-08-20
+
+- Slice 2 implementation pre-flight: BLOCKED by the pre-existing AUTH/CHARACTER SQLite FK write-order defect.
+- Baseline: 437 passed; process-local SQLite FK enforcement diagnostic: 358 passed / 79 failed.
+- Existing database `foreign_key_check` violations: 0.
+- Remediation pre-flight: PASS; human technical review: APPROVED.
+- Selected design: explicit UoW flush barriers — User save → flush → Player save → flush → Character save → one final commit.
+- Authorized future implementation allowlist: `app/shared/application/unit_of_work.py`, `app/shared/infrastructure/unit_of_work.py`, `app/auth/application/commands/register_user.py`, `app/character/application/factories/character_factory.py`, `app/composition_root.py`, and `tests/auth/integration/test_registration_flow.py`.
+- No implementation, migration, SQLite listener, or READ production change executed.
+- Next Gate: PRE-SLICE-2 REMEDIATION IMPLEMENTATION — AUTH/CHARACTER SQLITE FK WRITE ORDER.
+
+---
+
 ## READ-005 Slice 1 Integration + Slice 2 Authorization — 2026-08-19
 
 - Slice 1 integrated through PR #31 via Rebase and Merge.

@@ -1,3 +1,21 @@
+## PRE-SLICE-2 AUTH/CHARACTER FK Remediation Authorization — 2026-08-20
+
+- Slice 2 implementation pre-flight: BLOCKED.
+- Reason: pre-existing AUTH/CHARACTER SQLite FK write order.
+- Current database `foreign_key_check` violations: 0.
+- Remediation pre-flight: PASS.
+- Human technical review: APPROVED.
+- Selected design: explicit UoW flush barriers.
+- One transaction preserved; one final commit preserved; events remain post-commit.
+- Remediation implementation: NOT STARTED.
+- Slice 2 implementation: NOT STARTED.
+- Slices 3..8: GATED.
+- Migration 0008: NOT CREATED.
+
+**Next Gate:** PRE-SLICE-2 REMEDIATION IMPLEMENTATION — AUTH/CHARACTER SQLITE FK WRITE ORDER
+
+---
+
 ## READ-005 Slice 1 Integration + Slice 2 Authorization — 2026-08-19
 
 **Slice 1:** IMPLEMENTED / PUBLISHED / FINAL REVIEW APPROVED / INTEGRATED
