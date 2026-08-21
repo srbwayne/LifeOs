@@ -1,3 +1,21 @@
+## READ-005 Slice 2 Closed / Slice 3 Pre-Flight Authorized — 2026-08-21
+
+- PRE-SLICE-2 remediation was finalized before the Slice 2 implementation.
+- PR #37 implemented only the frozen two-file SQLite integrity foundation and
+  was merged into `432fbbe415e54a2d3d3fb81d972e52133e9f8977`.
+- Main CI `32439884304`: 3/3 SUCCESS; local integration finalization: PASS.
+- Validation: infrastructure tests 5 passed; AUTH/CHARACTER regression 4 passed;
+  full and DeprecationWarning-as-error suites 445 passed; coverage 98.13%.
+- SQLite enforcement is active; runtime and existing database
+  `foreign_key_check`: []. Alembic remains 0007 (head).
+- Slice 2: CLOSED / INTEGRATED / FINALIZED. Migration 0008: NOT CREATED.
+- Slice 3 implementation has not started. Only its read-only implementation
+  pre-flight is now executable; Slices 4..8 remain gated.
+
+**Next Gate:** SLICE 3 IMPLEMENTATION PRE-FLIGHT — READ-005 COMPLETION PERSISTENCE
+
+---
+
 ## READ-005 Slice 2 Implementation Authorization — 2026-08-20
 
 - Slice 2 was originally blocked by the AUTH/CHARACTER SQLite FK write-order defect; the
