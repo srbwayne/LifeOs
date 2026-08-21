@@ -1,3 +1,23 @@
+## READ-005 Slice 2 Implementation Authorization — 2026-08-20
+
+- Governance resumption PR #35: MERGED.
+- Main: `44307283ea0a79a8a41872da1e29e191d2281aab`.
+- Main CI `32435936394`: 3/3 SUCCESS.
+- Baseline: 440 passed; coverage: 98.12%; Alembic: 0007 (head).
+- PRE-SLICE-2 remediation: FINALIZED; prerequisite: RESOLVED.
+- Slice 2 Implementation Pre-Flight: PASS; Human Technical Review: APPROVED.
+- Selected design: centralized SQLAlchemy Engine-class `connect` listener with
+  `sqlite3.Connection` guard and `PRAGMA foreign_keys = ON` for SQLite only.
+- Frozen implementation allowlist: `app/shared/infrastructure/database.py` and
+  new `tests/shared/infrastructure/test_database.py` only.
+- Required coverage: runtime, direct test Engines, Alembic online SQLite, invalid and valid
+  FK behavior, clean `foreign_key_check`, and non-SQLite neutrality.
+- Migration 0008: NOT CREATED. Slices 3..8: GATED.
+
+**Next Gate:** SLICE 2 IMPLEMENTATION — READ-005 SQLITE INTEGRITY FOUNDATION
+
+---
+
 ## PRE-SLICE-2 Remediation Finalized / Slice 2 Resumed — 2026-08-20
 
 - PR #34: MERGED.

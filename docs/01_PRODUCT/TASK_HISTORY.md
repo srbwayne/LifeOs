@@ -1,3 +1,22 @@
+## READ-005 Slice 2 Implementation Authorization — 2026-08-20
+
+- Slice 2 was originally blocked by the AUTH/CHARACTER SQLite FK write-order defect; the
+  prerequisite remediation was completed and finalized through PR #34.
+- Governance resumed through PR #35; main is `44307283ea0a79a8a41872da1e29e191d2281aab`.
+- New Slice 2 Implementation Pre-Flight: PASS; Human Technical Review: APPROVED.
+- Main CI `32435936394`: 3/3 SUCCESS; baseline: 440 passed; coverage: 98.12%; Alembic: 0007 (head).
+- Process-local global Engine listener diagnostic: 440 passed; invalid FK rejected, valid FK
+  accepted, multiple new SQLite connections enabled, and `foreign_key_check`: [].
+- Runtime, current direct test Engines, and Alembic online coverage were proven; non-SQLite
+  neutrality was proven with the `sqlite3.Connection` guard.
+- Frozen implementation allowlist: `app/shared/infrastructure/database.py` and new
+  `tests/shared/infrastructure/test_database.py` only.
+- Slice 2 implementation has not executed. Migration 0008 is not created. Slices 3..8 remain gated.
+
+**Next Gate:** SLICE 2 IMPLEMENTATION — READ-005 SQLITE INTEGRITY FOUNDATION
+
+---
+
 ## PRE-SLICE-2 Remediation Finalized / Slice 2 Resumed — 2026-08-20
 
 - Original Slice 2 blocker: pre-existing AUTH/CHARACTER SQLite FK write-order defect.

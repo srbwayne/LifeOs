@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE-02-PREFLIGHT |
+| ID | READ-005-S09-SLICE-02 |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED — SLICE 2 |
-| Tipo | Implementation Pre-Flight |
+| Status | IMPLEMENTATION AUTHORIZED — SLICE 2 READY |
+| Tipo | Implementation |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,10 +32,10 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 2 IMPLEMENTATION PRE-FLIGHT — READ-005 SQLITE INTEGRITY FOUNDATION |
+| Current Executable Unit | SLICE 2 IMPLEMENTATION — READ-005 SQLITE INTEGRITY FOUNDATION |
 | Slice 1 Status | INTEGRATED |
-| Pre-Slice-2 Remediation Status | IMPLEMENTED / REVIEWED / MERGED / FINALIZED |
-| Slice 2 Status | AUTHORIZED / PREREQUISITE RESOLVED / IMPLEMENTATION NOT STARTED |
+| Pre-Slice-2 Remediation Status | FINALIZED |
+| Slice 2 Status | IMPLEMENTATION AUTHORIZED / NOT STARTED |
 | Slices 3..8 | NOT EXECUTABLE / GATED |
 
 ## Especificação aprovada
@@ -94,7 +94,9 @@
 - Slice 2 Implementation Pre-Flight was BLOCKED by the pre-existing AUTH/CHARACTER SQLite FK write-order defect.
 - PRE-SLICE-2 Remediation Pre-Flight: PASS; Human Technical Review: APPROVED.
 - PRE-SLICE-2 Remediation: IMPLEMENTED, REVIEWED, MERGED, and FINALIZED through PR #34.
-- Slice 2 prerequisite: RESOLVED. Slice 2 returns only to IMPLEMENTATION PRE-FLIGHT.
+- Slice 2 prerequisite: RESOLVED.
+- Slice 2 Implementation Pre-Flight: PASS; Human Technical Review: APPROVED.
+- Slice 2 implementation is authorized only through the frozen two-file allowlist below.
 - Slices 3..8 remain NOT EXECUTABLE / GATED.
 - Sprint 09 authorization is not blanket permission to implement all slices in one branch or PR.
 
@@ -127,6 +129,35 @@ The prerequisite is RESOLVED.
 Goal: establish the frozen SQLite foreign-key integrity foundation at shared
 Engine/connection infrastructure level.
 
+Frozen implementation mechanism:
+
+- SQLAlchemy Engine-class `connect` listener registered in
+  `app/shared/infrastructure/database.py` before runtime Engine creation;
+- SQLite guard: `isinstance(dbapi_connection, sqlite3.Connection)`;
+- SQLite connections execute `PRAGMA foreign_keys = ON`; non-SQLite connections are no-op;
+- the listener does not commit, rollback, change transaction mode, isolation level, or use
+  `Connection.autocommit`.
+
+Frozen implementation allowlist:
+
+1. `app/shared/infrastructure/database.py` — centralized SQLite-gated Engine listener only.
+2. `tests/shared/infrastructure/test_database.py` — new behavioral infrastructure tests only.
+
+Required tests and invariants:
+
+- fresh and multiple direct SQLite Engine connections report `foreign_keys == 1`;
+- invalid FK writes fail, valid FK writes succeed, and `foreign_key_check` is clean;
+- Alembic online SQLite connection is covered; non-SQLite callback path executes no PRAGMA;
+- runtime, current direct test Engines, and Alembic online Engines are covered;
+- repositories remain unaware of PRAGMA policy and the complete suite remains green.
+
+Accepted risks:
+
+- shared database infrastructure must be imported before directly created Engines establish
+  connections; all current runtime, test, and Alembic paths satisfy this ordering;
+- existing scoped test FK listeners may remain; they are redundant and idempotent;
+- the guard intentionally supports only the configured built-in `sqlite3` / pysqlite driver.
+
 Permitted scope when Slice 2 executes:
 
 - Engine-level SQLite connection enforcement;
@@ -146,9 +177,7 @@ backfill; BEGIN IMMEDIATE, retry or ReadingSession + Completion transaction inte
 completion detection orchestration; API, GET /book-completions, BookCompleted, EventBus
 changes, GAME or any work from Slices 3..8.
 
-Only the Slice 2 IMPLEMENTATION PRE-FLIGHT is executable now. DO NOT IMPLEMENT
-SLICE 2 YET. The next technical gate must re-evaluate implementation readiness
-after the integrated AUTH/CHARACTER remediation.
+ONLY SLICE 2 IS AUTHORIZED FOR IMPLEMENTATION. Slices 3..8 remain gated.
 
 ### Deferred slices
 
@@ -161,9 +190,9 @@ after the integrated AUTH/CHARACTER remediation.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 IMPLEMENTATION PRE-FLIGHT AUTHORIZED.
-- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 PREREQUISITE RESOLVED / IMPLEMENTATION NOT STARTED.
-- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 PREREQUISITE RESOLVED / IMPLEMENTATION NOT STARTED.
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 IMPLEMENTATION AUTHORIZED.
+- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 IMPLEMENTATION AUTHORIZED / NOT STARTED.
+- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 IMPLEMENTATION AUTHORIZED / NOT STARTED.
 - Migration 0008: NOT CREATED.
 - Alembic: 0007 (head).
 - READ-008: DEFERRED.
@@ -176,14 +205,14 @@ after the integrated AUTH/CHARACTER remediation.
 
 Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
 aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-A autorização humana atual é limitada ao IMPLEMENTATION PRE-FLIGHT da Slice 2;
-as Slices 3..8 permanecem gated.
+A autorização humana atual é limitada à IMPLEMENTATION da Slice 2 no allowlist
+congelado; as Slices 3..8 permanecem gated.
 
 ## Próximo Gate
 
-SLICE 2 IMPLEMENTATION PRE-FLIGHT — READ-005 SQLITE INTEGRITY FOUNDATION
+SLICE 2 IMPLEMENTATION — READ-005 SQLITE INTEGRITY FOUNDATION
 
-ONLY THE SLICE 2 IMPLEMENTATION PRE-FLIGHT IS AUTHORIZED FOR EXECUTION.
+ONLY SLICE 2 IS AUTHORIZED FOR IMPLEMENTATION.
 
 DO NOT START SLICE 3.
 
