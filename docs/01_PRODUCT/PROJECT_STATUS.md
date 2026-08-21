@@ -1,3 +1,18 @@
+## READ-005 Slice 2 Finalized / Slice 3 Pre-Flight Authorized — 2026-08-21
+
+- PR #37: MERGED; canonical main: `432fbbe415e54a2d3d3fb81d972e52133e9f8977`.
+- Main CI `32439884304`: 3/3 SUCCESS; local finalization: PASS.
+- Validation: 445 tests; coverage 98.13%; Alembic 0007 (head).
+- SQLite runtime `foreign_keys == 1`; runtime and existing database
+  `foreign_key_check`: [].
+- Slice 2: INTEGRATED / FINALIZED. Migration 0008: NOT CREATED.
+- Slice 3 implementation: NOT STARTED. Only its read-only implementation
+  pre-flight is authorized; Slices 4..8 remain gated.
+
+**Next Gate:** SLICE 3 IMPLEMENTATION PRE-FLIGHT — READ-005 COMPLETION PERSISTENCE
+
+---
+
 ## READ-005 Slice 2 Implementation Authorization — 2026-08-20
 
 - Governance resumption PR #35: MERGED.
