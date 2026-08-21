@@ -22,6 +22,9 @@ class SqlAlchemyUnitOfWork(IUnitOfWork):
         if aggregate not in self._tracked_aggregates:
             self._tracked_aggregates.append(aggregate)
 
+    def flush(self):
+        self.session.flush()
+
     def _publish_domain_events(self):
         events = []
         for aggregate in self._tracked_aggregates:
