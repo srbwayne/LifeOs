@@ -1,3 +1,20 @@
+## PRE-SLICE-2 Remediation Finalized / Slice 2 Resumed — 2026-08-20
+
+- Original Slice 2 blocker: pre-existing AUTH/CHARACTER SQLite FK write-order defect.
+- Baseline: 437 passed; original process-local FK diagnostic: 358 passed / 79 failed.
+- Remediation pre-flight: PASS; governance authorization: integrated.
+- PR #34 implemented the approved UoW flush barriers: User save → flush → Player save → flush → Character save → one final commit.
+- Allowlist amendment added no-op `flush()` compatibility only to `tests/read/application/test_create_reading_session.py` and `tests/read/application/test_create_book.py` fake UoWs.
+- Main: `f1a1af321a85576d1c8d7cba22cc8adf47167258`; Main CI `32433670497`: 3/3 SUCCESS.
+- Local finalization: PASS; focused remediation tests: 4 passed; full suite: 440 passed; coverage: 98.12%.
+- Global process-local SQLite FK diagnostic: 440 passed; registration cascade failures: 0; `foreign_key_check`: [].
+- Prerequisite: RESOLVED.
+- Slice 2 resumed at IMPLEMENTATION PRE-FLIGHT only; no Slice 2 implementation, migration, SQLite listener, or READ production change was introduced.
+
+**Next Gate:** SLICE 2 IMPLEMENTATION PRE-FLIGHT — READ-005 SQLITE INTEGRITY FOUNDATION
+
+---
+
 ## PRE-SLICE-2 AUTH/CHARACTER FK Remediation Authorization — 2026-08-20
 
 - Slice 2 implementation pre-flight: BLOCKED by the pre-existing AUTH/CHARACTER SQLite FK write-order defect.
