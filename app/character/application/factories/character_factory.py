@@ -7,6 +7,7 @@ from app.character.domain.errors.character_errors import (
 from app.character.domain.ports.character_repository import ICharacterRepository
 from app.character.domain.ports.player_repository import IPlayerRepository
 from app.character.domain.value_objects.player_name import PlayerName
+from app.shared.application.unit_of_work import IUnitOfWork
 from app.shared.domain.identifiers.user_id import UserId
 
 
@@ -15,9 +16,11 @@ class CharacterFactory:
         self,
         player_repository: IPlayerRepository,
         character_repository: ICharacterRepository,
+        unit_of_work: IUnitOfWork,
     ):
         self._player_repository = player_repository
         self._character_repository = character_repository
+        self._unit_of_work = unit_of_work
 
     def create_initial(self, user_id: UserId, email: str) -> tuple[Player, Character]:
         if self._player_repository.find_by_user_id(user_id):
@@ -28,6 +31,7 @@ class CharacterFactory:
 
         player = Player.create(user_id=user_id, name=player_name)
         self._player_repository.save(player)
+        self._unit_of_work.flush()
 
         if self._character_repository.find_by_player_id(player.id):
             raise PlayerAlreadyHasCharacterError()

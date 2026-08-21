@@ -79,6 +79,9 @@ class FakeUnitOfWork:
         if exc_type is not None:
             self.rollback()
 
+    def flush(self) -> None:
+        pass
+
     def commit(self) -> None:
         self.commit_count += 1
 

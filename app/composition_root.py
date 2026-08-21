@@ -22,8 +22,9 @@ from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 def get_character_factory(
     player_repo: IPlayerRepository = Depends(get_player_repository),
     character_repo: ICharacterRepository = Depends(get_character_repository),
+    unit_of_work: SqlAlchemyUnitOfWork = Depends(get_uow),
 ) -> ICharacterFactory:
-    return CharacterFactory(player_repo, character_repo)
+    return CharacterFactory(player_repo, character_repo, unit_of_work)
 
 
 def get_register_user_handler(
