@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE-03-PREFLIGHT |
+| ID | READ-005-S09-SLICE-03 |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED — SLICE 3 |
-| Tipo | Implementation Pre-Flight |
+| Status | IMPLEMENTATION AUTHORIZED — SLICE 3 READY |
+| Tipo | Implementation |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,11 +32,11 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 3 IMPLEMENTATION PRE-FLIGHT — READ-005 COMPLETION PERSISTENCE |
+| Current Executable Unit | SLICE 3 IMPLEMENTATION — READ-005 COMPLETION PERSISTENCE |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
-| Slice 3 Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED / IMPLEMENTATION NOT STARTED |
+| Slice 3 Status | IMPLEMENTATION AUTHORIZED / IMPLEMENTATION NOT STARTED |
 | Slices 4..8 | NOT EXECUTABLE / GATED |
 | Migration 0008 | NOT CREATED |
 | Alembic | 0007 (head) |
@@ -193,53 +193,78 @@ Slice 2 closure evidence:
 
 Slice 2 is CLOSED / INTEGRATED / FINALIZED.
 
-### SLICE 3 — COMPLETION PERSISTENCE — IMPLEMENTATION PRE-FLIGHT
+### SLICE 3 — COMPLETION PERSISTENCE — IMPLEMENTATION AUTHORIZED
 
-Goal: perform a strictly read-only implementation pre-flight for the persistence
-foundation of BookCompletion. The pre-flight must inspect the current repository
-and determine the smallest valid implementation slice consistent with the frozen
-READ-005 Technical Plan. It must not implement anything.
+The strictly read-only Slice 3 implementation pre-flight: PASS. Human Technical
+Review: APPROVED. Implementation Authorization Review: APPROVED. Slice 3 is the
+only implementation unit now authorized; implementation has not started.
 
-Frozen persistence context to preserve:
+Frozen domain and ownership contract:
 
-- BookCompletion is a dedicated immutable Aggregate Root with `id`, `book_id`
-  and `completed_at`; it has no `owner_id`, `user_id` or `updated_at`.
-- Ownership is derived through `BookCompletion.book_id → Book.id → Book.owner_id`.
-- The planned `book_completions` persistence has `id`, `book_id`, `completed_at`
-  and technical `created_at`; it requires UNIQUE(book_id), a book FK using
-  RESTRICT / NO ACTION, and `(completed_at, book_id)` indexing.
-- Migration 0008 belongs exclusively to Slice 6 and must not be created during
-  this pre-flight or future Slice 3 implementation.
-- Slice 2 SQLite enforcement is a finalized prerequisite: repositories must not
-  execute PRAGMA and the listener must not be duplicated or modified absent a
-  new blocker requiring human review.
+- BookCompletion remains a dedicated immutable Aggregate Root with `id`,
+  `book_id`, and `completed_at`; it has no `owner_id`, `user_id`, or `updated_at`.
+  Book, ReadingProgress, and the domain aggregate remain unchanged.
+- Domain ownership is derived through `BookCompletion.book_id → Book.id → Book.owner_id`.
+  The persistence owner-safe lookup derives through
+  `BookCompletionModel.book_id → BookModel.id → BookModel.user_id`. The table
+  must not persist an owner/user identifier. Wrong-owner lookup returns `None`.
+- The repository port is `IBookCompletionRepository`, with exactly
+  `save(completion)` and `get_by_book_and_owner(book_id, owner_id)`. The latter
+  joins `BookCompletionModel` to `BookModel`, filters completion `book_id` and
+  `BookModel.user_id`, and returns `BookCompletion | None`.
 
-Authorized read-only investigation:
+Frozen ORM, mapper, and repository contract:
 
-- BookCompletion domain aggregate and identifier; READ persistence structure;
-  BookModel; ReadingSessionModel; mappers; repository ports and SQLAlchemy
-  implementations; owner-scoped query patterns; Base/metadata registration;
-  persistence exports; dependency wiring only when registration requires it;
-  relevant unit/integration and architecture tests; SQLite FK foundation;
-  Alembic model-import behavior; ADR-0042; Technical Plan; and this task.
-- Determine exact ORM model, mapper, repository contract and owner-safe
-  `get_by_book_and_owner(book_id, owner_id)` semantics (or the exact established
-  equivalent), metadata uniqueness/FK/index representations, UTC-aware
-  `completed_at`, technical `created_at`, current datetime normalization, and
-  the mapper/repository/owner-isolation/constraint/timezone test plan.
-- Propose the exact smallest implementation allowlist and identify any file
-  outside it that would be required.
+- New `BookCompletionModel` maps `book_completions`: `id` String(26) primary key;
+  required and unique `book_id` String(26); required `completed_at`
+  DateTime(timezone=True); persistence-only technical `created_at` DateTime with
+  the established Python-side `datetime.datetime.now` default. It has no
+  relationship, owner/user field, `updated_at`, or cascade.
+- `book_id` uses `ForeignKey("books.id", ondelete="RESTRICT")`; one single-column
+  uniqueness mechanism (`mapped_column(..., unique=True)`) and no redundant
+  standalone non-unique book index. The required composite metadata index is
+  `Index("ix_book_completions_completed_at_book_id", "completed_at", "book_id")`.
+- `BookCompletionMapper` maps IDs with `to_persistence()` / `from_value()`.
+  On load it must call existing `canonicalize_utc_datetime(model.completed_at)`
+  before `BookCompletion.restore()`. SQLite may return a naive datetime; the
+  domain invariant must not be weakened.
+- `SqlAlchemyBookCompletionRepository` receives a Session, uses
+  `session.add(BookCompletionMapper.to_persistence(completion))`, and does not
+  commit, flush, merge, upsert, replace, update, or execute PRAGMA. The caller/UoW
+  owns commit and flush; duplicate Book completion is a database uniqueness error.
 
-Slice 3 may plan only BookCompletion ORM persistence, mapper, write repository,
-owner-safe lookup, metadata constraints, and focused persistence tests. It must
-exclude Slice 4 orchestration, completion detection, BEGIN IMMEDIATE, retries,
-concurrency and atomic command integration; Slice 5 read model/API; Slice 6
-migration/backfill; Slice 7 BookCompleted/EventBus work; and Slice 8 final
-regression/governance. GAME, Noema, Outbox, brokers, RabbitMQ, Kafka and all
-Slices 4..8 remain gated.
+Frozen implementation allowlist — exactly six new files; a seventh file requires
+human review and STOP:
 
-Implementation is NOT AUTHORIZED. This checkpoint authorizes only the read-only
-Slice 3 implementation pre-flight; human review is required after it.
+1. `app/read/domain/ports/book_completion_repository.py`
+2. `app/read/infrastructure/persistence/models/book_completion_model.py`
+3. `app/read/infrastructure/persistence/mappers/book_completion_mapper.py`
+4. `app/read/infrastructure/persistence/repositories/book_completion_repository.py`
+5. `tests/read/integration/test_book_completion_mapper.py`
+6. `tests/read/integration/test_book_completion_repository.py`
+
+Tests must use disposable SQLite plus explicit model import and
+`Base.metadata.create_all/drop_all`, not migration 0008. They cover mapper ID and
+UTC round trips; SQLite-naive restoration; save/rollback; owner isolation;
+uniqueness; valid/invalid FK; `foreign_keys == 1`; `foreign_key_check == []`;
+created_at; composite index; RESTRICT deletion rollback; and no merge/upsert.
+
+Migration 0008, Alembic model-import registration, production schema deployment,
+backfill, downgrade/re-upgrade remain Slice 6 only. `migrations/env.py` remains
+unchanged. Slice 2 Engine-level SQLite enforcement is mandatory and unchanged;
+new repositories must rely on it without a listener or PRAGMA.
+
+Accepted risk — MINOR: SQLite strips timezone information from
+`DateTime(timezone=True)` round trips. Mandatory mitigation is mapper use of the
+existing UTC canonicalizer before domain restoration. Accepted information
+boundary: Alembic explicitly imports models, and BookCompletion registration is
+owned by Slice 6.
+
+Slice 3 excludes all Slice 4 orchestration, detection, BEGIN IMMEDIATE, retries,
+concurrency, locks, and atomic ReadingSession flow; Slice 5 API/read model,
+pagination, count/list methods, and DTOs; Slice 6 migration work; Slice 7 events
+and EventBus; Slice 8 final closure; GAME, Noema, Outbox, RabbitMQ, Kafka, and
+broker work. Slices 4..8 remain gated.
 
 ### Deferred slices
 
@@ -252,9 +277,9 @@ Slice 3 implementation pre-flight; human review is required after it.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 PRE-FLIGHT AUTHORIZED.
-- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION NOT STARTED.
-- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION NOT STARTED.
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION AUTHORIZED.
+- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION AUTHORIZED / NOT STARTED.
+- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION AUTHORIZED / NOT STARTED.
 - Migration 0008: NOT CREATED.
 - Alembic: 0007 (head).
 - READ-008: DEFERRED.
@@ -267,15 +292,15 @@ Slice 3 implementation pre-flight; human review is required after it.
 
 Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
 aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-A autorização humana atual é limitada ao IMPLEMENTATION PRE-FLIGHT read-only da
-Slice 3; a implementação da Slice 3 e as Slices 4..8 permanecem gated.
+A autorização humana atual é limitada à implementação congelada de seis arquivos
+da Slice 3; as Slices 4..8 permanecem gated.
 
 ## Próximo Gate
 
-SLICE 3 IMPLEMENTATION PRE-FLIGHT — READ-005 COMPLETION PERSISTENCE
+SLICE 3 IMPLEMENTATION — READ-005 COMPLETION PERSISTENCE
 
-ONLY THE SLICE 3 READ-ONLY IMPLEMENTATION PRE-FLIGHT IS AUTHORIZED.
+ONLY THE FROZEN SIX-FILE SLICE 3 IMPLEMENTATION IS AUTHORIZED.
 
-DO NOT IMPLEMENT SLICE 3.
+DO NOT START SLICE 4 OR IMPLEMENT OUTSIDE THE ALLOWLIST.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
