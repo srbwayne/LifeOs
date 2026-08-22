@@ -1,3 +1,24 @@
+## READ-005 Slice 3 Implementation Authorization — 2026-08-22
+
+- Slice 3 pre-flight governance was integrated through PR #38; canonical main is
+  `83372b56277be2dd46fb1b910fa1bfabc8f9a3bd`.
+- The strictly read-only Completion Persistence pre-flight executed and passed.
+  Human Technical Review and Implementation Authorization Review: APPROVED.
+- The six-file implementation allowlist is frozen: BookCompletion repository
+  port, ORM model, mapper, SQLAlchemy repository, mapper tests, and repository
+  tests. No seventh file is authorized without human review.
+- BookCompletion remains unchanged and immutable; owner safety is derived through
+  BookModel. SQLite timezone loss is MINOR / ACCEPTED: mapper restoration must
+  use `canonicalize_utc_datetime` before domain restoration.
+- Slice 3 remains separated from migration 0008: disposable metadata tests are
+  approved, while Alembic model import, migration, and backfill remain Slice 6.
+- This governance commit authorizes implementation only; implementation has not
+  started. Slices 4..8 remain gated and migration 0008 remains absent.
+
+**Next Gate:** SLICE 3 IMPLEMENTATION — READ-005 COMPLETION PERSISTENCE
+
+---
+
 ## READ-005 Slice 2 Closed / Slice 3 Pre-Flight Authorized — 2026-08-21
 
 - PRE-SLICE-2 remediation was finalized before the Slice 2 implementation.

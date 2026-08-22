@@ -1,3 +1,22 @@
+## READ-005 Slice 3 Implementation Authorized — 2026-08-22
+
+- Slice 3 Completion Persistence implementation pre-flight: PASS; Human Technical
+  Review and Implementation Authorization Review: APPROVED.
+- The exact six-file implementation allowlist is frozen: repository port, ORM
+  model, mapper, SQLAlchemy repository, mapper tests, and repository tests.
+- BookCompletion remains immutable and unchanged; ownership is derived through
+  Book. No owner/user field is permitted in completion persistence.
+- The frozen model uses unique `book_id`, RESTRICT book FK, and index
+  `(completed_at, book_id)`; mapper restoration canonicalizes SQLite datetimes
+  to UTC. The SQLite timezone-loss risk is MINOR / ACCEPTED with this mitigation.
+- Migration 0008 is absent; Alembic remains 0007 (head). Explicit Alembic model
+  registration is an INFO / ACCEPTED Slice 6 responsibility.
+- Slice 3 implementation is authorized but not started. Slices 4..8 remain gated.
+
+**Next Gate:** SLICE 3 IMPLEMENTATION — READ-005 COMPLETION PERSISTENCE
+
+---
+
 ## READ-005 Slice 2 Finalized / Slice 3 Pre-Flight Authorized — 2026-08-21
 
 - PR #37: MERGED; canonical main: `432fbbe415e54a2d3d3fb81d972e52133e9f8977`.
