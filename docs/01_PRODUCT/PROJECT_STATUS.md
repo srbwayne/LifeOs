@@ -1,3 +1,17 @@
+## READ-005 Slice 3 Finalized / Slice 4 Pre-Flight Authorized — 2026-08-22
+
+- PR #40: MERGED; canonical main: `5674df21fcd40fb3e1c29bf3e4d0c303248ec5a0`.
+- Main CI `32611356740`: 3/3 SUCCESS; local integration finalization: PASS.
+- Validation: 459 tests; coverage 98.16%; Alembic 0007 (head).
+- Slice 3: INTEGRATED / FINALIZED. Migration 0008: NOT CREATED; existing
+  `lifeos.db` remains unchanged.
+- Slice 4 implementation: NOT STARTED. Only its strictly read-only implementation
+  pre-flight is authorized; Slices 5..8 remain gated.
+
+**Next Gate:** SLICE 4 IMPLEMENTATION PRE-FLIGHT — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
+
+---
+
 ## READ-005 Slice 3 Implementation Authorized — 2026-08-22
 
 - Slice 3 Completion Persistence implementation pre-flight: PASS; Human Technical
