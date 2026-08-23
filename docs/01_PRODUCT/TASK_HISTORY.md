@@ -1,3 +1,22 @@
+## READ-005 Slice 4 Architecture / Slice Order Remediation — 2026-08-23
+
+- Slice 4 pre-flight proved the Alembic 0007 missing-table failure for
+  `book_completions`; Slice 4 is blocked pending Migration 0008.
+- Temporal correctness review rejected independently deployed full backfill and
+  schema-only/backfill-later windows because either can lose or falsify
+  immutable `completed_at`.
+- Architecture remediation approved Option C: preserve migration and slice
+  numbering; keep Migration 0008 as schema + full backfill; couple its runtime
+  cutover to Slice 4 activation while ReadingSession writes are excluded.
+- Retry policy is frozen: two total write-intent acquisitions, fixed 50 ms delay,
+  `SQLITE_BUSY` acquisition only. `_tracked_aggregates` rollback behavior remains
+  INFO because retries occur before tracking.
+- No production, test, migration, or runtime implementation was executed.
+
+**Next Gate:** MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT — READ-005 COORDINATED COMPLETION CUTOVER
+
+---
+
 ## READ-005 Slice 3 Closed / Slice 4 Pre-Flight Authorized — 2026-08-22
 
 - Slice 3 governance authorization was integrated through PR #39; Slice 3

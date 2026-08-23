@@ -7,6 +7,24 @@ ix_reading_sessions_user_started_id on
 reading_sessions(user_id, started_at, id). Downgrade removes only this index.
 No table, column, or constraint is added.
 
+## READ-005 — Coordinated Completion Cutover
+
+Current Alembic head is `0007_add_reading_sessions_user_history_index`.
+Migration 0008 is planned but NOT CREATED. It owns the complete READ-005
+Completion schema, constraints, indexes, and historical backfill; Alembic remains
+the sole schema owner.
+
+Migration/backfill and Slice 4 transactional-write activation are one controlled
+operational cutover, although they remain separate implementation and review
+scopes. Before the backfill begins, create and verify a backup, exclude
+ReadingSession writes, and stop old writable application instances. Validate
+integrity before and after migration/backfill, then start only the Slice 4-capable
+runtime before re-enabling writes.
+
+It is forbidden to use runtime `create_all()`, table-existence fallback, or a
+writable old ReadingSession runtime during this cutover. A schema-only runtime
+activation followed by historical backfill is also forbidden.
+
 ## LifeOS
 
 **Versão:** 1.0  
@@ -256,7 +274,9 @@ A cadeia aplicada permanece linear:
 ↓
 0005_create_reading_sessions_table
 ↓
-0006_add_reading_sessions_user_book_index (head)
+0006_add_reading_sessions_user_book_index
+↓
+0007_add_reading_sessions_user_history_index (head)
 ```
 
 A migration `0004_create_books_table.py` permanece inalterada e mantém a tabela `books`, sua Foreign Key de ownership, a constraint de `total_pages` e o índice `ix_books_user_id`.
@@ -283,7 +303,7 @@ A migration `0006_add_reading_sessions_user_book_index.py` possui:
 - upgrade: cria `ix_reading_sessions_user_book` na tabela `reading_sessions`, nas colunas `(user_id, book_id)`, com `unique=False`;
 - downgrade: remove exclusivamente `ix_reading_sessions_user_book` da tabela `reading_sessions`.
 
-A migration `0006` não cria tabela, não cria coluna, não altera dados, não persiste progresso e não modifica migrations anteriores. Após READ-003, o Alembic head atual é `0006`.
+A migration `0006` não cria tabela, não cria coluna, não altera dados, não persiste progresso e não modifica migrations anteriores. Após READ-003, `0006` was the then-current head; the current Alembic head is `0007`.
 
 As migrations `0001`, `0002`, `0003` e `0004` permanecem inalteradas.
 
