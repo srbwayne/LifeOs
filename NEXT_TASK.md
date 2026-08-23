@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE-03 |
+| ID | READ-005-S09-SLICE-04-PREFLIGHT |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION AUTHORIZED — SLICE 3 READY |
-| Tipo | Implementation |
+| Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED — SLICE 4 |
+| Tipo | Implementation Pre-Flight |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,12 +32,13 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 3 IMPLEMENTATION — READ-005 COMPLETION PERSISTENCE |
+| Current Executable Unit | SLICE 4 IMPLEMENTATION PRE-FLIGHT — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
-| Slice 3 Status | IMPLEMENTATION AUTHORIZED / IMPLEMENTATION NOT STARTED |
-| Slices 4..8 | NOT EXECUTABLE / GATED |
+| Slice 3 Status | INTEGRATED / FINALIZED |
+| Slice 4 Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED / IMPLEMENTATION NOT STARTED |
+| Slices 5..8 | NOT EXECUTABLE / GATED |
 | Migration 0008 | NOT CREATED |
 | Alembic | 0007 (head) |
 
@@ -193,11 +194,14 @@ Slice 2 closure evidence:
 
 Slice 2 is CLOSED / INTEGRATED / FINALIZED.
 
-### SLICE 3 — COMPLETION PERSISTENCE — IMPLEMENTATION AUTHORIZED
+### SLICE 3 — COMPLETION PERSISTENCE — CLOSED / INTEGRATED / FINALIZED
 
-The strictly read-only Slice 3 implementation pre-flight: PASS. Human Technical
-Review: APPROVED. Implementation Authorization Review: APPROVED. Slice 3 is the
-only implementation unit now authorized; implementation has not started.
+Slice 3 implementation pre-flight: PASS. Human Technical Review: APPROVED.
+Implementation Authorization Review: APPROVED. PR #40 is MERGED; authorized head
+`00bc7b4f38e52358970b600f6a5c6064bc38a63a` was integrated into canonical main
+`5674df21fcd40fb3e1c29bf3e4d0c303248ec5a0` (parent
+`8803474ab748f96cc2fac10704d20b3303789674`). Main CI `32611356740`: 3/3 SUCCESS.
+Local integration finalization: PASS.
 
 Frozen domain and ownership contract:
 
@@ -260,16 +264,59 @@ existing UTC canonicalizer before domain restoration. Accepted information
 boundary: Alembic explicitly imports models, and BookCompletion registration is
 owned by Slice 6.
 
-Slice 3 excludes all Slice 4 orchestration, detection, BEGIN IMMEDIATE, retries,
-concurrency, locks, and atomic ReadingSession flow; Slice 5 API/read model,
-pagination, count/list methods, and DTOs; Slice 6 migration work; Slice 7 events
-and EventBus; Slice 8 final closure; GAME, Noema, Outbox, RabbitMQ, Kafka, and
-broker work. Slices 4..8 remain gated.
+Slice 3 validation and closure evidence:
+
+- exact integrated scope: the six frozen port/model/mapper/repository/test files;
+  no existing Slice 3 file changed and no unexpected file was added;
+- mapper tests: 5 passed; repository tests: 9 passed; architecture: 12 passed;
+  full and DeprecationWarning-as-error suites: 459 passed; coverage: 98.16%;
+  Alembic: 0007 (head);
+- runtime SQLite `foreign_keys == 1` and `foreign_key_check == []`; existing
+  `lifeos.db` remains Alembic 0007 with clean `foreign_key_check` and no
+  `book_completions` deployment; migration 0008 remains absent.
+
+Slice 3 is CLOSED / INTEGRATED / FINALIZED. Its frozen persistence contract above
+is preserved as completed evidence. No Slice 4+ implementation was introduced.
+
+### SLICE 4 — TRANSACTIONAL WRITE AND CONCURRENCY — IMPLEMENTATION PRE-FLIGHT AUTHORIZED
+
+Only a strictly read-only technical pre-flight is authorized. Slice 4
+implementation has NOT started; no implementation allowlist or implementation
+branch exists. The pre-flight may inspect repository/code/test/UoW behavior and
+run diagnostics, then must return for human review before implementation.
+
+Frozen investigation constraints:
+
+- ReadingSession and optional BookCompletion must ultimately use one UoW, one
+  Session, one transaction, and one final commit; no partial durable state.
+- SQLite V1 requires `BEGIN IMMEDIATE` before relevant reads. The pre-flight must
+  identify the smallest project-compatible seam; it must not implement it.
+- `autoflush=False` remains. The new ReadingSession must be explicitly included
+  in the calculator input rather than relying on flush visibility.
+- Reuse `ReadingCoverageCalculator` and
+  `ReadingProgressCalculator.calculate_from_coverage`: incomplete means no
+  completion; complete plus existing completion is a no-op; complete with no
+  completion creates exactly one. Command handlers must not call query handlers.
+- Frozen target ordering is: enter UoW → BEGIN IMMEDIATE → owner-safe Book and
+  Completion reads → owner-scoped ReadingSessions → create and calculate with new
+  session → save ReadingSession / optional completion → track occurrence → flush
+  → one commit → post-commit best-effort publication.
+- A single logical writer per Book is required. Retry analysis is limited to
+  transient pre-commit lock acquisition, with full rollback and full operation
+  retry; never retry ambiguous commits, arbitrary IntegrityError, domain/owner
+  failures, post-commit publication, or unknown errors.
+- Occurrence tracking is transaction architecture only. `BookCompleted`, EventBus
+  changes, outbox/broker publication, GAME, and Noema remain outside this slice.
+
+Slice 4 pre-flight excludes implementation of orchestration, completion detection,
+BEGIN IMMEDIATE, retry, concurrency, locks, API/read models/DTOs/pagination,
+migration 0008, Alembic registration, deployment/backfill, events, and all Slice
+5..8 work. Slices 5..8 remain gated.
 
 ### Deferred slices
 
-3. Completion Persistence.
-4. Transactional Write + Concurrency.
+3. Completion Persistence — INTEGRATED / FINALIZED.
+4. Transactional Write + Concurrency — PRE-FLIGHT AUTHORIZED.
 5. Dedicated Read Model / API.
 6. Migration 0008 + Backfill.
 7. Best-Effort Event Seam.
@@ -277,9 +324,9 @@ broker work. Slices 4..8 remain gated.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION AUTHORIZED.
-- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION AUTHORIZED / NOT STARTED.
-- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 IMPLEMENTATION AUTHORIZED / NOT STARTED.
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 PRE-FLIGHT AUTHORIZED.
+- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTATION NOT STARTED.
+- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTATION NOT STARTED.
 - Migration 0008: NOT CREATED.
 - Alembic: 0007 (head).
 - READ-008: DEFERRED.
@@ -292,15 +339,15 @@ broker work. Slices 4..8 remain gated.
 
 Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
 aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-A autorização humana atual é limitada à implementação congelada de seis arquivos
-da Slice 3; as Slices 4..8 permanecem gated.
+A autorização humana atual é limitada ao IMPLEMENTATION PRE-FLIGHT read-only da
+Slice 4; a implementação da Slice 4 e as Slices 5..8 permanecem gated.
 
 ## Próximo Gate
 
-SLICE 3 IMPLEMENTATION — READ-005 COMPLETION PERSISTENCE
+SLICE 4 IMPLEMENTATION PRE-FLIGHT — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
 
-ONLY THE FROZEN SIX-FILE SLICE 3 IMPLEMENTATION IS AUTHORIZED.
+ONLY THE SLICE 4 READ-ONLY IMPLEMENTATION PRE-FLIGHT IS AUTHORIZED.
 
-DO NOT START SLICE 4 OR IMPLEMENT OUTSIDE THE ALLOWLIST.
+DO NOT IMPLEMENT SLICE 4.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.

@@ -1,3 +1,23 @@
+## READ-005 Slice 3 Closed / Slice 4 Pre-Flight Authorized — 2026-08-22
+
+- Slice 3 governance authorization was integrated through PR #39; Slice 3
+  implementation PR #40 merged with authorized head
+  `00bc7b4f38e52358970b600f6a5c6064bc38a63a`.
+- Canonical main is `5674df21fcd40fb3e1c29bf3e4d0c303248ec5a0`, parent
+  `8803474ab748f96cc2fac10704d20b3303789674`; Main CI `32611356740`: 3/3 SUCCESS.
+- Local finalization: PASS. The exact six-file scope integrated with no unexpected
+  file: mapper 5 passed, repository 9 passed, architecture 12 passed, full and
+  DeprecationWarning-as-error suites 459 passed, coverage 98.16%.
+- SQLite integrity is clean; Alembic remains 0007; migration 0008 is absent.
+  Slice 3 is CLOSED / INTEGRATED / FINALIZED.
+- Slice 4 implementation has not started. Only its read-only Transactional Write
+  and Concurrency implementation pre-flight is authorized; Slices 5..8 remain
+  gated.
+
+**Next Gate:** SLICE 4 IMPLEMENTATION PRE-FLIGHT — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
+
+---
+
 ## READ-005 Slice 3 Implementation Authorization — 2026-08-22
 
 - Slice 3 pre-flight governance was integrated through PR #38; canonical main is
