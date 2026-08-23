@@ -81,6 +81,22 @@ ReadingSession e Completion são atômicos no mesmo UoW, transação e commit. S
 
 Retries são limitados a falhas transitórias de aquisição de lock antes do commit, com rollback completo e repetição da operação inteira. Resultado de commit ambíguo não recebe retry automático, pois o comando atual não possui idempotency key.
 
+Runtime activation of Slice 4 requires a verified Migration 0008 schema and
+completed historical backfill. Migration/backfill and Slice 4 activation must use
+a coordinated cutover: no ReadingSession writes may occur from the start of the
+backfill snapshot until only the Slice 4-capable runtime is active. A migrated
+schema with the old writable ReadingSession path, and a schema-only Slice 4
+activation followed by later backfill, are forbidden deployment states.
+
+The SQLite V1 retry policy is frozen as two total write-intent acquisition
+attempts: the initial attempt and at most one retry after a fixed 50 ms delay,
+without jitter. Retry is allowed only before relevant reads, writes, aggregate
+tracking, flush, or commit, when `OperationalError` wraps
+`sqlite3.OperationalError` with `sqlite_errorcode == SQLITE_BUSY`. It never
+applies after successful acquisition, to `SQLITE_LOCKED`, IntegrityError, domain
+or owner failures, flush, commit, ambiguous commit, publication, or unknown
+errors.
+
 ## 6. Completion Detection
 
 Reutilizar ReadingCoverageCalculator e ReadingProgressCalculator.calculate_from_coverage:
@@ -107,6 +123,10 @@ São esperados dois SELECTs: count e page query com JOIN Book/Completion. N+1 é
 
 ## 9. Migration 0008 and Backfill
 
+Migration 0008 remains one cohesive Completion migration: table, integrity,
+uniqueness, indexes, and complete historical backfill. It is not created in this
+gate and must not be split into a schema-only revision plus a later backfill.
+
 Migration conceitual 0008 cria tabela, integridade, unicidade, índices e backfill. Ela não é criada neste gate.
 
 Para cada Book, ReadingSessions owner-consistent são ordenadas por ended_at ASC, id ASC; intervalos são unidos cumulativamente; o primeiro timestamp que alcança 100% cria exatamente uma Completion. Books incompletos ou sem sessões não recebem row. Empates preservam o mesmo timestamp.
@@ -114,6 +134,14 @@ Para cada Book, ReadingSessions owner-consistent são ordenadas por ended_at ASC
 IDs de backfill usam a dependência TSID já fixada, sem importar código de aplicação mutável. Downgrade remove apenas a persistência de Completion e não modifica Books ou ReadingSessions.
 
 Sessão retroativa com Completion existente nunca altera completed_at; sem Completion, pode criar o milestone usando seu próprio ended_at. Alteração posterior de total_pages não revoga o milestone.
+
+Before a real-data Migration 0008, create and verify a backup, exclude
+ReadingSession writes, stop old writable application instances, and validate
+`foreign_key_check`. After migration/backfill, validate Alembic revision, schema,
+constraints, indexes, FK integrity, uniqueness, and historical backfill results.
+The application must not start if these validations fail. Old writable instances
+remain stopped until the Slice 4-capable runtime is healthy; downgrade requires a
+compatible application rollback and traffic exclusion.
 
 ## 10. Test Plan
 
@@ -142,9 +170,22 @@ Cobertura obrigatória:
 
 Cada slice deve preservar atomicidade, owner isolation, unicidade, derivação de ReadingProgress, fronteiras READ-003/004/006/007 e ausência de efeitos GAME.
 
+Slice numbering is a semantic implementation and review decomposition, not an
+unconditional independent deployment order. Slice 6 Migration 0008 + Backfill is
+a deployment prerequisite for Slice 4 runtime activation. Slice 6 and Slice 4
+may use separate branches, PRs, and reviews, but their final writable-runtime
+activation is coupled.
+
 ## 12. Boundaries and Authorization
 
 Este documento formaliza o plano técnico aprovado; não cria código, migration, schema aplicado ou comportamento runtime. A aprovação não autoriza implementação nem Sprint 09.
+
+Independent Slice 4 activation on schema 0007 is forbidden. Independent writable
+deployment of Migration 0008/backfill while the old ReadingSession path accepts
+writes is forbidden. Schema-only activation followed by later historical backfill
+is forbidden. The coupled cutover requires an explicit readiness review; this
+amendment authorizes neither Migration 0008 implementation nor Slice 4
+implementation.
 
 Technical Plan: APPROVED / FROZEN.
 Implementation: NOT AUTHORIZED.

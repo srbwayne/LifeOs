@@ -1,3 +1,22 @@
+## READ-005 Slice 4 Blocker Resolved by Architecture Amendment — 2026-08-23
+
+- Slice 4 pre-flight was BLOCKED by schema ordering: Alembic 0007 has no
+  `book_completions`, and the owner-safe lookup was proven to fail against it.
+- Transaction/concurrency mechanics otherwise passed pre-flight: `BEGIN IMMEDIATE`
+  acquisition, same Session, calculator reuse, and atomic write design are viable.
+- Option C is approved: Migration 0008 remains complete schema + historical
+  backfill, coupled operationally to Slice 4 runtime activation under
+  ReadingSession write exclusion.
+- Domain semantics and slice identities are unchanged; execution/deployment order
+  is amended. Retry is frozen as two total SQLITE_BUSY acquisition attempts with a
+  fixed 50 ms delay.
+- Slice 4 implementation remains blocked; Migration 0008 remains NOT CREATED and
+  its implementation has not started. Slices 5, 7, and 8 remain gated.
+
+**Next Gate:** MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT — READ-005 COORDINATED COMPLETION CUTOVER
+
+---
+
 ## READ-005 Slice 3 Finalized / Slice 4 Pre-Flight Authorized — 2026-08-22
 
 - PR #40: MERGED; canonical main: `5674df21fcd40fb3e1c29bf3e4d0c303248ec5a0`.

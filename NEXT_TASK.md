@@ -8,9 +8,9 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE-04-PREFLIGHT |
+| ID | READ-005-S09-MIGRATION-0008-PREFLIGHT |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED — SLICE 4 |
+| Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED — MIGRATION 0008 + BACKFILL |
 | Tipo | Implementation Pre-Flight |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
@@ -32,13 +32,16 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 4 IMPLEMENTATION PRE-FLIGHT — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY |
+| Current Executable Unit | MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT — READ-005 COORDINATED COMPLETION CUTOVER |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
-| Slice 4 Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED / IMPLEMENTATION NOT STARTED |
-| Slices 5..8 | NOT EXECUTABLE / GATED |
+| Slice 4 Status | IMPLEMENTATION PRE-FLIGHT COMPLETED / IMPLEMENTATION BLOCKED PENDING MIGRATION 0008 |
+| Slice 5 Status | GATED |
+| Slice 6 Status | MIGRATION 0008 + BACKFILL PRE-FLIGHT AUTHORIZED / IMPLEMENTATION NOT STARTED |
+| Slice 7 Status | GATED |
+| Slice 8 Status | GATED |
 | Migration 0008 | NOT CREATED |
 | Alembic | 0007 (head) |
 
@@ -278,55 +281,75 @@ Slice 3 validation and closure evidence:
 Slice 3 is CLOSED / INTEGRATED / FINALIZED. Its frozen persistence contract above
 is preserved as completed evidence. No Slice 4+ implementation was introduced.
 
-### SLICE 4 — TRANSACTIONAL WRITE AND CONCURRENCY — IMPLEMENTATION PRE-FLIGHT AUTHORIZED
+### SLICE 4 — TRANSACTIONAL WRITE AND CONCURRENCY — PREFLIGHT COMPLETED / BLOCKED
 
-Only a strictly read-only technical pre-flight is authorized. Slice 4
-implementation has NOT started; no implementation allowlist or implementation
-branch exists. The pre-flight may inspect repository/code/test/UoW behavior and
-run diagnostics, then must return for human review before implementation.
+The strictly read-only Slice 4 pre-flight completed. `BEGIN IMMEDIATE`, the
+same-Session invariant, calculator reuse, and the atomic Session + Completion
+design were proven viable. The pre-flight is BLOCKED only by SLICE ORDER / SCHEMA
+COMPATIBILITY: `BookCompletionRepository.get_by_book_and_owner(...)` against the
+real Alembic 0007 schema raises `sqlalchemy.exc.OperationalError`, with original
+`sqlite3.OperationalError: no such table: book_completions`.
 
-Frozen investigation constraints:
+Slice 4 implementation remains NOT AUTHORIZED. It may not be activated in a
+writable runtime until Migration 0008 has created and fully backfilled Completion
+persistence under the coordinated cutover below.
 
-- ReadingSession and optional BookCompletion must ultimately use one UoW, one
-  Session, one transaction, and one final commit; no partial durable state.
-- SQLite V1 requires `BEGIN IMMEDIATE` before relevant reads. The pre-flight must
-  identify the smallest project-compatible seam; it must not implement it.
-- `autoflush=False` remains. The new ReadingSession must be explicitly included
-  in the calculator input rather than relying on flush visibility.
-- Reuse `ReadingCoverageCalculator` and
-  `ReadingProgressCalculator.calculate_from_coverage`: incomplete means no
-  completion; complete plus existing completion is a no-op; complete with no
-  completion creates exactly one. Command handlers must not call query handlers.
-- Frozen target ordering is: enter UoW → BEGIN IMMEDIATE → owner-safe Book and
-  Completion reads → owner-scoped ReadingSessions → create and calculate with new
-  session → save ReadingSession / optional completion → track occurrence → flush
-  → one commit → post-commit best-effort publication.
-- A single logical writer per Book is required. Retry analysis is limited to
-  transient pre-commit lock acquisition, with full rollback and full operation
-  retry; never retry ambiguous commits, arbitrary IntegrityError, domain/owner
-  failures, post-commit publication, or unknown errors.
-- Occurrence tracking is transaction architecture only. `BookCompleted`, EventBus
-  changes, outbox/broker publication, GAME, and Noema remain outside this slice.
+### COORDINATED MIGRATION 0008 + SLICE 4 RUNTIME CUTOVER — FROZEN
 
-Slice 4 pre-flight excludes implementation of orchestration, completion detection,
-BEGIN IMMEDIATE, retry, concurrency, locks, API/read models/DTOs/pagination,
-migration 0008, Alembic registration, deployment/backfill, events, and all Slice
-5..8 work. Slices 5..8 remain gated.
+Semantic slice identities and BookCompletion semantics are preserved. Execution
+and deployment order are amended: Migration 0008 + Backfill and Slice 4 remain
+separate implementation/review scopes, but they are not independent deployment
+units.
+
+For every writable environment, the required sequence is:
+
+1. create and verify a backup;
+2. exclude ReadingSession write traffic and stop old writable application instances;
+3. validate pre-migration database integrity;
+4. apply Migration 0008, containing Completion schema, constraints, indexes, and
+   complete historical backfill;
+5. validate Alembic revision, schema, FK integrity, uniqueness, and historical
+   backfill invariants;
+6. start only the Slice 4-capable runtime and verify health;
+7. re-enable ReadingSession write traffic.
+
+No ReadingSession write may occur from the start of historical backfill until the
+Slice 4-capable runtime is active. The following are invalid: migration/backfill
+with an old writable ReadingSession runtime, and schema-only activation followed
+by later historical backfill. Neither runtime schema fallback nor completion
+timestamp rewriting is permitted.
+
+Migration 0008 remains one cohesive schema + full-backfill migration. It is NOT
+CREATED and its implementation is NOT AUTHORIZED by this task. Do not split the
+backfill into 0009 and do not add provenance state.
+
+The retry policy is frozen for a later Slice 4 implementation only: two total
+write-intent acquisition attempts, fixed 50 ms delay, no jitter, and retry only
+for `OperationalError` wrapping `sqlite3.OperationalError` with
+`sqlite_errorcode == SQLITE_BUSY` before relevant reads, writes, tracking, flush,
+or commit. Never retry after acquisition, `SQLITE_LOCKED`, IntegrityError, domain
+or owner failure, flush, commit, ambiguous commit, publication, or unknown error.
+
+`SqlAlchemyUnitOfWork.rollback()` not clearing `_tracked_aggregates` remains INFO:
+no remediation is required while retry stays acquisition-only before tracking.
+
+Only the read-only Migration 0008 + Backfill implementation pre-flight is now
+authorized. No migration implementation allowlist exists yet.
 
 ### Deferred slices
 
 3. Completion Persistence — INTEGRATED / FINALIZED.
-4. Transactional Write + Concurrency — PRE-FLIGHT AUTHORIZED.
+4. Transactional Write + Concurrency — PREFLIGHT COMPLETED / BLOCKED PENDING 0008.
 5. Dedicated Read Model / API.
-6. Migration 0008 + Backfill.
+6. Migration 0008 + Backfill — PREFLIGHT AUTHORIZED.
 7. Best-Effort Event Seam.
 8. Full Regression + Governance.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 PRE-FLIGHT AUTHORIZED.
-- RF-READ-005: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTATION NOT STARTED.
-- US-READ-005-001: SLICE 1 INTEGRATED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTATION NOT STARTED.
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 BLOCKED PENDING 0008 / SLICE 6 PREFLIGHT AUTHORIZED.
+- RF-READ-005: SLICE 4 IMPLEMENTATION BLOCKED PENDING MIGRATION 0008; Migration 0008 implementation NOT STARTED.
+- US-READ-005-001: Slice 4 implementation NOT STARTED; only Migration 0008 + Backfill pre-flight is executable.
 - Migration 0008: NOT CREATED.
 - Alembic: 0007 (head).
 - READ-008: DEFERRED.
@@ -337,17 +360,20 @@ migration 0008, Alembic registration, deployment/backfill, events, and all Slice
 
 ## Architecture Boundary
 
-Architecture Decision ADR-0042 está aceita e congelada. O Technical Plan está
-aprovado e congelado em docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
-A autorização humana atual é limitada ao IMPLEMENTATION PRE-FLIGHT read-only da
-Slice 4; a implementação da Slice 4 e as Slices 5..8 permanecem gated.
+This amendment preserves ADR-0042 and BookCompletion semantics while changing
+only execution/deployment ordering. The current authorization is limited to the
+read-only Migration 0008 + Backfill implementation pre-flight; Slice 4 remains
+blocked pending Migration 0008 and Slices 5, 7, and 8 remain gated.
+
+Architecture Decision ADR-0042 está aceita e congelada. The amended Technical
+Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
 
 ## Próximo Gate
 
-SLICE 4 IMPLEMENTATION PRE-FLIGHT — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
+MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT — READ-005 COORDINATED COMPLETION CUTOVER
 
-ONLY THE SLICE 4 READ-ONLY IMPLEMENTATION PRE-FLIGHT IS AUTHORIZED.
+ONLY THE MIGRATION 0008 + BACKFILL READ-ONLY IMPLEMENTATION PRE-FLIGHT IS AUTHORIZED.
 
-DO NOT IMPLEMENT SLICE 4.
+DO NOT IMPLEMENT SLICE 4 OR MIGRATION 0008.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
