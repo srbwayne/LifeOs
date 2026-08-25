@@ -1,3 +1,21 @@
+## READ-005 Migration 0008 Architecture / Data-Integrity Remediation — 2026-08-24
+
+- The initial Migration 0008 pre-flight found the TSID 13-vs-26 wording conflict
+  and the schema-0007 page-bound gap; current domain validation enforces the
+  runtime upper bound while historical SQL does not.
+- `tsidpy==1.1.5` round-trip defines canonical 13-character strings; no domain,
+  value-object, model, dependency, or persistence-capacity change is required.
+- Owner-consistent out-of-current-range history is now fail-fast before DDL;
+  owner mismatch remains excluded, and no repair/rewrite/delete is authorized.
+- All source validation, candidate computation, TSID generation, and technical
+  created_at selection must finish before 0008 DDL. ADR-0042 remains unchanged.
+- No migration or implementation was created. Next gate: Migration 0008 +
+  Backfill implementation pre-flight resume.
+
+**Next Gate:** MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT RESUME — READ-005 DATA-INTEGRITY REMEDIATION
+
+---
+
 ## READ-005 Slice 4 Architecture / Slice Order Remediation — 2026-08-23
 
 - Slice 4 pre-flight proved the Alembic 0007 missing-table failure for

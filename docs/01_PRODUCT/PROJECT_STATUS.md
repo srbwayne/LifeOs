@@ -1,3 +1,20 @@
+## READ-005 Migration 0008 Pre-Flight Data-Integrity Remediation — 2026-08-24
+
+- The initial Migration 0008 pre-flight was BLOCKED by a TSID wording conflict
+  and the missing historical cross-table page-bound validation.
+- `tsidpy==1.1.5` canonical strings are 13 characters; `VARCHAR(26)` remains
+  unchanged storage capacity.
+- Owner-consistent history outside current total_pages is ambiguous and must
+  fail the migration before DDL; no automatic historical repair is permitted.
+- Owner mismatch remains excluded from backfill. All candidates must be
+  validated and precomputed before DDL; ADR-0042 remains unchanged.
+- Migration implementation remains unauthorized. The next executable unit after
+  governance integration is the Migration 0008 + Backfill pre-flight resume.
+
+**Next Gate:** MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT RESUME — READ-005 DATA-INTEGRITY REMEDIATION
+
+---
+
 ## READ-005 Slice 4 Blocker Resolved by Architecture Amendment — 2026-08-23
 
 - Slice 4 pre-flight was BLOCKED by schema ordering: Alembic 0007 has no

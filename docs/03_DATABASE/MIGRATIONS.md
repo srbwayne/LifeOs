@@ -25,6 +25,16 @@ It is forbidden to use runtime `create_all()`, table-existence fallback, or a
 writable old ReadingSession runtime during this cutover. A schema-only runtime
 activation followed by historical backfill is also forbidden.
 
+For planned Migration 0008, migration-local IDs follow the canonical string
+representation of pinned `tsidpy==1.1.5` (currently 13 characters); `VARCHAR(26)`
+remains storage capacity. Before its first DDL, the migration must validate and
+precompute all owner-consistent backfill candidates. An owner-consistent interval
+outside the current Book page boundary, or a required unreadable/non-orderable
+timestamp, aborts before DDL: no clamp, truncation, rewrite, deletion, or
+automatic repair is allowed. Owner-mismatched sessions are excluded from
+backfill, not repaired, and do not independently block it. Backup, traffic
+exclusion, and pre/post integrity checks remain mandatory.
+
 ## LifeOS
 
 **Versão:** 1.0  
