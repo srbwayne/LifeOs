@@ -22,7 +22,14 @@ Estado de BookCompletion:
 - book_id: BookId;
 - completed_at: datetime.
 
-Não possui owner_id nem updated_at. BookCompletionId segue a convenção TSID canônica de 26 caracteres. completed_at é o ended_at da ReadingSession disparadora, normalizado como UTC-aware. Equality é por BookCompletionId. Não existe update, reopen ou automatic revoke.
+Não possui owner_id nem updated_at. BookCompletionId segue a representação de string
+TSID canônica produzida e validada pela dependência `tsidpy` fixada. Em
+`tsidpy==1.1.5`, essa representação canônica possui 13 caracteres; a
+canonicalidade é comportamental (`TSID.from_string(value).to_string() == value`).
+`VARCHAR(26)` é capacidade de persistência/compatibilidade e não define o
+comprimento semântico do TSID. completed_at é o ended_at da ReadingSession
+disparadora, normalizado como UTC-aware. Equality é por BookCompletionId. Não
+existe update, reopen ou automatic revoke.
 
 ## 2. Ownership
 
@@ -48,6 +55,9 @@ Tabela: book_completions.
 | created_at | DateTime | no | technical timestamp |
 
 UNIQUE(book_id) garante um milestone por Player + Book, pois cada Book possui owner único. A FK usa RESTRICT / NO ACTION; CASCADE não é permitido. Índices: unique book_id e (completed_at, book_id). Não há user_id, owner_id ou updated_at.
+
+Os campos `id` e `book_id` permanecem `VARCHAR(26)` como capacidade de
+armazenamento; isso não impõe representação TSID semântica de 26 caracteres.
 
 ## 4. SQLite Integrity
 
@@ -131,7 +141,32 @@ Migration conceitual 0008 cria tabela, integridade, unicidade, índices e backfi
 
 Para cada Book, ReadingSessions owner-consistent são ordenadas por ended_at ASC, id ASC; intervalos são unidos cumulativamente; o primeiro timestamp que alcança 100% cria exatamente uma Completion. Books incompletos ou sem sessões não recebem row. Empates preservam o mesmo timestamp.
 
-IDs de backfill usam a dependência TSID já fixada, sem importar código de aplicação mutável. Downgrade remove apenas a persistência de Completion e não modifica Books ou ReadingSessions.
+IDs de backfill usam diretamente a dependência `tsidpy` já fixada, sem importar
+`app.shared.domain.tsid.new_tsid`, BookCompletionId ou outro código de aplicação
+mutável. A canonicalidade segue a representação fornecida pela dependência fixada;
+em `tsidpy==1.1.5`, ela possui 13 caracteres e cabe em `VARCHAR(26)`.
+
+Antes do primeiro DDL de 0008, a migration deve validar toda a fonte
+owner-consistent e calcular o conjunto completo de candidatos. Cada intervalo
+considerado deve obedecer a `start_page >= 1`, `end_page >= start_page`,
+`start_page <= books.total_pages` e `end_page <= books.total_pages`; `ended_at`
+deve ser legível e deterministamente ordenável. História owner-consistent que não
+for representável contra o total_pages atual aborta a migration antes de qualquer
+DDL. Não é permitido clamp, truncamento, exclusão, reescrita, reparo automático
+ou inferência de total_pages histórico. Sessões com owner divergente continuam
+excluídas da fonte de backfill e, isoladamente, não bloqueiam a migration.
+
+Após validar e calcular candidatos, a migration gera e valida todos os TSIDs e
+define explicitamente `created_at` técnico; somente então pode criar a tabela,
+índice e inserir as linhas preparadas. Violações de `foreign_key_check` continuam
+blockers independentes. Como SQLite/Alembic não oferece garantia suficiente de
+DDL transacional neste ambiente, backup, exclusão de tráfego, failed-start,
+verificação pós-migration e cutover coordenado permanecem obrigatórios.
+
+Downgrade remove apenas a persistência de Completion e não modifica Books ou
+ReadingSessions. Re-upgrade precisa preservar book_ids completos, completed_at,
+contagem e semântica de unicidade/ownership; IDs de Completion podem ser
+regenerados após o downgrade destrutivo.
 
 Sessão retroativa com Completion existente nunca altera completed_at; sem Completion, pode criar o milestone usando seu próprio ended_at. Alteração posterior de total_pages não revoga o milestone.
 

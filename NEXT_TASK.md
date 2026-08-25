@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-MIGRATION-0008-PREFLIGHT |
+| ID | READ-005-S09-MIGRATION-0008-PREFLIGHT-RESUME |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT AUTHORIZED — MIGRATION 0008 + BACKFILL |
-| Tipo | Implementation Pre-Flight |
+| Status | IMPLEMENTATION PRE-FLIGHT RESUME AUTHORIZED — MIGRATION 0008 + BACKFILL |
+| Tipo | Implementation Pre-Flight Resume |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,14 +32,14 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT — READ-005 COORDINATED COMPLETION CUTOVER |
+| Current Executable Unit | MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT RESUME — READ-005 DATA-INTEGRITY REMEDIATION |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
 | Slice 4 Status | IMPLEMENTATION PRE-FLIGHT COMPLETED / IMPLEMENTATION BLOCKED PENDING MIGRATION 0008 |
 | Slice 5 Status | GATED |
-| Slice 6 Status | MIGRATION 0008 + BACKFILL PRE-FLIGHT AUTHORIZED / IMPLEMENTATION NOT STARTED |
+| Slice 6 Status | INITIAL MIGRATION 0008 PREFLIGHT COMPLETED / BLOCKED; DATA-INTEGRITY REMEDIATION APPROVED; PREFLIGHT RESUME AUTHORIZED / IMPLEMENTATION NOT STARTED |
 | Slice 7 Status | GATED |
 | Slice 8 Status | GATED |
 | Migration 0008 | NOT CREATED |
@@ -333,23 +333,52 @@ or owner failure, flush, commit, ambiguous commit, publication, or unknown error
 `SqlAlchemyUnitOfWork.rollback()` not clearing `_tracked_aggregates` remains INFO:
 no remediation is required while retry stays acquisition-only before tracking.
 
-Only the read-only Migration 0008 + Backfill implementation pre-flight is now
-authorized. No migration implementation allowlist exists yet.
+### MIGRATION 0008 + BACKFILL — INITIAL PREFLIGHT BLOCKERS RESOLVED / RESUME AUTHORIZED
+
+The initial strictly read-only Migration 0008 + Backfill pre-flight completed
+and was BLOCKED by two governance issues: documentation described a canonical
+26-character TSID although pinned `tsidpy==1.1.5` produces and validates the
+canonical 13-character representation; and schema 0007 permits historical
+owner-consistent page intervals outside a Book's current total_pages.
+
+Human data-integrity remediation is APPROVED. Canonical TSID representation is
+defined behaviorally by the pinned dependency's round-trip, not by a length;
+`VARCHAR(26)` remains unchanged persistence capacity. No domain, value object,
+model, existing ID, or dependency change is authorized or required.
+
+For each owner-consistent source row, backfill must validate page bounds against
+the current Book and a readable, deterministically orderable ended_at. Any
+unrepresentable source history aborts 0008 before DDL; no clamp, truncation,
+silent exclusion, rewrite, deletion, repair, or synthetic historical total_pages
+is permitted. Owner-mismatched sessions remain excluded from coverage and do not
+independently block migration. FK integrity violations remain independent
+blockers.
+
+SQLite partial-DDL risk is accepted only under the already frozen backup,
+traffic-exclusion, failed-start, post-migration verification, and coordinated
+cutover controls. All source validation, full candidate computation,
+migration-local TSID generation/validation, and explicit technical created_at
+selection must complete before the first 0008 DDL.
+
+The conditional three-file candidate from the blocked pre-flight is NOT
+AUTHORIZED. Only the strictly read-only Migration 0008 + Backfill pre-flight
+resume is now executable after this governance amendment is integrated. No
+migration implementation allowlist exists yet.
 
 ### Deferred slices
 
 3. Completion Persistence — INTEGRATED / FINALIZED.
 4. Transactional Write + Concurrency — PREFLIGHT COMPLETED / BLOCKED PENDING 0008.
 5. Dedicated Read Model / API.
-6. Migration 0008 + Backfill — PREFLIGHT AUTHORIZED.
+6. Migration 0008 + Backfill — INITIAL PREFLIGHT BLOCKED / REMEDIATION APPROVED / PREFLIGHT RESUME AUTHORIZED.
 7. Best-Effort Event Seam.
 8. Full Regression + Governance.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 BLOCKED PENDING 0008 / SLICE 6 PREFLIGHT AUTHORIZED.
-- RF-READ-005: SLICE 4 IMPLEMENTATION BLOCKED PENDING MIGRATION 0008; Migration 0008 implementation NOT STARTED.
-- US-READ-005-001: Slice 4 implementation NOT STARTED; only Migration 0008 + Backfill pre-flight is executable.
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 BLOCKED PENDING 0008 / SLICE 6 PREFLIGHT RESUME AUTHORIZED.
+- RF-READ-005: SLICE 4 IMPLEMENTATION BLOCKED PENDING MIGRATION 0008; Migration 0008 implementation NOT STARTED and NOT AUTHORIZED.
+- US-READ-005-001: Slice 4 implementation NOT STARTED; only Migration 0008 + Backfill pre-flight resume is executable.
 - Migration 0008: NOT CREATED.
 - Alembic: 0007 (head).
 - READ-008: DEFERRED.
@@ -360,19 +389,20 @@ authorized. No migration implementation allowlist exists yet.
 
 ## Architecture Boundary
 
-This amendment preserves ADR-0042 and BookCompletion semantics while changing
-only execution/deployment ordering. The current authorization is limited to the
-read-only Migration 0008 + Backfill implementation pre-flight; Slice 4 remains
-blocked pending Migration 0008 and Slices 5, 7, and 8 remain gated.
+This amendment preserves ADR-0042 and BookCompletion semantics while clarifying
+the pinned TSID representation and source-history safety conditions. The current
+authorization is limited to the read-only Migration 0008 + Backfill
+implementation pre-flight resume; Slice 4 remains blocked pending Migration 0008
+and Slices 5, 7, and 8 remain gated.
 
 Architecture Decision ADR-0042 está aceita e congelada. The amended Technical
 Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
 
 ## Próximo Gate
 
-MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT — READ-005 COORDINATED COMPLETION CUTOVER
+MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT RESUME — READ-005 DATA-INTEGRITY REMEDIATION
 
-ONLY THE MIGRATION 0008 + BACKFILL READ-ONLY IMPLEMENTATION PRE-FLIGHT IS AUTHORIZED.
+ONLY THE MIGRATION 0008 + BACKFILL READ-ONLY IMPLEMENTATION PRE-FLIGHT RESUME IS AUTHORIZED.
 
 DO NOT IMPLEMENT SLICE 4 OR MIGRATION 0008.
 
