@@ -9,10 +9,11 @@ No table, column, or constraint is added.
 
 ## READ-005 — Coordinated Completion Cutover
 
-Current Alembic head is `0007_add_reading_sessions_user_history_index`.
-Migration 0008 is planned but NOT CREATED. It owns the complete READ-005
+Repository Alembic head is `0008_create_book_completions_with_backfill`.
+Migration 0008 code is IMPLEMENTED / INTEGRATED. It owns the complete READ-005
 Completion schema, constraints, indexes, and historical backfill; Alembic remains
-the sole schema owner.
+the sole schema owner. Real local `lifeos.db` intentionally remains revision
+0007: real-data Migration 0008 application has NOT EXECUTED.
 
 Migration/backfill and Slice 4 transactional-write activation are one controlled
 operational cutover, although they remain separate implementation and review
@@ -25,7 +26,7 @@ It is forbidden to use runtime `create_all()`, table-existence fallback, or a
 writable old ReadingSession runtime during this cutover. A schema-only runtime
 activation followed by historical backfill is also forbidden.
 
-For planned Migration 0008, migration-local IDs follow the canonical string
+For Migration 0008, migration-local IDs follow the canonical string
 representation of pinned `tsidpy==1.1.5` (currently 13 characters); `VARCHAR(26)`
 remains storage capacity. Before its first DDL, the migration must validate and
 precompute all owner-consistent backfill candidates. An owner-consistent interval
@@ -286,7 +287,9 @@ A cadeia aplicada permanece linear:
 ↓
 0006_add_reading_sessions_user_book_index
 ↓
-0007_add_reading_sessions_user_history_index (head)
+0007_add_reading_sessions_user_history_index
+↓
+0008_create_book_completions_with_backfill (repository head)
 ```
 
 A migration `0004_create_books_table.py` permanece inalterada e mantém a tabela `books`, sua Foreign Key de ownership, a constraint de `total_pages` e o índice `ix_books_user_id`.
