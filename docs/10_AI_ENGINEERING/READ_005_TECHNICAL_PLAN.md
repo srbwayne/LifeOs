@@ -9,8 +9,13 @@ Architecture: ADR-0042 — ACCEPTED / FROZEN
 Technical Plan: APPROVED / FROZEN
 Human Review: APPROVED
 Date: 2026-08-17
-Implementation: NOT AUTHORIZED
-Sprint 09: NOT AUTHORIZED
+Implementation at Technical Plan approval: NOT AUTHORIZED
+Sprint 09 at Technical Plan approval: NOT AUTHORIZED
+
+Current execution state is governed by `NEXT_TASK.md` and subsequent approved
+governance. Migration 0008 code is integrated; Slice 4 implementation remains
+subject to its separate Implementation Authorization Review; runtime activation
+remains coupled to the coordinated cutover.
 
 ## 1. Domain
 
@@ -134,10 +139,13 @@ São esperados dois SELECTs: count e page query com JOIN Book/Completion. N+1 é
 ## 9. Migration 0008 and Backfill
 
 Migration 0008 remains one cohesive Completion migration: table, integrity,
-uniqueness, indexes, and complete historical backfill. It is not created in this
-gate and must not be split into a schema-only revision plus a later backfill.
+uniqueness, indexes, and complete historical backfill. It must not be split into
+a schema-only revision plus a later backfill.
 
-Migration conceitual 0008 cria tabela, integridade, unicidade, índices e backfill. Ela não é criada neste gate.
+Execution status: Migration 0008 code is implemented and integrated at repository
+head 0008. At Technical Plan approval time it was not yet created; real-data
+application remains pending the coordinated cutover, and real local `lifeos.db`
+intentionally remains revision 0007.
 
 Para cada Book, ReadingSessions owner-consistent são ordenadas por ended_at ASC, id ASC; intervalos são unidos cumulativamente; o primeiro timestamp que alcança 100% cria exatamente uma Completion. Books incompletos ou sem sessões não recebem row. Empates preservam o mesmo timestamp.
 
@@ -219,9 +227,19 @@ Independent Slice 4 activation on schema 0007 is forbidden. Independent writable
 deployment of Migration 0008/backfill while the old ReadingSession path accepts
 writes is forbidden. Schema-only activation followed by later historical backfill
 is forbidden. The coupled cutover requires an explicit readiness review; this
-amendment authorizes neither Migration 0008 implementation nor Slice 4
-implementation.
+amendment did not authorize Migration 0008 implementation or Slice 4
+implementation. Migration 0008 code is now integrated; Slice 4 implementation
+still requires its separate Implementation Authorization Review, and runtime
+activation still requires the coordinated cutover.
 
 Technical Plan: APPROVED / FROZEN.
-Implementation: NOT AUTHORIZED.
-Sprint 09: NOT AUTHORIZED.
+
+At Technical Plan approval:
+
+- Implementation: NOT AUTHORIZED.
+- Sprint 09: NOT AUTHORIZED.
+
+Current execution authorization is governed by `NEXT_TASK.md` and subsequent
+approved governance. Migration 0008 code is INTEGRATED. Slice 4 implementation
+is NOT YET AUTHORIZED; Slice 4 runtime activation is BLOCKED PENDING COORDINATED
+CUTOVER.

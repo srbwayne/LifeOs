@@ -1,3 +1,21 @@
+## READ-005 Migration 0008 Integration Finalized — 2026-08-27
+
+- The initial pre-flight, data-integrity remediation, implementation
+  authorization, PR #44 implementation, and final-review TSID-collision
+  remediation completed in sequence.
+- PR #44 amended head `dd4a1b1069b342febf0bdec4d271ffb1e833ecf1` merged via
+  Rebase and Merge into canonical main `93c385670be8490662cb7f96e05016be7a60aed5`.
+- Main CI `33028326214`: 3/3 SUCCESS; local finalization: PASS; 465 tests and
+  98.16% coverage. Repository Alembic head is 0008.
+- Real `lifeos.db` remains revision 0007 without `book_completions`. No
+  real-data migration or coordinated cutover has executed.
+- Slice 4 remains unimplemented. Its runtime activation remains blocked pending
+  coordinated cutover.
+
+**Next Gate:** SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
+
+---
+
 ## READ-005 Migration 0008 Architecture / Data-Integrity Remediation — 2026-08-24
 
 - The initial Migration 0008 pre-flight found the TSID 13-vs-26 wording conflict

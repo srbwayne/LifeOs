@@ -1,3 +1,20 @@
+## READ-005 Migration 0008 Integrated / Slice 4 Authorization Review Next — 2026-08-27
+
+- PR #44 merged authorized head `dd4a1b1069b342febf0bdec4d271ffb1e833ecf1`
+  into canonical main `93c385670be8490662cb7f96e05016be7a60aed5`.
+- Main CI `33028326214`: 3/3 SUCCESS; local finalization: PASS; 465 tests and
+  98.16% coverage.
+- Migration 0008 code integration is finalized and repository Alembic head is
+  0008. Real `lifeos.db` intentionally remains revision 0007; real-data
+  migration and the coordinated cutover have not executed.
+- Slice 4 implementation has not started. The next gate is its Implementation
+  Authorization Review; runtime activation remains blocked until the coordinated
+  cutover.
+
+**Next Gate:** SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
+
+---
+
 ## READ-005 Migration 0008 Pre-Flight Data-Integrity Remediation — 2026-08-24
 
 - The initial Migration 0008 pre-flight was BLOCKED by a TSID wording conflict

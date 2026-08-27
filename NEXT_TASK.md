@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-MIGRATION-0008-PREFLIGHT-RESUME |
+| ID | READ-005-S09-SLICE-4-AUTHORIZATION-REVIEW |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT RESUME AUTHORIZED — MIGRATION 0008 + BACKFILL |
-| Tipo | Implementation Pre-Flight Resume |
+| Status | IMPLEMENTATION AUTHORIZATION REVIEW AUTHORIZED — SLICE 4 |
+| Tipo | Implementation Authorization Review |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,18 +32,18 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT RESUME — READ-005 DATA-INTEGRITY REMEDIATION |
+| Current Executable Unit | SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
-| Slice 4 Status | IMPLEMENTATION PRE-FLIGHT COMPLETED / IMPLEMENTATION BLOCKED PENDING MIGRATION 0008 |
+| Slice 4 Status | IMPLEMENTATION PRE-FLIGHT COMPLETED / MIGRATION 0008 CODE PREREQUISITE RESOLVED / IMPLEMENTATION AUTHORIZATION REVIEW AUTHORIZED / IMPLEMENTATION NOT STARTED / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
 | Slice 5 Status | GATED |
-| Slice 6 Status | INITIAL MIGRATION 0008 PREFLIGHT COMPLETED / BLOCKED; DATA-INTEGRITY REMEDIATION APPROVED; PREFLIGHT RESUME AUTHORIZED / IMPLEMENTATION NOT STARTED |
+| Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
 | Slice 7 Status | GATED |
 | Slice 8 Status | GATED |
-| Migration 0008 | NOT CREATED |
-| Alembic | 0007 (head) |
+| Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
+| Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
 
 ## Especificação aprovada
 
@@ -290,9 +290,10 @@ COMPATIBILITY: `BookCompletionRepository.get_by_book_and_owner(...)` against the
 real Alembic 0007 schema raises `sqlalchemy.exc.OperationalError`, with original
 `sqlite3.OperationalError: no such table: book_completions`.
 
-Slice 4 implementation remains NOT AUTHORIZED. It may not be activated in a
-writable runtime until Migration 0008 has created and fully backfilled Completion
-persistence under the coordinated cutover below.
+Slice 4 implementation has not started. Its next executable gate is the
+Implementation Authorization Review; runtime activation remains forbidden until
+Migration 0008 has been applied and fully backfilled under the coordinated
+cutover below.
 
 ### COORDINATED MIGRATION 0008 + SLICE 4 RUNTIME CUTOVER — FROZEN
 
@@ -319,9 +320,10 @@ with an old writable ReadingSession runtime, and schema-only activation followed
 by later historical backfill. Neither runtime schema fallback nor completion
 timestamp rewriting is permitted.
 
-Migration 0008 remains one cohesive schema + full-backfill migration. It is NOT
-CREATED and its implementation is NOT AUTHORIZED by this task. Do not split the
-backfill into 0009 and do not add provenance state.
+Migration 0008 remains one cohesive schema + full-backfill migration. Its code is
+integrated at repository Alembic head 0008; real-data application remains pending
+the coordinated cutover. Do not split the backfill into 0009 and do not add
+provenance state.
 
 The retry policy is frozen for a later Slice 4 implementation only: two total
 write-intent acquisition attempts, fixed 50 ms delay, no jitter, and retry only
@@ -360,27 +362,41 @@ cutover controls. All source validation, full candidate computation,
 migration-local TSID generation/validation, and explicit technical created_at
 selection must complete before the first 0008 DDL.
 
-The conditional three-file candidate from the blocked pre-flight is NOT
-AUTHORIZED. Only the strictly read-only Migration 0008 + Backfill pre-flight
-resume is now executable after this governance amendment is integrated. No
-migration implementation allowlist exists yet.
+At the blocked pre-flight stage, the conditional three-file candidate was not
+yet authorized and only the Migration 0008 + Backfill pre-flight resume was
+executable. That historical state was subsequently superseded by the approved
+Implementation Authorization Review, implementation, final review, and PR #44
+integration.
+
+### MIGRATION 0008 CODE INTEGRATION FINALIZED
+
+- PR #44 merged authorized head `dd4a1b1069b342febf0bdec4d271ffb1e833ecf1`
+  through Rebase and Merge into canonical main
+  `93c385670be8490662cb7f96e05016be7a60aed5`.
+- Main CI `33028326214`: 3/3 SUCCESS. Local finalization: PASS; 465 tests and
+  98.16% coverage. Repository Alembic head is 0008.
+- Real `lifeos.db` intentionally remains revision 0007 without
+  `book_completions`; no real-data migration or coordinated cutover has run.
+- Migration 0008 code integration is finalized. Slice 4 implementation has not
+  started and is not authorized by this state transition; only its Implementation
+  Authorization Review is now executable.
 
 ### Deferred slices
 
 3. Completion Persistence — INTEGRATED / FINALIZED.
-4. Transactional Write + Concurrency — PREFLIGHT COMPLETED / BLOCKED PENDING 0008.
+4. Transactional Write + Concurrency — PREFLIGHT COMPLETED / AUTHORIZATION REVIEW AUTHORIZED / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER.
 5. Dedicated Read Model / API.
-6. Migration 0008 + Backfill — INITIAL PREFLIGHT BLOCKED / REMEDIATION APPROVED / PREFLIGHT RESUME AUTHORIZED.
+6. Migration 0008 + Backfill — CODE INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED.
 7. Best-Effort Event Seam.
 8. Full Regression + Governance.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 BLOCKED PENDING 0008 / SLICE 6 PREFLIGHT RESUME AUTHORIZED.
-- RF-READ-005: SLICE 4 IMPLEMENTATION BLOCKED PENDING MIGRATION 0008; Migration 0008 implementation NOT STARTED and NOT AUTHORIZED.
-- US-READ-005-001: Slice 4 implementation NOT STARTED; only Migration 0008 + Backfill pre-flight resume is executable.
-- Migration 0008: NOT CREATED.
-- Alembic: 0007 (head).
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 AUTHORIZATION REVIEW AUTHORIZED / SLICE 6 CODE INTEGRATED.
+- RF-READ-005: Slice 4 implementation NOT STARTED; runtime activation remains blocked pending coordinated cutover.
+- US-READ-005-001: only Slice 4 Implementation Authorization Review is executable.
+- Migration 0008: CODE INTEGRATED; real local database NOT APPLIED.
+- Alembic: repository 0008 (head); real `lifeos.db` 0007.
 - READ-008: DEFERRED.
 - RF-READ-009: ASSOCIAÇÃO PENDENTE / DEFERRED.
 - RF-READ-010: RECONCILIAÇÃO PENDENTE / DEFERRED.
@@ -390,20 +406,23 @@ migration implementation allowlist exists yet.
 ## Architecture Boundary
 
 This amendment preserves ADR-0042 and BookCompletion semantics while clarifying
-the pinned TSID representation and source-history safety conditions. The current
-authorization is limited to the read-only Migration 0008 + Backfill
-implementation pre-flight resume; Slice 4 remains blocked pending Migration 0008
-and Slices 5, 7, and 8 remain gated.
+the pinned TSID representation and source-history safety conditions. At this
+amendment's historical stage, authorization was limited to the read-only
+Migration 0008 + Backfill implementation pre-flight resume. That state was
+superseded by Migration 0008 code integration; the current executable authority
+is the Slice 4 Implementation Authorization Review, while Slice 4 runtime
+activation remains blocked pending coordinated cutover and Slices 5, 7, and 8
+remain gated.
 
 Architecture Decision ADR-0042 está aceita e congelada. The amended Technical
 Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
 
 ## Próximo Gate
 
-MIGRATION 0008 + BACKFILL IMPLEMENTATION PRE-FLIGHT RESUME — READ-005 DATA-INTEGRITY REMEDIATION
+SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
 
-ONLY THE MIGRATION 0008 + BACKFILL READ-ONLY IMPLEMENTATION PRE-FLIGHT RESUME IS AUTHORIZED.
+ONLY THE SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW IS AUTHORIZED.
 
-DO NOT IMPLEMENT SLICE 4 OR MIGRATION 0008.
+DO NOT IMPLEMENT SLICE 4, APPLY MIGRATION 0008 TO REAL DATA, OR EXECUTE THE COORDINATED CUTOVER.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
