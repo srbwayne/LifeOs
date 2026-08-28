@@ -14,8 +14,13 @@ from app.read.application.errors.book_errors import BookNotFoundError
 from app.read.domain.aggregates.book import Book
 from app.read.domain.aggregates.reading_session import ReadingSession
 from app.read.domain.errors.reading_session_errors import ReadingBeyondBookError
+from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
+from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.infrastructure.persistence.models.reading_session_model import (
     ReadingSessionModel,
+)
+from app.read.infrastructure.persistence.repositories.book_completion_repository import (
+    SqlAlchemyBookCompletionRepository,
 )
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
@@ -81,19 +86,25 @@ def build_handler(
     CreateReadingSessionCommandHandler,
     SqlAlchemyBookRepository,
     SqlAlchemyReadingSessionRepository,
+    SqlAlchemyBookCompletionRepository,
     SqlAlchemyUnitOfWork,
 ]:
     book_repository = SqlAlchemyBookRepository(session)
     reading_session_repository = SqlAlchemyReadingSessionRepository(session)
+    book_completion_repository = SqlAlchemyBookCompletionRepository(session)
     unit_of_work = SqlAlchemyUnitOfWork(session, InMemoryEventBus())
     return (
         CreateReadingSessionCommandHandler(
             book_repository,
             reading_session_repository,
+            book_completion_repository,
+            ReadingCoverageCalculator(),
+            ReadingProgressCalculator(),
             unit_of_work,
         ),
         book_repository,
         reading_session_repository,
+        book_completion_repository,
         unit_of_work,
     )
 
@@ -114,12 +125,19 @@ def test_handler_uses_shared_session_and_commit_persists(session: Session) -> No
     owner_id = UserId.new()
     add_user(session, owner_id)
     book = add_book(session, owner_id)
-    handler, book_repository, reading_repository, unit_of_work = build_handler(session)
+    (
+        handler,
+        book_repository,
+        reading_repository,
+        completion_repository,
+        unit_of_work,
+    ) = build_handler(session)
 
     result = handler(command(owner_id, book))
 
     assert book_repository._session is unit_of_work.session
     assert reading_repository._session is unit_of_work.session
+    assert completion_repository._session is unit_of_work.session
     assert session_count(session) == 1
     assert session.get(ReadingSessionModel, result.id) is not None
     assert result.pages_read == 3
@@ -129,7 +147,7 @@ def test_missing_book_does_not_persist(session: Session) -> None:
     owner_id = UserId.new()
     add_user(session, owner_id)
     missing_book = Book.create(owner_id, "Missing", "Author", 100)
-    handler, _, _, _ = build_handler(session)
+    handler, _, _, _, _ = build_handler(session)
 
     with pytest.raises(BookNotFoundError):
         handler(command(owner_id, missing_book))
@@ -143,7 +161,7 @@ def test_other_owner_book_does_not_persist(session: Session) -> None:
     add_user(session, owner_id)
     add_user(session, other_owner)
     hidden_book = add_book(session, other_owner)
-    handler, _, _, _ = build_handler(session)
+    handler, _, _, _, _ = build_handler(session)
 
     with pytest.raises(BookNotFoundError):
         handler(command(owner_id, hidden_book))
@@ -155,7 +173,7 @@ def test_domain_error_does_not_persist(session: Session) -> None:
     owner_id = UserId.new()
     add_user(session, owner_id)
     book = add_book(session, owner_id)
-    handler, _, _, _ = build_handler(session)
+    handler, _, _, _, _ = build_handler(session)
 
     with pytest.raises(ReadingBeyondBookError):
         handler(command(owner_id, book, end_page=101))

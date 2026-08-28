@@ -1,14 +1,44 @@
+import sqlite3
+import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Protocol
+
+from sqlalchemy.exc import OperationalError
 
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
+from app.read.domain.ports.book_completion_repository import IBookCompletionRepository
 from app.read.domain.ports.book_repository import IBookRepository
 from app.read.domain.ports.reading_session_repository import IReadingSessionRepository
+from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
+from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
-from app.shared.application.unit_of_work import IUnitOfWork
 from app.shared.domain.identifiers.user_id import UserId
+
+_SQLITE_BUSY_CODE: int = sqlite3.SQLITE_BUSY
+
+
+class ReadingSessionWriteUnitOfWork(Protocol):
+    def __enter__(self) -> "ReadingSessionWriteUnitOfWork": ...
+
+    def __exit__(self, exc_type: object, exc_value: object, traceback: object) -> None: ...
+
+    def acquire_write_intent(self) -> None: ...
+
+    def flush(self) -> None: ...
+
+    def commit(self) -> None: ...
+
+
+def _is_retryable_acquisition_busy(error: OperationalError) -> bool:
+    return (
+        isinstance(error.orig, sqlite3.OperationalError)
+        and getattr(error.orig, "sqlite_errorcode", None) == _SQLITE_BUSY_CODE
+    )
 
 
 @dataclass(frozen=True)
@@ -27,32 +57,66 @@ class CreateReadingSessionCommandHandler:
         self,
         book_repository: IBookRepository,
         reading_session_repository: IReadingSessionRepository,
-        unit_of_work: IUnitOfWork,
+        book_completion_repository: IBookCompletionRepository,
+        coverage_calculator: ReadingCoverageCalculator,
+        progress_calculator: ReadingProgressCalculator,
+        unit_of_work: ReadingSessionWriteUnitOfWork,
+        sleeper: Callable[[float], None] = time.sleep,
     ) -> None:
         self._book_repository = book_repository
         self._reading_session_repository = reading_session_repository
+        self._book_completion_repository = book_completion_repository
+        self._coverage_calculator = coverage_calculator
+        self._progress_calculator = progress_calculator
         self._unit_of_work = unit_of_work
+        self._sleeper = sleeper
 
     def __call__(self, command: CreateReadingSessionCommand) -> ReadingSessionDTO:
-        with self._unit_of_work as uow:
-            book = self._book_repository.get_by_id_and_owner(
-                command.book_id,
-                command.owner_id,
-            )
-            if book is None:
-                raise BookNotFoundError()
+        for attempt in range(2):
+            acquired = False
+            try:
+                with self._unit_of_work as uow:
+                    uow.acquire_write_intent()
+                    acquired = True
 
-            session = ReadingSession.create(
-                owner_id=command.owner_id,
-                book_id=book.id,
-                start_page=command.start_page,
-                end_page=command.end_page,
-                started_at=command.started_at,
-                ended_at=command.ended_at,
-                book_total_pages=book.total_pages,
-                notes=command.notes,
-            )
-            self._reading_session_repository.save(session)
-            uow.commit()
+                    book = self._book_repository.get_by_id_and_owner(
+                        command.book_id,
+                        command.owner_id,
+                    )
+                    if book is None:
+                        raise BookNotFoundError()
 
-        return ReadingSessionDTO.from_session(session)
+                    completion = self._book_completion_repository.get_by_book_and_owner(
+                        book.id,
+                        command.owner_id,
+                    )
+                    existing_sessions = self._reading_session_repository.list_by_book_and_owner(
+                        book.id,
+                        command.owner_id,
+                    )
+                    session = ReadingSession.create(
+                        owner_id=command.owner_id,
+                        book_id=book.id,
+                        start_page=command.start_page,
+                        end_page=command.end_page,
+                        started_at=command.started_at,
+                        ended_at=command.ended_at,
+                        book_total_pages=book.total_pages,
+                        notes=command.notes,
+                    )
+                    coverage = self._coverage_calculator.calculate(existing_sessions + (session,))
+                    progress = self._progress_calculator.calculate_from_coverage(book, coverage)
+                    self._reading_session_repository.save(session)
+                    if progress.completed and completion is None:
+                        self._book_completion_repository.save(
+                            BookCompletion.create(book.id, session.ended_at)
+                        )
+                    uow.flush()
+                    uow.commit()
+                    return ReadingSessionDTO.from_session(session)
+            except OperationalError as error:
+                if acquired or not _is_retryable_acquisition_busy(error) or attempt == 1:
+                    raise
+                self._sleeper(0.050)
+
+        raise AssertionError("unreachable")
