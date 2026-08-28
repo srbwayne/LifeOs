@@ -20,11 +20,15 @@ from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
 from app.read.application.queries.list_reading_history import (
     ListReadingHistoryQueryHandler,
 )
+from app.read.domain.ports.book_completion_repository import IBookCompletionRepository
 from app.read.domain.ports.book_repository import IBookRepository
 from app.read.domain.ports.reading_session_repository import IReadingSessionRepository
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_insights_calculator import ReadingInsightsCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
+from app.read.infrastructure.persistence.repositories.book_completion_repository import (
+    SqlAlchemyBookCompletionRepository,
+)
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
 )
@@ -50,6 +54,12 @@ def get_reading_session_repository(
     db: Session = Depends(get_db),
 ) -> IReadingSessionRepository:
     return SqlAlchemyReadingSessionRepository(db)
+
+
+def get_book_completion_repository(
+    db: Session = Depends(get_db),
+) -> IBookCompletionRepository:
+    return SqlAlchemyBookCompletionRepository(db)
 
 
 def get_reading_history_repository(
@@ -90,11 +100,15 @@ def get_list_my_books_handler(
 def get_create_reading_session_handler(
     book_repository: IBookRepository = Depends(get_book_repository),
     reading_session_repository: IReadingSessionRepository = Depends(get_reading_session_repository),
+    book_completion_repository: IBookCompletionRepository = Depends(get_book_completion_repository),
     unit_of_work: SqlAlchemyUnitOfWork = Depends(get_book_uow),
 ) -> CreateReadingSessionCommandHandler:
     return CreateReadingSessionCommandHandler(
         book_repository,
         reading_session_repository,
+        book_completion_repository,
+        ReadingCoverageCalculator(),
+        ReadingProgressCalculator(),
         unit_of_work,
     )
 

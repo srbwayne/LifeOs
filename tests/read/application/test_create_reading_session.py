@@ -1,7 +1,9 @@
+import sqlite3
 from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
 
 import pytest
+from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommand,
@@ -10,6 +12,7 @@ from app.read.application.commands.create_reading_session import (
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
 from app.read.domain.aggregates.book import Book
+from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
 from app.read.domain.errors.reading_session_errors import (
     InvalidPageNumberError,
@@ -17,6 +20,8 @@ from app.read.domain.errors.reading_session_errors import (
     InvalidReadingSessionTimeError,
     ReadingBeyondBookError,
 )
+from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
+from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
 from app.shared.domain.aggregate import AggregateRoot
 from app.shared.domain.identifiers.user_id import UserId
@@ -31,6 +36,7 @@ class FakeBookRepository:
         self.lookups: list[tuple[BookId, UserId]] = []
         self.save_count = 0
         self.list_count = 0
+        self.get_error: Exception | None = None
 
     def save(self, book: Book) -> None:
         self.save_count += 1
@@ -40,6 +46,8 @@ class FakeBookRepository:
         raise AssertionError("Reading session creation must not list the library.")
 
     def get_by_id_and_owner(self, book_id: BookId, owner_id: UserId) -> Book | None:
+        if self.get_error:
+            raise self.get_error
         self.lookups.append((book_id, owner_id))
         return next(
             (book for book in self.books if book.id == book_id and book.owner_id == owner_id),
@@ -48,8 +56,10 @@ class FakeBookRepository:
 
 
 class FakeReadingSessionRepository:
-    def __init__(self) -> None:
+    def __init__(self, sessions: tuple[ReadingSession, ...] = ()) -> None:
         self.saved: list[ReadingSession] = []
+        self.sessions = sessions
+        self.lookups: list[tuple[BookId, UserId]] = []
 
     def save(self, session: ReadingSession) -> None:
         self.saved.append(session)
@@ -59,7 +69,22 @@ class FakeReadingSessionRepository:
         book_id: BookId,
         owner_id: UserId,
     ) -> tuple[ReadingSession, ...]:
-        raise AssertionError("Reading session creation must not list sessions.")
+        self.lookups.append((book_id, owner_id))
+        return self.sessions
+
+
+class FakeBookCompletionRepository:
+    def __init__(self, completion: BookCompletion | None = None) -> None:
+        self.completion = completion
+        self.saved: list[BookCompletion] = []
+        self.lookups: list[tuple[BookId, UserId]] = []
+
+    def save(self, completion: BookCompletion) -> None:
+        self.saved.append(completion)
+
+    def get_by_book_and_owner(self, book_id: BookId, owner_id: UserId) -> BookCompletion | None:
+        self.lookups.append((book_id, owner_id))
+        return self.completion
 
 
 class FakeUnitOfWork:
@@ -68,6 +93,11 @@ class FakeUnitOfWork:
         self.exit_count = 0
         self.commit_count = 0
         self.rollback_count = 0
+        self.flush_count = 0
+        self.acquisition_count = 0
+        self.acquisition_errors: list[Exception] = []
+        self.flush_error: Exception | None = None
+        self.commit_error: Exception | None = None
         self.tracked_aggregates: list[AggregateRoot] = []
 
     def __enter__(self) -> "FakeUnitOfWork":
@@ -80,10 +110,19 @@ class FakeUnitOfWork:
             self.rollback()
 
     def flush(self) -> None:
-        pass
+        self.flush_count += 1
+        if self.flush_error:
+            raise self.flush_error
+
+    def acquire_write_intent(self) -> None:
+        self.acquisition_count += 1
+        if self.acquisition_errors:
+            raise self.acquisition_errors.pop(0)
 
     def commit(self) -> None:
         self.commit_count += 1
+        if self.commit_error:
+            raise self.commit_error
 
     def rollback(self) -> None:
         self.rollback_count += 1
@@ -110,21 +149,30 @@ def valid_command(
 
 def build_handler(
     books: tuple[Book, ...],
+    sessions: tuple[ReadingSession, ...] = (),
+    completion: BookCompletion | None = None,
+    sleeper=lambda _: None,
 ) -> tuple[
     CreateReadingSessionCommandHandler,
     FakeBookRepository,
     FakeReadingSessionRepository,
+    FakeBookCompletionRepository,
     FakeUnitOfWork,
 ]:
     book_repository = FakeBookRepository(books)
-    session_repository = FakeReadingSessionRepository()
+    session_repository = FakeReadingSessionRepository(sessions)
+    completion_repository = FakeBookCompletionRepository(completion)
     unit_of_work = FakeUnitOfWork()
     handler = CreateReadingSessionCommandHandler(
         book_repository,
         session_repository,
+        completion_repository,
+        ReadingCoverageCalculator(),
+        ReadingProgressCalculator(),
         unit_of_work,
+        sleeper,
     )
-    return handler, book_repository, session_repository, unit_of_work
+    return handler, book_repository, session_repository, completion_repository, unit_of_work
 
 
 def test_command_is_immutable() -> None:
@@ -138,7 +186,7 @@ def test_command_is_immutable() -> None:
 def test_handler_creates_saves_commits_once_and_returns_dto() -> None:
     owner_id = UserId.new()
     book = Book.create(owner_id, "Book", "Author", 300)
-    handler, book_repository, session_repository, unit_of_work = build_handler((book,))
+    handler, book_repository, session_repository, _, unit_of_work = build_handler((book,))
 
     result = handler(valid_command(owner_id, book.id))
 
@@ -162,7 +210,7 @@ def test_handler_creates_saves_commits_once_and_returns_dto() -> None:
 def test_dto_does_not_expose_owner_and_is_immutable() -> None:
     owner_id = UserId.new()
     book = Book.create(owner_id, "Book", "Author", 300)
-    handler, _, _, _ = build_handler((book,))
+    handler, _, _, _, _ = build_handler((book,))
 
     result = handler(valid_command(owner_id, book.id))
 
@@ -176,7 +224,7 @@ def test_dto_does_not_expose_owner_and_is_immutable() -> None:
 def test_handler_preserves_normalized_optional_notes(notes: str | None) -> None:
     owner_id = UserId.new()
     book = Book.create(owner_id, "Book", "Author", 300)
-    handler, _, _, _ = build_handler((book,))
+    handler, _, _, _, _ = build_handler((book,))
 
     result = handler(valid_command(owner_id, book.id, notes=notes))
 
@@ -186,7 +234,7 @@ def test_handler_preserves_normalized_optional_notes(notes: str | None) -> None:
 def test_handler_returns_utc_timestamps() -> None:
     owner_id = UserId.new()
     book = Book.create(owner_id, "Book", "Author", 300)
-    handler, _, _, _ = build_handler((book,))
+    handler, _, _, _, _ = build_handler((book,))
     offset = timezone(timedelta(hours=-3))
 
     result = handler(
@@ -221,7 +269,7 @@ def test_missing_or_other_owner_book_has_same_error_without_save_or_commit(
                 total_pages=Book.create(UserId.new(), "Source", "Author", 100).total_pages,
             ),
         )
-    handler, book_repository, session_repository, unit_of_work = build_handler(books)
+    handler, book_repository, session_repository, _, unit_of_work = build_handler(books)
 
     with pytest.raises(BookNotFoundError, match="Book not found"):
         handler(valid_command(owner_id, book_id))
@@ -246,7 +294,7 @@ def test_domain_error_prevents_session_save_and_commit(
 ) -> None:
     owner_id = UserId.new()
     book = Book.create(owner_id, "Book", "Author", 300)
-    handler, _, session_repository, unit_of_work = build_handler((book,))
+    handler, _, session_repository, _, unit_of_work = build_handler((book,))
 
     with pytest.raises(error):
         handler(valid_command(owner_id, book.id, **overrides))
@@ -259,9 +307,129 @@ def test_domain_error_prevents_session_save_and_commit(
 def test_handler_does_not_track_or_publish_domain_events() -> None:
     owner_id = UserId.new()
     book = Book.create(owner_id, "Book", "Author", 300)
-    handler, _, session_repository, unit_of_work = build_handler((book,))
+    handler, _, session_repository, _, unit_of_work = build_handler((book,))
 
     handler(valid_command(owner_id, book.id))
 
     assert unit_of_work.tracked_aggregates == []
     assert session_repository.saved[0].domain_events == []
+
+
+def test_handler_creates_completion_when_new_session_reaches_full_coverage() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    existing = ReadingSession.create(owner_id, book.id, 1, 79, UTC_START, UTC_END, book.total_pages)
+    handler, _, sessions, completions, uow = build_handler((book,), (existing,))
+
+    result = handler(valid_command(owner_id, book.id, start_page=80, end_page=100))
+
+    assert result.id == sessions.saved[0].id.to_persistence()
+    assert len(completions.saved) == 1
+    assert completions.saved[0].completed_at == sessions.saved[0].ended_at
+    assert uow.flush_count == 1
+    assert uow.commit_count == 1
+
+
+def test_existing_completion_is_not_rewritten() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    existing_completion = BookCompletion.create(book.id, UTC_START)
+    handler, _, sessions, completions, _ = build_handler((book,), completion=existing_completion)
+
+    handler(valid_command(owner_id, book.id))
+
+    assert len(sessions.saved) == 1
+    assert completions.saved == []
+    assert existing_completion.completed_at == UTC_START
+
+
+class _Busy(sqlite3.OperationalError):
+    sqlite_errorcode = sqlite3.SQLITE_BUSY
+
+
+class _Locked(sqlite3.OperationalError):
+    sqlite_errorcode = sqlite3.SQLITE_LOCKED
+
+
+def _operational_error(original: Exception) -> OperationalError:
+    return OperationalError("BEGIN IMMEDIATE", {}, original)
+
+
+def test_busy_retries_once_after_context_rollback() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    slept: list[float] = []
+    handler, _, _, _, uow = build_handler((book,), sleeper=slept.append)
+    uow.acquisition_errors = [_operational_error(_Busy())]
+
+    handler(valid_command(owner_id, book.id))
+
+    assert uow.acquisition_count == 2
+    assert uow.rollback_count == 1
+    assert uow.commit_count == 1
+    assert slept == [0.050]
+
+
+def test_busy_twice_propagates_after_two_rollbacks() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    slept: list[float] = []
+    handler, _, sessions, completions, uow = build_handler((book,), sleeper=slept.append)
+    uow.acquisition_errors = [_operational_error(_Busy()), _operational_error(_Busy())]
+
+    with pytest.raises(OperationalError):
+        handler(valid_command(owner_id, book.id))
+
+    assert uow.acquisition_count == 2
+    assert uow.rollback_count == 2
+    assert uow.commit_count == 0
+    assert slept == [0.050]
+    assert sessions.saved == []
+    assert completions.saved == []
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        _operational_error(_Locked()),
+        OperationalError("BEGIN IMMEDIATE", {}, Exception("generic")),
+    ],
+)
+def test_non_busy_acquisition_errors_do_not_retry(error: OperationalError) -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    slept: list[float] = []
+    handler, _, _, _, uow = build_handler((book,), sleeper=slept.append)
+    uow.acquisition_errors = [error]
+    with pytest.raises(OperationalError):
+        handler(valid_command(owner_id, book.id))
+    assert (uow.acquisition_count, uow.rollback_count, slept) == (1, 1, [])
+
+
+@pytest.mark.parametrize(
+    "failure_stage",
+    ["post_acquisition", "flush", "commit", "integrity", "unknown"],
+)
+def test_failures_after_acquisition_do_not_retry(failure_stage: str) -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    slept: list[float] = []
+    handler, book_repository, _, _, uow = build_handler((book,), sleeper=slept.append)
+
+    if failure_stage == "post_acquisition":
+        book_repository.get_error = OperationalError("SELECT", {}, Exception("failure"))
+    elif failure_stage == "flush":
+        uow.flush_error = OperationalError("FLUSH", {}, Exception("failure"))
+    elif failure_stage == "commit":
+        uow.commit_error = OperationalError("COMMIT", {}, Exception("failure"))
+    elif failure_stage == "integrity":
+        book_repository.get_error = IntegrityError("SELECT", {}, Exception("failure"))
+    else:
+        book_repository.get_error = RuntimeError("failure")
+
+    with pytest.raises(Exception, match="failure"):
+        handler(valid_command(owner_id, book.id))
+
+    assert uow.acquisition_count == 1
+    assert uow.rollback_count == 1
+    assert slept == []

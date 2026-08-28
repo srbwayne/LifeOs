@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.shared.application.event_bus import IEventBus
@@ -24,6 +25,12 @@ class SqlAlchemyUnitOfWork(IUnitOfWork):
 
     def flush(self):
         self.session.flush()
+
+    def acquire_write_intent(self) -> None:
+        bind = self.session.get_bind()
+        if bind.dialect.name != "sqlite":
+            return
+        self.session.execute(text("BEGIN IMMEDIATE"))
 
     def _publish_domain_events(self):
         events = []
