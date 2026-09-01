@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE-4-AUTHORIZATION-REVIEW |
+| ID | READ-005-S09-PY311-PLATFORM-TRANSITION-AUTHORIZATION-REVIEW |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION AUTHORIZATION REVIEW AUTHORIZED — SLICE 4 |
-| Tipo | Implementation Authorization Review |
+| Status | PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW AUTHORIZED |
+| Tipo | Platform Transition Implementation Authorization Review |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,18 +32,26 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY |
+| Current Executable Unit | PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
-| Slice 4 Status | IMPLEMENTATION PRE-FLIGHT COMPLETED / MIGRATION 0008 CODE PREREQUISITE RESOLVED / IMPLEMENTATION AUTHORIZATION REVIEW AUTHORIZED / IMPLEMENTATION NOT STARTED / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
+| Slice 4 Status | IMPLEMENTED / FINAL LOCAL REVIEW PASS / PUBLISHED IN DRAFT PR #46 / PR CI FAILED ON PYTHON 3.10 PLATFORM INCOMPATIBILITY / MERGE BLOCKED PENDING PYTHON 3.11 PLATFORM TRANSITION / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
 | Slice 5 Status | GATED |
 | Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
 | Slice 7 Status | GATED |
 | Slice 8 Status | GATED |
 | Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
 | Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
+| Slice 4 PR | #46 — OPEN / DRAFT |
+| Slice 4 PR Head | `151a519291a785f86856c685880f441b8b3bc510` |
+| Slice 4 PR CI | `33457790140` — FAILURE |
+| Current Integrated Python Platform | 3.10 |
+| Current Required Branch Checks | Static quality (Python 3.10); Tests and coverage (Python 3.10); Alembic migration (Python 3.10) |
+| Approved Future Python Platform | >=3.11 |
+| Python 3.11 Platform Implementation | NOT STARTED |
+| Python 3.11 Platform Implementation Authorization | NOT YET GRANTED |
 
 ## Especificação aprovada
 
@@ -281,18 +289,25 @@ Slice 3 validation and closure evidence:
 Slice 3 is CLOSED / INTEGRATED / FINALIZED. Its frozen persistence contract above
 is preserved as completed evidence. No Slice 4+ implementation was introduced.
 
-### SLICE 4 — TRANSACTIONAL WRITE AND CONCURRENCY — PREFLIGHT COMPLETED / BLOCKED
+### SLICE 4 — TRANSACTIONAL WRITE AND CONCURRENCY — IMPLEMENTED / PUBLISHED / MERGE BLOCKED
 
-The strictly read-only Slice 4 pre-flight completed. `BEGIN IMMEDIATE`, the
-same-Session invariant, calculator reuse, and the atomic Session + Completion
-design were proven viable. The pre-flight is BLOCKED only by SLICE ORDER / SCHEMA
-COMPATIBILITY: `BookCompletionRepository.get_by_book_and_owner(...)` against the
-real Alembic 0007 schema raises `sqlalchemy.exc.OperationalError`, with original
-`sqlite3.OperationalError: no such table: book_completions`.
+Slice 4 Implementation Authorization is APPROVED. The implementation, local final
+review, atomicity evidence remediation, and final remediated commit review all
+passed. The six-file authorized implementation is complete at commit
+`151a519291a785f86856c685880f441b8b3bc510` and is published in PR #46, which
+remains OPEN / DRAFT.
 
-Slice 4 implementation has not started. Its next executable gate is the
-Implementation Authorization Review; runtime activation remains forbidden until
-Migration 0008 has been applied and fully backfilled under the coordinated
+PR CI `33457790140` failed on the current integrated Python 3.10 platform: its
+stdlib `sqlite3` does not expose the public numeric SQLite error-code API required
+by the frozen `SQLITE_BUSY` classifier. This is a PLATFORM PREREQUISITE, not a
+change to the frozen retry semantics. Slice 4 merge is blocked pending a separately
+reviewed, implemented, and integrated Python >=3.11 platform transition.
+
+Human Technical Decision: APPROVED — OPTION B. The future LifeOS platform is
+Python >=3.11; the transition implementation is NOT STARTED and its implementation
+authorization is NOT YET GRANTED. The current integrated platform and required
+branch checks remain Python 3.10. Runtime activation remains separately forbidden
+until Migration 0008 has been applied and fully backfilled under the coordinated
 cutover below.
 
 ### COORDINATED MIGRATION 0008 + SLICE 4 RUNTIME CUTOVER — FROZEN
@@ -325,7 +340,7 @@ integrated at repository Alembic head 0008; real-data application remains pendin
 the coordinated cutover. Do not split the backfill into 0009 and do not add
 provenance state.
 
-The retry policy is frozen for a later Slice 4 implementation only: two total
+The retry policy frozen for the completed Slice 4 implementation remains: two total
 write-intent acquisition attempts, fixed 50 ms delay, no jitter, and retry only
 for `OperationalError` wrapping `sqlite3.OperationalError` with
 `sqlite_errorcode == SQLITE_BUSY` before relevant reads, writes, tracking, flush,
@@ -377,14 +392,16 @@ integration.
   98.16% coverage. Repository Alembic head is 0008.
 - Real `lifeos.db` intentionally remains revision 0007 without
   `book_completions`; no real-data migration or coordinated cutover has run.
-- Migration 0008 code integration is finalized. Slice 4 implementation has not
-  started and is not authorized by this state transition; only its Implementation
-  Authorization Review is now executable.
+- Migration 0008 code integration is finalized. At that integration checkpoint,
+  Slice 4 implementation had not started and its Implementation Authorization
+  Review was next. That historical state was superseded by the approved Slice 4
+  implementation, final review, publication in draft PR #46, and discovery of the
+  Python 3.11 platform prerequisite.
 
 ### Deferred slices
 
 3. Completion Persistence — INTEGRATED / FINALIZED.
-4. Transactional Write + Concurrency — PREFLIGHT COMPLETED / AUTHORIZATION REVIEW AUTHORIZED / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER.
+4. Transactional Write + Concurrency — IMPLEMENTED / DRAFT PR #46 / MERGE BLOCKED PENDING PYTHON 3.11 PLATFORM TRANSITION / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER.
 5. Dedicated Read Model / API.
 6. Migration 0008 + Backfill — CODE INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED.
 7. Best-Effort Event Seam.
@@ -392,9 +409,10 @@ integration.
 
 ## Pendências
 
-- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 AUTHORIZATION REVIEW AUTHORIZED / SLICE 6 CODE INTEGRATED.
-- RF-READ-005: Slice 4 implementation NOT STARTED; runtime activation remains blocked pending coordinated cutover.
-- US-READ-005-001: only Slice 4 Implementation Authorization Review is executable.
+- READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTED AND PUBLISHED IN DRAFT PR #46 / SLICE 6 CODE INTEGRATED.
+- RF-READ-005: Slice 4 merge is blocked pending the Python 3.11 platform transition; runtime activation remains blocked pending coordinated cutover.
+- US-READ-005-001: only the Python 3.11 Platform Transition Implementation Authorization Review is executable.
+- Python platform: current integrated platform and required checks remain 3.10; future >=3.11 transition is human-approved but NOT STARTED / NOT YET AUTHORIZED for implementation.
 - Migration 0008: CODE INTEGRATED; real local database NOT APPLIED.
 - Alembic: repository 0008 (head); real `lifeos.db` 0007.
 - READ-008: DEFERRED.
@@ -409,20 +427,21 @@ This amendment preserves ADR-0042 and BookCompletion semantics while clarifying
 the pinned TSID representation and source-history safety conditions. At this
 amendment's historical stage, authorization was limited to the read-only
 Migration 0008 + Backfill implementation pre-flight resume. That state was
-superseded by Migration 0008 code integration; the current executable authority
-is the Slice 4 Implementation Authorization Review, while Slice 4 runtime
-activation remains blocked pending coordinated cutover and Slices 5, 7, and 8
-remain gated.
+superseded by Migration 0008 code integration and the completed, reviewed Slice 4
+implementation now published in draft PR #46. The current executable authority is
+the Python 3.11 Platform Transition Implementation Authorization Review. Slice 4
+merge remains blocked pending that platform transition; runtime activation remains
+blocked pending coordinated cutover; Slices 5, 7, and 8 remain gated.
 
 Architecture Decision ADR-0042 está aceita e congelada. The amended Technical
 Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md.
 
 ## Próximo Gate
 
-SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW — READ-005 TRANSACTIONAL WRITE AND CONCURRENCY
+PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW
 
-ONLY THE SLICE 4 IMPLEMENTATION AUTHORIZATION REVIEW IS AUTHORIZED.
+ONLY THE PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW IS AUTHORIZED.
 
-DO NOT IMPLEMENT SLICE 4, APPLY MIGRATION 0008 TO REAL DATA, OR EXECUTE THE COORDINATED CUTOVER.
+DO NOT IMPLEMENT THE PLATFORM TRANSITION, MODIFY PR #46, APPLY MIGRATION 0008 TO REAL DATA, OR EXECUTE THE COORDINATED CUTOVER.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.

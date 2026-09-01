@@ -1,3 +1,35 @@
+## READ-005 Slice 4 Implementation / Python 3.11 Platform Prerequisite — 2026-09-01
+
+1. Slice 4 implementation authorization completed.
+2. Human Scope Review expanded the original five-file implementation allowlist to
+   six files because `tests/read/integration/test_reading_session_uow.py` directly
+   constructed the changed handler.
+3. The authorized Slice 4 implementation completed locally.
+4. Atomicity Final Review found missing real SQLite rollback evidence.
+5. The evidence remediation added tests only and amended the same implementation
+   commit.
+6. Final reviewed commit: `151a519291a785f86856c685880f441b8b3bc510`.
+7. Final local validation: 483 passed, 98.11% coverage, repository Alembic 0008;
+   real `lifeos.db` remained 0007.
+8. PR #46 was created as OPEN / DRAFT.
+9. PR CI `33457790140`: Static FAILURE, Tests FAILURE, Alembic SUCCESS. Static
+   failed at application import and Tests failed during collection.
+10. Root cause: Python 3.10 stdlib `sqlite3` does not provide the public numeric
+    SQLite error-code API required by the frozen classifier.
+11. Python 3.10 compatibility review: PASS.
+12. Human Technical Decision: APPROVED — OPTION B; future LifeOS platform is
+    Python >=3.11, preserving numeric `sqlite_errorcode` / `SQLITE_BUSY`
+    classification and keeping `SQLITE_LOCKED` non-retryable.
+13. Platform implementation: NOT STARTED / NOT YET AUTHORIZED. The current
+    integrated platform remains Python 3.10.
+14. PR #46 remains OPEN / DRAFT / NOT MERGEABLE BY GOVERNANCE. Slice 4 runtime
+    remains blocked pending the coordinated Migration 0008 cutover; real-data
+    migration and cutover have not executed.
+
+**Next Gate:** PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW
+
+---
+
 ## READ-005 Migration 0008 Integration Finalized — 2026-08-27
 
 - The initial pre-flight, data-integrity remediation, implementation

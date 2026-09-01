@@ -13,9 +13,11 @@ Implementation at Technical Plan approval: NOT AUTHORIZED
 Sprint 09 at Technical Plan approval: NOT AUTHORIZED
 
 Current execution state is governed by `NEXT_TASK.md` and subsequent approved
-governance. Migration 0008 code is integrated; Slice 4 implementation remains
-subject to its separate Implementation Authorization Review; runtime activation
-remains coupled to the coordinated cutover.
+governance. Migration 0008 code is integrated. Slice 4 implementation is complete,
+locally reviewed, and published in draft PR #46, but its merge is blocked by the
+separately approved future Python >=3.11 platform prerequisite. The current
+integrated platform remains Python 3.10. Runtime activation remains coupled to the
+coordinated cutover.
 
 ## 1. Domain
 
@@ -111,6 +113,34 @@ tracking, flush, or commit, when `OperationalError` wraps
 applies after successful acquisition, to `SQLITE_LOCKED`, IntegrityError, domain
 or owner failures, flush, commit, ambiguous commit, publication, or unknown
 errors.
+
+### Python 3.11 Platform Prerequisite — Current Execution Blocker
+
+The SQLite V1 numeric retry classifier depends on Python 3.11+ public `sqlite3`
+error-code support. The project was still integrated on Python 3.10 when Slice 4
+PR #46 first ran CI, so the PR failed before integration: Python 3.10 stdlib
+`sqlite3` does not provide the public numeric API required by the frozen
+`sqlite_errorcode == SQLITE_BUSY` classifier.
+
+Human Technical Decision approved a future Python >=3.11 platform transition.
+That transition is not yet implemented or integrated; the current platform and
+required branch checks remain `Static quality (Python 3.10)`,
+`Tests and coverage (Python 3.10)`, and `Alembic migration (Python 3.10)`. The
+retry semantics remain unchanged: two total attempts, fixed 50 ms delay, numeric
+`SQLITE_BUSY` classification only, `SQLITE_LOCKED` non-retryable, and no string
+matching.
+
+Slice 4 merge remains blocked until:
+
+1. the Python 3.11 platform transition is separately reviewed;
+2. the platform transition is implemented and integrated;
+3. main CI is green on Python 3.11;
+4. PR #46 is rebased or remediated against that main;
+5. Slice 4 PR CI is green under Python 3.11;
+6. a new remote final review passes.
+
+Runtime activation remains separately blocked pending the coordinated Migration
+0008 real-data cutover.
 
 ## 6. Completion Detection
 
@@ -226,11 +256,11 @@ Este documento formaliza o plano técnico aprovado; não cria código, migration
 Independent Slice 4 activation on schema 0007 is forbidden. Independent writable
 deployment of Migration 0008/backfill while the old ReadingSession path accepts
 writes is forbidden. Schema-only activation followed by later historical backfill
-is forbidden. The coupled cutover requires an explicit readiness review; this
-amendment did not authorize Migration 0008 implementation or Slice 4
-implementation. Migration 0008 code is now integrated; Slice 4 implementation
-still requires its separate Implementation Authorization Review, and runtime
-activation still requires the coordinated cutover.
+is forbidden. The coupled cutover requires an explicit readiness review. Migration
+0008 code is integrated; real-data application has not executed. Slice 4
+implementation is complete and published in draft PR #46, but merge remains
+blocked pending the separately reviewed, implemented, and integrated Python 3.11
+platform transition. Runtime activation still requires the coordinated cutover.
 
 Technical Plan: APPROVED / FROZEN.
 
@@ -240,6 +270,8 @@ At Technical Plan approval:
 - Sprint 09: NOT AUTHORIZED.
 
 Current execution authorization is governed by `NEXT_TASK.md` and subsequent
-approved governance. Migration 0008 code is INTEGRATED. Slice 4 implementation
-is NOT YET AUTHORIZED; Slice 4 runtime activation is BLOCKED PENDING COORDINATED
-CUTOVER.
+approved governance. Migration 0008 code is INTEGRATED. Slice 4 implementation is
+APPROVED / COMPLETED / LOCALLY REVIEWED / PUBLISHED IN DRAFT PR #46; merge is
+BLOCKED PENDING THE PYTHON 3.11 PLATFORM TRANSITION. The transition implementation
+is NOT STARTED / NOT YET AUTHORIZED, and the current integrated platform remains
+Python 3.10. Slice 4 runtime activation is BLOCKED PENDING COORDINATED CUTOVER.
