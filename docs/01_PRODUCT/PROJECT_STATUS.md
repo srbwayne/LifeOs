@@ -1,3 +1,36 @@
+## READ-005 Slice 4 Published / Python 3.11 Platform Prerequisite Identified — 2026-09-01
+
+- Slice 4 implementation completed within its authorized six-file scope. Local
+  final review, atomicity evidence remediation, and final remediated commit review:
+  PASS. Final commit: `151a519291a785f86856c685880f441b8b3bc510`.
+- Authorized implementation scope:
+  `app/read/application/commands/create_reading_session.py`,
+  `app/read/dependencies.py`, `app/shared/infrastructure/unit_of_work.py`,
+  `tests/read/application/test_create_reading_session.py`,
+  `tests/read/integration/test_create_reading_session_completion_transaction.py`,
+  and `tests/read/integration/test_reading_session_uow.py`.
+- Local validation: 483 passed, 98.11% coverage, repository Alembic 0008; real
+  `lifeos.db` remains 0007.
+- PR #46 was published as OPEN / DRAFT. PR CI `33457790140` failed: Static failed
+  at application import, Tests failed during collection, and Alembic succeeded.
+- Root cause: the current Python 3.10 stdlib `sqlite3` lacks the public
+  `SQLITE_BUSY` / `sqlite_errorcode` API required by the frozen numeric classifier.
+- Python 3.10 Compatibility Review: PASS. Human Technical Decision: APPROVED —
+  OPTION B, establishing Python >=3.11 as the future LifeOS platform target while
+  preserving numeric classification, `SQLITE_BUSY`-only retry, `SQLITE_LOCKED`
+  exclusion, and the prohibition on string matching.
+- The Python 3.11 platform transition is NOT STARTED and its implementation is NOT
+  YET AUTHORIZED. The current integrated platform and required branch checks remain
+  Python 3.10: `Static quality (Python 3.10)`, `Tests and coverage (Python 3.10)`,
+  and `Alembic migration (Python 3.10)`.
+- Slice 4 merge is blocked pending the separately reviewed and integrated platform
+  transition. Slice 4 runtime remains blocked pending the coordinated Migration
+  0008 real-data cutover; no real-data migration or cutover has executed.
+
+**Next Gate:** PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW
+
+---
+
 ## READ-005 Migration 0008 Integrated / Slice 4 Authorization Review Next — 2026-08-27
 
 - PR #44 merged authorized head `dd4a1b1069b342febf0bdec4d271ffb1e833ecf1`
