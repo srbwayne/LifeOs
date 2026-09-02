@@ -196,14 +196,14 @@ No momento desta documentação:
 
 | Item | Valor |
 |------|--------|
-| Python | 3.10+ |
+| Python | 3.11+ |
 
 Toda nova funcionalidade deverá respeitar essa versão mínima.
 
 Não utilizar recursos de versões superiores sem atualização oficial do projeto.
 
-O `pyproject.toml` declara `requires-python = ">=3.10"` e as ferramentas de
-qualidade utilizam Python 3.10 como versão-alvo.
+O `pyproject.toml` declara `requires-python = ">=3.11"` e as ferramentas de
+qualidade utilizam Python 3.11 como versão-alvo.
 
 ---
 

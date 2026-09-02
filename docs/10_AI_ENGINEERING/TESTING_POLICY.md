@@ -1136,10 +1136,24 @@ A suíte deverá ser executada tratando warnings de depreciação como erro.
 Executar:
 
 ```bash
-python -W error::DeprecationWarning -m pytest -v
+python -W error::DeprecationWarning -W "ignore:The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.:DeprecationWarning:starlette.testclient" -m pytest -v
 ```
 
-Nenhum `DeprecationWarning` deverá permanecer.
+`DeprecationWarning` é tratado como erro por padrão. Deprecações originadas no
+LifeOS e warnings não classificados permanecem proibidos.
+
+Um warning de terceiro pode receber exceção somente quando for externo ao LifeOS,
+não puder ser removido sem uma transição de dependência não relacionada, e a exceção
+temporária estiver documentada com mensagem, categoria e módulo exatos. A exceção
+deverá ser removida quando a compatibilidade upstream for resolvida.
+
+Exceção temporária atual:
+
+- origem: `starlette.testclient`;
+- categoria: `DeprecationWarning`;
+- warning: `The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.`;
+- motivo: Starlette 0.46.2 acessa um alias do AnyIO descontinuado pelo AnyIO 4.15.0;
+  resolver por alteração de dependência está fora da transição de plataforma Python 3.11.
 
 ---
 
@@ -1169,12 +1183,20 @@ A automação valida:
 - migrations;
 - importabilidade da aplicação.
 
-Após a primeira execução real bem-sucedida em Python 3.10, a proteção da `main` exige
-exclusivamente os checks produzidos pelos três jobs observados no GitHub:
+Com a plataforma Python 3.11, os Quality Gates oficiais produzem os seguintes
+checks:
 
-- `Static quality (Python 3.10)`;
-- `Tests and coverage (Python 3.10)`;
-- `Alembic migration (Python 3.10)`.
+- `Static quality (Python 3.11)`;
+- `Tests and coverage (Python 3.11)`;
+- `Alembic migration (Python 3.11)`.
+
+A alteração desta política e do workflow não modifica automaticamente a proteção da
+branch `main`. A substituição dos required contexts existentes pelos contexts Python
+3.11 constitui um gate humano separado e somente deverá ocorrer após um Draft PR da
+transição comprovar os três novos checks com sucesso. Após essa substituição
+controlada, a proteção da `main` deverá exigir exclusivamente os três contexts Python
+3.11 acima, sem janela deliberadamente desprotegida e sem desabilitação temporária dos
+required checks.
 
 Os comandos, critérios e metas permanecem definidos nesta política.
 
