@@ -241,6 +241,14 @@ Os ADRs serão numerados sequencialmente.
 
 ---
 
+## Plataforma
+
+| ADR | Título | Status |
+|------|---------|--------|
+| ADR-0043 | Python 3.11 — Minimum Platform Runtime | Accepted |
+
+---
+
 # 9. Template Oficial de ADR
 
 ```markdown
