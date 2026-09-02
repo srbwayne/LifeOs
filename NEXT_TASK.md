@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-PY311-PLATFORM-TRANSITION-AUTHORIZATION-REVIEW |
+| ID | READ-005-S09-PY311-PLATFORM-TRANSITION-IMPLEMENTATION |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW AUTHORIZED |
-| Tipo | Platform Transition Implementation Authorization Review |
+| Status | PLATFORM TRANSITION IMPLEMENTATION AUTHORIZED |
+| Tipo | Platform Transition Implementation |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,7 +32,7 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW |
+| Current Executable Unit | PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
@@ -50,8 +50,28 @@
 | Current Integrated Python Platform | 3.10 |
 | Current Required Branch Checks | Static quality (Python 3.10); Tests and coverage (Python 3.10); Alembic migration (Python 3.10) |
 | Approved Future Python Platform | >=3.11 |
-| Python 3.11 Platform Implementation | NOT STARTED |
-| Python 3.11 Platform Implementation Authorization | NOT YET GRANTED |
+| Python 3.11 Platform Implementation | AUTHORIZED / NOT STARTED |
+| Python 3.11 Platform Implementation Authorization | APPROVED |
+
+## Autorização de implementação da plataforma Python 3.11
+
+Human Implementation Authorization: APPROVED.
+
+Current Integrated Python Platform: 3.10. Approved Target Platform: >=3.11.
+Python 3.10 support is dropped after the transition; Python 3.11 is not yet
+integrated and CI/branch protection remain on Python 3.10.
+
+The future platform implementation is authorized for exactly these six files:
+
+1. `pyproject.toml`
+2. `.github/workflows/quality.yml`
+3. `docs/10_AI_ENGINEERING/CODE_STYLE.md`
+4. `docs/10_AI_ENGINEERING/TESTING_POLICY.md`
+5. `docs/02_ARCHITECTURE/decisions/ADR-0043-python-311-platform-minimum.md`
+6. `docs/02_ARCHITECTURE/09_DECISION_LOG.md`
+
+Platform implementation may begin ONLY AFTER this governance authorization is
+integrated into canonical `main`. No other file is authorized automatically.
 
 ## Especificação aprovada
 
@@ -304,8 +324,8 @@ change to the frozen retry semantics. Slice 4 merge is blocked pending a separat
 reviewed, implemented, and integrated Python >=3.11 platform transition.
 
 Human Technical Decision: APPROVED — OPTION B. The future LifeOS platform is
-Python >=3.11; the transition implementation is NOT STARTED and its implementation
-authorization is NOT YET GRANTED. The current integrated platform and required
+Python >=3.11; the transition implementation is AUTHORIZED / NOT STARTED. The
+current integrated platform and required
 branch checks remain Python 3.10. Runtime activation remains separately forbidden
 until Migration 0008 has been applied and fully backfilled under the coordinated
 cutover below.
@@ -411,8 +431,8 @@ integration.
 
 - READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTED AND PUBLISHED IN DRAFT PR #46 / SLICE 6 CODE INTEGRATED.
 - RF-READ-005: Slice 4 merge is blocked pending the Python 3.11 platform transition; runtime activation remains blocked pending coordinated cutover.
-- US-READ-005-001: only the Python 3.11 Platform Transition Implementation Authorization Review is executable.
-- Python platform: current integrated platform and required checks remain 3.10; future >=3.11 transition is human-approved but NOT STARTED / NOT YET AUTHORIZED for implementation.
+- US-READ-005-001: only the Python 3.11 Platform Transition Implementation is executable.
+- Python platform: current integrated platform and required checks remain 3.10; future >=3.11 transition is human-approved and AUTHORIZED / NOT STARTED.
 - Migration 0008: CODE INTEGRATED; real local database NOT APPLIED.
 - Alembic: repository 0008 (head); real `lifeos.db` 0007.
 - READ-008: DEFERRED.
@@ -429,7 +449,7 @@ amendment's historical stage, authorization was limited to the read-only
 Migration 0008 + Backfill implementation pre-flight resume. That state was
 superseded by Migration 0008 code integration and the completed, reviewed Slice 4
 implementation now published in draft PR #46. The current executable authority is
-the Python 3.11 Platform Transition Implementation Authorization Review. Slice 4
+the Python 3.11 Platform Transition Implementation. Slice 4
 merge remains blocked pending that platform transition; runtime activation remains
 blocked pending coordinated cutover; Slices 5, 7, and 8 remain gated.
 
@@ -438,10 +458,10 @@ Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md
 
 ## Próximo Gate
 
-PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW
+PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION
 
-ONLY THE PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION AUTHORIZATION REVIEW IS AUTHORIZED.
+ONLY THE PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION IS AUTHORIZED.
 
-DO NOT IMPLEMENT THE PLATFORM TRANSITION, MODIFY PR #46, APPLY MIGRATION 0008 TO REAL DATA, OR EXECUTE THE COORDINATED CUTOVER.
+DO NOT MODIFY PR #46, APPLY MIGRATION 0008 TO REAL DATA, EXECUTE THE COORDINATED CUTOVER, OR EXPAND THE PYTHON 3.11 PLATFORM IMPLEMENTATION BEYOND THE FROZEN SIX-FILE ALLOWLIST.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
