@@ -736,3 +736,20 @@ A Sprint 01 foi concluída com sucesso, entregando a fundação arquitetural e a
 - **Cobertura de Testes:** Alta para os fluxos implementados.
 - **Débito Técnico:** Baixo.
 - **Documentação:** Atualizada.
+## Python 3.11 Platform Transition Implementation Authorized — 2026-09-01
+
+- Implementation Authorization Review: PASS; Human Implementation Authorization: APPROVED.
+- Canonical baseline: `d4c8a465a2c60435f887e39f72f08df0a6788cf2`.
+- Previous environment blockers are resolved. CPython 3.11.9 / SQLite 3.45.1
+  capability proof passed with numeric `SQLITE_BUSY` code 5 and name
+  `SQLITE_BUSY`; dependency compatibility passed and pin changes are not required.
+- The exact six-file future platform allowlist is frozen. Python 3.10 remains
+  the current integrated platform and current required checks remain Python 3.10
+  until the platform PR is integrated.
+- Branch-protection context replacement requires explicit later human action.
+- PR #46 remains OPEN / DRAFT / frozen; Slice 4 merge remains blocked pending
+  the platform transition and runtime remains blocked pending coordinated cutover.
+
+**Next Gate:** PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION
+
+---
