@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-PY311-PLATFORM-TRANSITION-IMPLEMENTATION |
+| ID | READ-005-S09-SLICE4-PY311-REBASE-REMEDIATION-AUTHORIZATION-REVIEW |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | PLATFORM TRANSITION IMPLEMENTATION AUTHORIZED |
-| Tipo | Platform Transition Implementation |
+| Status | REBASE + REMEDIATION AUTHORIZATION REVIEW PENDING / EXECUTABLE |
+| Tipo | Slice 4 Python 3.11 Rebase + Remediation Authorization Review |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,12 +32,12 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION |
+| Current Executable Unit | PR #46 PYTHON 3.11 REBASE + REMEDIATION AUTHORIZATION REVIEW |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
-| Slice 4 Status | IMPLEMENTED / FINAL LOCAL REVIEW PASS / PUBLISHED IN DRAFT PR #46 / PR CI FAILED ON PYTHON 3.10 PLATFORM INCOMPATIBILITY / MERGE BLOCKED PENDING PYTHON 3.11 PLATFORM TRANSITION / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
+| Slice 4 Status | IMPLEMENTED / LOCAL FINAL REVIEW PASS / PUBLISHED IN DRAFT PR #46 / PYTHON 3.10 PLATFORM PREREQUISITE RESOLVED / PR REBASE + PYTHON 3.11 REMEDIATION NOT YET EXECUTED / MERGE STILL BLOCKED / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
 | Slice 5 Status | GATED |
 | Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
 | Slice 7 Status | GATED |
@@ -47,31 +47,34 @@
 | Slice 4 PR | #46 — OPEN / DRAFT |
 | Slice 4 PR Head | `151a519291a785f86856c685880f441b8b3bc510` |
 | Slice 4 PR CI | `33457790140` — FAILURE |
-| Current Integrated Python Platform | 3.10 |
-| Current Required Branch Checks | Static quality (Python 3.10); Tests and coverage (Python 3.10); Alembic migration (Python 3.10) |
-| Approved Future Python Platform | >=3.11 |
-| Python 3.11 Platform Implementation | AUTHORIZED / NOT STARTED |
-| Python 3.11 Platform Implementation Authorization | APPROVED |
+| Slice 4 PR Topology | ahead 1 / behind 3 relative to `main` |
+| Current Integrated Python Platform | >=3.11 |
+| Current Required Branch Checks | Static quality (Python 3.11); Tests and coverage (Python 3.11); Alembic migration (Python 3.11) |
+| Python 3.11 Platform Transition | INTEGRATED / FINALIZED |
+| Platform PR | #49 — MERGED |
+| Platform Main | `f62d4798560cf36025cee021b34c5fb10462cff3` |
+| Platform Main CI | `33697509650` — 3/3 SUCCESS |
+| Platform Baseline | 465 tests / 98.16% coverage |
 
-## Autorização de implementação da plataforma Python 3.11
+## Limite atual de autorização
 
-Human Implementation Authorization: APPROVED.
+Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch exige
+`Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
+`Alembic migration (Python 3.11)`.
 
-Current Integrated Python Platform: 3.10. Approved Target Platform: >=3.11.
-Python 3.10 support is dropped after the transition; Python 3.11 is not yet
-integrated and CI/branch protection remain on Python 3.10.
+**AUTHORIZED NOW:** PR #46 PYTHON 3.11 REBASE + REMEDIATION AUTHORIZATION REVIEW.
 
-The future platform implementation is authorized for exactly these six files:
+**NOT YET AUTHORIZED:**
 
-1. `pyproject.toml`
-2. `.github/workflows/quality.yml`
-3. `docs/10_AI_ENGINEERING/CODE_STYLE.md`
-4. `docs/10_AI_ENGINEERING/TESTING_POLICY.md`
-5. `docs/02_ARCHITECTURE/decisions/ADR-0043-python-311-platform-minimum.md`
-6. `docs/02_ARCHITECTURE/09_DECISION_LOG.md`
+- rebase PR #46;
+- modificar ou force-push PR #46;
+- executar remediação de implementação;
+- marcar PR #46 Ready;
+- merge PR #46.
 
-Platform implementation may begin ONLY AFTER this governance authorization is
-integrated into canonical `main`. No other file is authorized automatically.
+A próxima review deverá determinar e congelar a remediação exata antes de qualquer
+mutação da branch. O CI Python 3.10 `33457790140` permanece apenas como evidência
+histórica; PR #46 ainda não foi rebased, remediado ou validado em Python 3.11.
 
 ## Especificação aprovada
 

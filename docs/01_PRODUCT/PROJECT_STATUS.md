@@ -1,3 +1,24 @@
+## READ-005 Python 3.11 Platform Integrated / Slice 4 PR Remediation Review Next — 2026-09-02
+
+- PR #49 foi merged via Rebase and Merge; `main` canônico é
+  `f62d4798560cf36025cee021b34c5fb10462cff3` e LifeOS suporta Python >=3.11.
+- Main CI `33697509650`: 3/3 SUCCESS sob CPython 3.11.16, com 465 testes e
+  98.16% de cobertura.
+- A proteção de `main` agora exige exclusivamente `Static quality (Python 3.11)`,
+  `Tests and coverage (Python 3.11)` e `Alembic migration (Python 3.11)`; os
+  contexts Python 3.10 foram retirados.
+- PR #46 permanece OPEN / DRAFT no head
+  `151a519291a785f86856c685880f441b8b3bc510`, ahead 1 / behind 3 em relação ao
+  novo `main`. O pré-requisito Python 3.10 foi resolvido, mas o PR não foi
+  rebased, remediado nem validado em Python 3.11.
+- Migration 0008 está integrada no código e o Alembic do repositório está em 0008;
+  o `lifeos.db` real permanece em 0007. Não houve migration real, cutover
+  coordenado ou ativação de runtime.
+
+**Next Gate:** PR #46 PYTHON 3.11 REBASE + REMEDIATION AUTHORIZATION REVIEW
+
+---
+
 ## READ-005 Slice 4 Published / Python 3.11 Platform Prerequisite Identified — 2026-09-01
 
 - Slice 4 implementation completed within its authorized six-file scope. Local
