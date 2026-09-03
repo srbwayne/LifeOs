@@ -1,3 +1,18 @@
+## READ-005 Slice 4 Integrated / Slice 5 Pre-Flight Next — 2026-09-03
+
+- PR #46 foi marcado Ready sem mutação de head e merged via Rebase and Merge.
+- Source head autorizado: `3f23cdb4f991a0c8381801378b2b0f70267f7d97`; main canônico resultante: `8201cb9d6e3f79241808c01fe913b232c730188f`; parent: `33815e04c661a84bc52c387d2455bb989815cb43`.
+- Subject integrado: `feat(read): add transactional book completion write`.
+- Escopo exato Slice 4: seis arquivos — `app/read/application/commands/create_reading_session.py`, `app/read/dependencies.py`, `app/shared/infrastructure/unit_of_work.py`, `tests/read/application/test_create_reading_session.py`, `tests/read/integration/test_create_reading_session_completion_transaction.py`, `tests/read/integration/test_reading_session_uow.py`.
+- Main CI `33705415321`: 3/3 SUCCESS, CPython 3.11.16, 483 testes, warning gate 483 PASS e 98.11% de cobertura.
+- Proteção de branch permaneceu inalterada, com os três contexts Python 3.11.
+- Slice 4 está INTEGRATED / FINALIZED. `lifeos.db` real permanece em 0007; Migration 0008 não foi executada em dados reais, não houve cutover coordenado e o runtime Slice 4 não foi ativado.
+- Slice 5 permanece não implementada.
+
+**Next Gate:** SLICE 5 — DEDICATED READ MODEL AND API — IMPLEMENTATION PRE-FLIGHT
+
+---
+
 ## READ-005 Python 3.11 Platform Integrated / Slice 4 PR Remediation Review Next — 2026-09-02
 
 - PR #49 foi merged via Rebase and Merge; `main` canônico é
