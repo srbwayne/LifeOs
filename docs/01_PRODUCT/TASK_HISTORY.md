@@ -600,3 +600,21 @@
 **Next Gate:** PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION
 
 ---
+## READ-005 Slice 4 Python 3.11 Publication Finalized — 2026-09-03
+
+1. PR #46 permaneceu congelado durante a transição Python >=3.11.
+2. A plataforma Python >=3.11 foi integrada.
+3. A branch Slice 4 foi rebased sem conflitos sobre o main canônico.
+4. A remediação substituiu casts de compatibilidade por `sqlite3.SQLITE_BUSY` / `sqlite3.SQLITE_LOCKED`.
+5. A semântica de retry permaneceu inalterada.
+6. A validação local atingiu 36 focused PASS, 483 full PASS, 483 warning-gate PASS e 98.11% cobertura.
+7. Local Final Review passou.
+8. O head `3f23cdb4f991a0c8381801378b2b0f70267f7d97` foi publicado com force-with-lease explícito.
+9. PR #46 permaneceu Draft.
+10. CI `33701876559` atingiu 3/3 SUCCESS sob CPython 3.11.16.
+11. Remote Final Review passou com BLOCKER 0 / MAJOR 0.
+12. Migration 0008 real, cutover e ativação de runtime não foram executados.
+
+**Next Gate:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW
+
+---
