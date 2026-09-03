@@ -1,3 +1,27 @@
+## READ-005 Python 3.11 Platform Integration Finalized — 2026-09-02
+
+1. A decisão humana por Python >=3.11 foi aprovada.
+2. A autorização de governança foi integrada.
+3. A implementação da plataforma foi concluída.
+4. A exceção estreita UP017 foi adotada sem modernização de application/tests.
+5. PR #49 foi publicado.
+6. A remediação do warning externo Starlette/AnyIO foi adicionada como uma única
+   exceção temporária exata.
+7. O CI do PR `33696485646` atingiu 3/3 SUCCESS.
+8. A proteção da branch transitou atomicamente de três contexts Python 3.10 para
+   três contexts Python 3.11.
+9. PR #49 foi merged via Rebase and Merge.
+10. O `main` canônico passou a
+    `f62d4798560cf36025cee021b34c5fb10462cff3`.
+11. O Main CI `33697509650` atingiu 3/3 SUCCESS sob CPython 3.11.16.
+12. O baseline é 465 testes / 98.16% de cobertura.
+13. PR #46 permaneceu intocado.
+14. Migration 0008 real, cutover coordenado e ativação de runtime não foram executados.
+
+**Next Gate:** PR #46 PYTHON 3.11 REBASE + REMEDIATION AUTHORIZATION REVIEW
+
+---
+
 ## READ-005 Slice 4 Implementation / Python 3.11 Platform Prerequisite — 2026-09-01
 
 1. Slice 4 implementation authorization completed.
