@@ -1,3 +1,29 @@
+## READ-005 Slice 4 Integration Finalized — 2026-09-03
+
+1. A implementação da Slice 4 foi concluída em seu escopo autorizado de seis arquivos.
+2. O pré-requisito de plataforma Python 3.11 foi identificado e integrado.
+3. O PR #46 foi rebased e remediado usando códigos numéricos públicos de `sqlite3`.
+4. A validação local alcançou 483 PASS / 98.11% de cobertura.
+5. A revisão final local passou.
+6. O head `3f23cdb4f991a0c8381801378b2b0f70267f7d97` foi publicado via force-with-lease explícito.
+7. O CI do PR `33701876559` alcançou 3/3 SUCCESS.
+8. A revisão final remota passou.
+9. A revisão de autorização de integração comprovou que o único commit behind era governance-only; nenhum rebase adicional foi necessário.
+10. O PR #46 foi marcado Ready sem mutação de SHA.
+11. O PR #46 foi merged via Rebase and Merge.
+12. O main canônico tornou-se `8201cb9d6e3f79241808c01fe913b232c730188f`.
+13. O Main CI `33705415321` alcançou 3/3 SUCCESS.
+14. A validação do main foi CPython 3.11.16 / 483 testes / warning gate 483 / 98.11% de cobertura.
+15. A proteção de branch permaneceu inalterada.
+16. Migration 0008 não foi aplicada a dados reais.
+17. O cutover coordenado não foi executado.
+18. O runtime Slice 4 não foi ativado.
+19. A integração de código da Slice 4 foi finalizada; isso não representa ativação de runtime.
+
+**Next Gate:** SLICE 5 — DEDICATED READ MODEL AND API — IMPLEMENTATION PRE-FLIGHT
+
+---
+
 ## READ-005 Python 3.11 Platform Integration Finalized — 2026-09-02
 
 1. A decisão humana por Python >=3.11 foi aprovada.
