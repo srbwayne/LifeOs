@@ -8,9 +8,9 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE4-PY311-REBASE-REMEDIATION-AUTHORIZATION-REVIEW |
+| ID | READ-005-S09-SLICE4-INTEGRATION-AUTHORIZATION-REVIEW |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | REBASE + REMEDIATION AUTHORIZATION REVIEW PENDING / EXECUTABLE |
+| Status | INTEGRATION AUTHORIZATION REVIEW PENDING / EXECUTABLE |
 | Tipo | Slice 4 Python 3.11 Rebase + Remediation Authorization Review |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
@@ -32,12 +32,12 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | PR #46 PYTHON 3.11 REBASE + REMEDIATION AUTHORIZATION REVIEW |
+| Current Executable Unit | PR #46 READY + INTEGRATION AUTHORIZATION REVIEW |
 | Slice 1 Status | INTEGRATED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
-| Slice 4 Status | IMPLEMENTED / LOCAL FINAL REVIEW PASS / PUBLISHED IN DRAFT PR #46 / PYTHON 3.10 PLATFORM PREREQUISITE RESOLVED / PR REBASE + PYTHON 3.11 REMEDIATION NOT YET EXECUTED / MERGE STILL BLOCKED / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
+| Slice 4 Status | IMPLEMENTED / REBASED ON PYTHON 3.11 MAIN / PYTHON 3.11 REMEDIATED / LOCAL FINAL REVIEW PASS / PUBLISHED IN DRAFT PR #46 / PR CI PYTHON 3.11 3/3 SUCCESS / REMOTE FINAL REVIEW PASS / MERGE BLOCKED PENDING INTEGRATION AUTHORIZATION / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
 | Slice 5 Status | GATED |
 | Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
 | Slice 7 Status | GATED |
@@ -45,9 +45,11 @@
 | Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
 | Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
 | Slice 4 PR | #46 — OPEN / DRAFT |
-| Slice 4 PR Head | `151a519291a785f86856c685880f441b8b3bc510` |
-| Slice 4 PR CI | `33457790140` — FAILURE |
-| Slice 4 PR Topology | ahead 1 / behind 3 relative to `main` |
+| Slice 4 PR Head | `3f23cdb4f991a0c8381801378b2b0f70267f7d97` |
+| Slice 4 PR CI | `33701876559` — 3/3 SUCCESS |
+| Slice 4 PR Topology | ahead 1 / behind 0 relative to `main` |
+| Slice 4 Remote Final Review | PASS |
+| Slice 4 Validation | Python >=3.11 / 483 tests / 98.11% coverage |
 | Current Integrated Python Platform | >=3.11 |
 | Current Required Branch Checks | Static quality (Python 3.11); Tests and coverage (Python 3.11); Alembic migration (Python 3.11) |
 | Python 3.11 Platform Transition | INTEGRATED / FINALIZED |
@@ -62,19 +64,20 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
 `Alembic migration (Python 3.11)`.
 
-**AUTHORIZED NOW:** PR #46 PYTHON 3.11 REBASE + REMEDIATION AUTHORIZATION REVIEW.
+**AUTHORIZED NOW:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW.
 
 **NOT YET AUTHORIZED:**
 
-- rebase PR #46;
-- modificar ou force-push PR #46;
-- executar remediação de implementação;
 - marcar PR #46 Ready;
 - merge PR #46.
 
-A próxima review deverá determinar e congelar a remediação exata antes de qualquer
-mutação da branch. O CI Python 3.10 `33457790140` permanece apenas como evidência
-histórica; PR #46 ainda não foi rebased, remediado ou validado em Python 3.11.
+- aplicar Migration 0008 a dados reais;
+- executar o cutover coordenado;
+- ativar o runtime Slice 4.
+
+O CI Python 3.10 `33457790140` permanece apenas como evidência histórica. PR #46
+foi rebased, remediado e validado em Python 3.11; Ready e integração aguardam
+autorização explícita.
 
 ## Especificação aprovada
 
