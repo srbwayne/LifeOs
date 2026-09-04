@@ -5,6 +5,9 @@ from app.read.application.commands.create_book import CreateBookCommandHandler
 from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommandHandler,
 )
+from app.read.application.ports.book_completion_read_repository import (
+    IBookCompletionReadRepository,
+)
 from app.read.application.ports.reading_history_repository import (
     IReadingHistoryReadRepository,
 )
@@ -16,6 +19,9 @@ from app.read.application.queries.get_reading_progress import GetReadingProgress
 from app.read.application.queries.get_reading_statistics import (
     GetReadingStatisticsQueryHandler,
 )
+from app.read.application.queries.list_book_completions import (
+    ListBookCompletionsQueryHandler,
+)
 from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
 from app.read.application.queries.list_reading_history import (
     ListReadingHistoryQueryHandler,
@@ -26,6 +32,9 @@ from app.read.domain.ports.reading_session_repository import IReadingSessionRepo
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_insights_calculator import ReadingInsightsCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
+from app.read.infrastructure.persistence.repositories.book_completion_read_repository import (
+    SqlAlchemyBookCompletionReadRepository,
+)
 from app.read.infrastructure.persistence.repositories.book_completion_repository import (
     SqlAlchemyBookCompletionRepository,
 )
@@ -66,6 +75,12 @@ def get_reading_history_repository(
     db: Session = Depends(get_db),
 ) -> IReadingHistoryReadRepository:
     return SqlAlchemyReadingHistoryReadRepository(db)
+
+
+def get_book_completion_read_repository(
+    db: Session = Depends(get_db),
+) -> IBookCompletionReadRepository:
+    return SqlAlchemyBookCompletionReadRepository(db)
 
 
 def get_reading_statistics_repository(
@@ -141,3 +156,9 @@ def get_list_reading_history_handler(
     repository: IReadingHistoryReadRepository = Depends(get_reading_history_repository),
 ) -> ListReadingHistoryQueryHandler:
     return ListReadingHistoryQueryHandler(repository)
+
+
+def get_list_book_completions_handler(
+    repository: IBookCompletionReadRepository = Depends(get_book_completion_read_repository),
+) -> ListBookCompletionsQueryHandler:
+    return ListBookCompletionsQueryHandler(repository)

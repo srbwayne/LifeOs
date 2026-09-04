@@ -9,6 +9,10 @@ from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommand,
     CreateReadingSessionCommandHandler,
 )
+from app.read.application.dtos.book_completion_dto import (
+    BookCompletionItemDTO,
+    BookCompletionPageDTO,
+)
 from app.read.application.dtos.book_dto import BookDTO
 from app.read.application.dtos.reading_history_dto import (
     ReadingHistoryItemDTO,
@@ -30,6 +34,10 @@ from app.read.application.queries.get_reading_statistics import (
     GetReadingStatisticsQuery,
     GetReadingStatisticsQueryHandler,
 )
+from app.read.application.queries.list_book_completions import (
+    ListBookCompletionsQuery,
+    ListBookCompletionsQueryHandler,
+)
 from app.read.application.queries.list_my_books import (
     ListMyBooksQuery,
     ListMyBooksQueryHandler,
@@ -41,6 +49,7 @@ from app.read.application.queries.list_reading_history import (
 from app.read.dependencies import (
     get_create_book_handler,
     get_create_reading_session_handler,
+    get_list_book_completions_handler,
     get_list_my_books_handler,
     get_list_reading_history_handler,
     get_reading_insights_handler,
@@ -49,6 +58,8 @@ from app.read.dependencies import (
 )
 from app.read.domain.value_objects.book_id import BookId
 from app.read.presentation.api.fastapi.schemas import (
+    BookCompletionItemResponse,
+    BookCompletionPageResponse,
     BookResponse,
     CreateBookRequest,
     CreateReadingSessionRequest,
@@ -65,6 +76,7 @@ from app.shared.domain.identifiers.user_id import UserId
 router = APIRouter(prefix="/books", tags=["Reading Library"])
 history_router = APIRouter(tags=["Reading History"])
 statistics_router = APIRouter(tags=["Reading Statistics"])
+completion_router = APIRouter(tags=["Book Completions"])
 
 
 def _to_response(book: BookDTO) -> BookResponse:
@@ -116,6 +128,28 @@ def _to_reading_history_page_response(
 ) -> ReadingHistoryPageResponse:
     return ReadingHistoryPageResponse(
         items=[_to_reading_history_item_response(item) for item in page.items],
+        page=page.page,
+        size=page.size,
+        total_items=page.total_items,
+        total_pages=page.total_pages,
+    )
+
+
+def _to_book_completion_item_response(
+    item: BookCompletionItemDTO,
+) -> BookCompletionItemResponse:
+    return BookCompletionItemResponse(
+        book_id=item.book_id,
+        book_title=item.book_title,
+        completed_at=item.completed_at,
+    )
+
+
+def _to_book_completion_page_response(
+    page: BookCompletionPageDTO,
+) -> BookCompletionPageResponse:
+    return BookCompletionPageResponse(
+        items=[_to_book_completion_item_response(item) for item in page.items],
         page=page.page,
         size=page.size,
         total_items=page.total_items,
@@ -280,6 +314,26 @@ def list_reading_history(
         )
     )
     return _to_reading_history_page_response(result)
+
+
+@completion_router.get(
+    "/book-completions",
+    response_model=BookCompletionPageResponse,
+)
+def list_book_completions(
+    page: int = Query(default=1, ge=1),
+    size: int = Query(default=20, ge=1, le=100),
+    user_id: UserId = Depends(get_current_user_id),
+    handler: ListBookCompletionsQueryHandler = Depends(get_list_book_completions_handler),
+) -> BookCompletionPageResponse:
+    result = handler(
+        ListBookCompletionsQuery(
+            owner_id=user_id,
+            page=page,
+            size=size,
+        )
+    )
+    return _to_book_completion_page_response(result)
 
 
 @statistics_router.get(

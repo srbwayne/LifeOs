@@ -71,6 +71,20 @@ class ReadingHistoryPageResponse(BaseModel):
     total_pages: int
 
 
+class BookCompletionItemResponse(BaseModel):
+    book_id: str
+    book_title: str
+    completed_at: datetime
+
+
+class BookCompletionPageResponse(BaseModel):
+    items: list[BookCompletionItemResponse]
+    page: int
+    size: int
+    total_items: int
+    total_pages: int
+
+
 class ReadingProgressResponse(BaseModel):
     book_id: str
     total_pages: int
