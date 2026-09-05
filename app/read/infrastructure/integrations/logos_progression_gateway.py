@@ -22,6 +22,8 @@ class LogosProgressionSettings:
     enabled: bool
     timeout_seconds: float
     bearer_token: str | None
+    configuration_key: str = "reading"
+    configuration_revision: int = 2
 
     @classmethod
     def from_environment(cls) -> LogosProgressionSettings:
@@ -43,6 +45,10 @@ class LogosProgressionSettings:
             enabled=enabled,
             timeout_seconds=timeout,
             bearer_token=os.getenv("LOGOS_BEARER_TOKEN"),
+            configuration_key=os.getenv("LOGOS_READING_CONFIGURATION_KEY", "reading").strip(),
+            configuration_revision=int(
+                os.getenv("LOGOS_READING_CONFIGURATION_REVISION", "2").strip()
+            ),
         )
 
 
@@ -70,7 +76,10 @@ class LogosProgressionGateway:
                 "source": "lifeos",
                 "idempotencyKey": fact.source_event_id,
             },
-            "configuration": {"key": "reading"},
+            "configuration": {
+                "key": fact.configuration_key,
+                "revision": fact.configuration_revision,
+            },
             "details": [{"factorKey": "pages_read", "value": fact.pages_read}],
         }
         request = Request(

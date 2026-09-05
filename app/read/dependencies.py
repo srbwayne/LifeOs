@@ -8,7 +8,6 @@ from app.read.application.commands.create_reading_session import (
 from app.read.application.ports.book_completion_read_repository import (
     IBookCompletionReadRepository,
 )
-from app.read.application.ports.progression_gateway import ProgressionGateway
 from app.read.application.ports.reading_history_repository import (
     IReadingHistoryReadRepository,
 )
@@ -26,6 +25,9 @@ from app.read.application.queries.list_book_completions import (
 from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
 from app.read.application.queries.list_reading_history import (
     ListReadingHistoryQueryHandler,
+)
+from app.read.application.services.progression_delivery_dispatcher import (
+    ProgressionDeliveryDispatcher,
 )
 from app.read.domain.ports.book_completion_repository import IBookCompletionRepository
 from app.read.domain.ports.book_repository import IBookRepository
@@ -45,6 +47,9 @@ from app.read.infrastructure.persistence.repositories.book_completion_repository
 )
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
+)
+from app.read.infrastructure.persistence.repositories.progression_delivery_repository import (
+    SqlAlchemyProgressionDeliveryRepository,
 )
 from app.read.infrastructure.persistence.repositories.reading_history_repository import (
     SqlAlchemyReadingHistoryReadRepository,
@@ -100,6 +105,12 @@ def get_reading_statistics_handler(
     return GetReadingStatisticsQueryHandler(repository)
 
 
+def get_progression_delivery_repository(
+    db: Session = Depends(get_db),
+) -> SqlAlchemyProgressionDeliveryRepository:
+    return SqlAlchemyProgressionDeliveryRepository(db)
+
+
 def get_book_uow(db: Session = Depends(get_db)) -> SqlAlchemyUnitOfWork:
     return SqlAlchemyUnitOfWork(db, InMemoryEventBus())
 
@@ -122,10 +133,17 @@ def get_create_reading_session_handler(
     reading_session_repository: IReadingSessionRepository = Depends(get_reading_session_repository),
     book_completion_repository: IBookCompletionRepository = Depends(get_book_completion_repository),
     unit_of_work: SqlAlchemyUnitOfWork = Depends(get_book_uow),
-    progression_gateway: ProgressionGateway = Depends(
-        lambda: LogosProgressionGateway(LogosProgressionSettings.from_environment())
+    progression_delivery_repository: SqlAlchemyProgressionDeliveryRepository = Depends(
+        get_progression_delivery_repository
     ),
 ) -> CreateReadingSessionCommandHandler:
+    progression_settings = LogosProgressionSettings.from_environment()
+    progression_gateway = LogosProgressionGateway(progression_settings)
+    progression_delivery_dispatcher = ProgressionDeliveryDispatcher(
+        progression_delivery_repository,
+        progression_gateway,
+        unit_of_work,
+    )
     return CreateReadingSessionCommandHandler(
         book_repository,
         reading_session_repository,
@@ -134,6 +152,11 @@ def get_create_reading_session_handler(
         ReadingProgressCalculator(),
         unit_of_work,
         progression_gateway=progression_gateway,
+        progression_delivery_repository=progression_delivery_repository,
+        progression_delivery_dispatcher=progression_delivery_dispatcher,
+        progression_configuration_key=progression_settings.configuration_key,
+        progression_configuration_revision=progression_settings.configuration_revision,
+        progression_delivery_enabled=progression_settings.enabled,
     )
 
 

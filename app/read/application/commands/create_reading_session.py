@@ -9,6 +9,10 @@ from sqlalchemy.exc import OperationalError
 
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_delivery_repository import (
+    ProgressionDeliveryIntent,
+    ProgressionDeliveryRepository,
+)
 from app.read.application.ports.progression_gateway import (
     ProgressionGateway,
     ReadingProgressionFact,
@@ -22,6 +26,7 @@ from app.read.domain.services.reading_coverage_calculator import ReadingCoverage
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
 from app.shared.domain.identifiers.user_id import UserId
+from app.shared.domain.tsid import new_tsid
 
 _SQLITE_BUSY_CODE: int = sqlite3.SQLITE_BUSY
 
@@ -36,6 +41,10 @@ class ReadingSessionWriteUnitOfWork(Protocol):
     def flush(self) -> None: ...
 
     def commit(self) -> None: ...
+
+
+class ProgressionDeliveryDispatcher(Protocol):
+    def dispatch(self, delivery_id: str) -> None: ...
 
 
 def _is_retryable_acquisition_busy(error: OperationalError) -> bool:
@@ -67,6 +76,11 @@ class CreateReadingSessionCommandHandler:
         unit_of_work: ReadingSessionWriteUnitOfWork,
         sleeper: Callable[[float], None] = time.sleep,
         progression_gateway: ProgressionGateway | None = None,
+        progression_delivery_repository: ProgressionDeliveryRepository | None = None,
+        progression_delivery_dispatcher: ProgressionDeliveryDispatcher | None = None,
+        progression_configuration_key: str = "reading",
+        progression_configuration_revision: int = 2,
+        progression_delivery_enabled: bool = True,
     ) -> None:
         self._book_repository = book_repository
         self._reading_session_repository = reading_session_repository
@@ -76,6 +90,11 @@ class CreateReadingSessionCommandHandler:
         self._unit_of_work = unit_of_work
         self._sleeper = sleeper
         self._progression_gateway = progression_gateway
+        self._progression_delivery_repository = progression_delivery_repository
+        self._progression_delivery_dispatcher = progression_delivery_dispatcher
+        self._progression_configuration_key = progression_configuration_key
+        self._progression_configuration_revision = progression_configuration_revision
+        self._progression_delivery_enabled = progression_delivery_enabled
 
     def __call__(self, command: CreateReadingSessionCommand) -> ReadingSessionDTO:
         committed_session: ReadingSession | None = None
@@ -118,6 +137,26 @@ class CreateReadingSessionCommandHandler:
                         self._book_completion_repository.save(
                             BookCompletion.create(book.id, session.ended_at)
                         )
+                    delivery_id: str | None = None
+                    if (
+                        self._progression_delivery_repository is not None
+                        and self._progression_delivery_enabled
+                    ):
+                        uow.flush()
+                        delivery_id = new_tsid()
+                        self._progression_delivery_repository.save(
+                            ProgressionDeliveryIntent(
+                                id=delivery_id,
+                                reading_session_id=session.id.to_persistence(),
+                                source="lifeos",
+                                idempotency_key=session.id.to_persistence(),
+                                subject_namespace="lifeos",
+                                subject_external_id=session.owner_id.to_persistence(),
+                                configuration_key=self._progression_configuration_key,
+                                configuration_revision=self._progression_configuration_revision,
+                                pages_read=session.pages_read,
+                            )
+                        )
                     uow.flush()
                     uow.commit()
                     committed_session = session
@@ -129,12 +168,16 @@ class CreateReadingSessionCommandHandler:
 
         if committed_session is None:
             raise AssertionError("unreachable")
-        if self._progression_gateway is not None:
+        if self._progression_delivery_dispatcher is not None and delivery_id is not None:
+            self._progression_delivery_dispatcher.dispatch(delivery_id)
+        elif self._progression_gateway is not None:
             self._progression_gateway.evaluate_reading_session(
                 ReadingProgressionFact(
                     source_event_id=committed_session.id.to_persistence(),
                     user_id=committed_session.owner_id,
                     pages_read=committed_session.pages_read,
+                    configuration_key=self._progression_configuration_key,
+                    configuration_revision=self._progression_configuration_revision,
                 )
             )
         return ReadingSessionDTO.from_session(committed_session)

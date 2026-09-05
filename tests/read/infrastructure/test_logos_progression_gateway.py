@@ -55,7 +55,7 @@ def test_gateway_maps_reading_session_to_exact_logos_v3_request(monkeypatch) -> 
     assert request.get_header("Authorization") == "Bearer token-from-env"
     assert json.loads(request.data.decode()) == {
         "execution": {"source": "lifeos", "idempotencyKey": "reading-session-1"},
-        "configuration": {"key": "reading"},
+            "configuration": {"key": "reading", "revision": 2},
         "details": [{"factorKey": "pages_read", "value": 30}],
     }
 

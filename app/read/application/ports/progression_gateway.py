@@ -9,6 +9,8 @@ class ReadingProgressionFact:
     source_event_id: str
     user_id: UserId
     pages_read: int
+    configuration_key: str = "reading"
+    configuration_revision: int = 2
 
 
 @dataclass(frozen=True)

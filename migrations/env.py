@@ -19,6 +19,9 @@ from app.read.infrastructure.persistence.models.book_completion_model import (  
     BookCompletionModel,
 )
 from app.read.infrastructure.persistence.models.book_model import BookModel  # noqa: F401
+from app.read.infrastructure.persistence.models.progression_delivery_model import (  # noqa: F401
+    ProgressionDeliveryModel,
+)
 from app.read.infrastructure.persistence.models.reading_session_model import (  # noqa: F401
     ReadingSessionModel,
 )
