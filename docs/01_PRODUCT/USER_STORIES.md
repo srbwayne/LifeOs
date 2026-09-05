@@ -1130,3 +1130,108 @@ Não são expostos owner, timestamps técnicos, duração, Progress, Insights, c
     Sprint 07
 
 Esta User Story foi entregue com a conclusão da Sprint 07.
+
+---
+
+## US-INT-001-001 — Entregar Progressão de ReadingSession de Forma Durável
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-INT-001-001 |
+| Capability | INTEGRATION |
+| Feature | INT-001 — Durable Progression Delivery |
+| Requisito Funcional | RF-INT-001 — Entrega Durável de Progressão Externa |
+| Status | Product Specification APPROVED / Implementation AUTHORIZED |
+
+### Persona
+
+Usuário do LifeOS.
+
+### Necessidade
+
+Garantir que uma ReadingSession registrada mantenha sua intenção de progressão
+quando o Logos estiver temporariamente indisponível.
+
+### Valor
+
+Permitir a recuperação da entrega sem invalidar o fato original nem aplicar a
+mesma progressão mais de uma vez.
+
+### User Story
+
+Como usuário do LifeOS,
+quero que uma ReadingSession registrada com sucesso preserve sua intenção de
+entrega de progressão quando o Logos estiver indisponível,
+para que a atividade receba sua progressão posteriormente sem duplicação ou
+perda.
+
+### Regras de negócio
+
+- A ReadingSession e a intenção de entrega são atômicas.
+- O fato pertence ao LifeOS; a progressão canônica pertence ao Logos.
+- A entrega usa semântica at-least-once e identidade idempotente.
+- Retries preservam `ReadingSessionId`, `UserId`, `pages_read` e `reading@2`.
+- Eventos distintos do mesmo sujeito respeitam a ordem de criação.
+- Nenhum token ou estado canônico de progressão é persistido no LifeOS.
+
+### Cenários
+
+#### Cenário 1 — Falha externa após commit
+
+**Dado** que uma ReadingSession e sua intenção foram confirmadas
+**Quando** o Logos estiver indisponível
+**Então** a ReadingSession permanecerá persistida
+**E** a intenção permanecerá recuperável.
+
+#### Cenário 2 — Recuperação
+
+**Dado** uma intenção não resolvida
+**Quando** o Logos voltar a responder
+**Então** a mesma identidade e os mesmos fatos serão reenviados.
+
+#### Cenário 3 — Entrega duplicada
+
+**Dado** o mesmo `ReadingSessionId` reenviado
+**Quando** o Logos processar a entrega
+**Então** a progressão será aplicada no máximo uma vez.
+
+#### Cenário 4 — Revisão congelada
+
+**Dado** uma intenção criada para `reading@2`
+**Quando** uma revisão posterior se tornar corrente
+**Então** o retry continuará usando `reading@2`.
+
+### Critérios de aceite
+
+- ReadingSession e intenção de entrega são confirmadas atomicamente.
+- Falha do Logos não invalida a ReadingSession.
+- Entrega falha permanece recuperável.
+- Retries preservam identidade, fatos e configuração original.
+- Duplicatas não aplicam progressão duas vezes.
+- Ordenação por sujeito é preservada.
+- Credenciais não são persistidas.
+- XP, nível, stress, atributos e skills continuam canônicos no Logos.
+
+### Fora do escopo
+
+- Kafka, RabbitMQ, broker ou plataforma genérica;
+- exactly-once distribuído;
+- alterações no Logos ou Noema;
+- redesenho de autenticação, autorização de namespace ou identidade multi-tenant;
+- retry automático durável além do mecanismo autorizado por RF-INT-001.
+
+### Rastreabilidade
+
+```text
+US-INT-001-001
+↓
+INT-001 — Durable Progression Delivery
+↓
+RF-INT-001 — Durable External Progression Delivery
+↓
+TASK-015 — LifeOS Durable Progression Delivery Discovery
+↓
+TASK-015I — Durable LifeOS → Logos Progression Delivery
+```

@@ -8,13 +8,13 @@
 
 | Campo | Valor |
 |---|---|
-| ID | TASK-015G-DURABLE-PROGRESSION-GOVERNANCE |
-| Iniciativa | READ-005 — Livros Concluídos |
-| Status | GOVERNANCE REGISTRATION / EXECUTABLE |
-| Tipo | Slice 7 Best-Effort Event Seam Pre-Flight |
-| Capability | READ |
-| Feature | READ-005 — Livros Concluídos |
-| Requisito Funcional | RF-READ-005 — Conclusão de Livro |
+| ID | TASK-015I-DURABLE-PROGRESSION-DELIVERY |
+| Iniciativa | INT-001 — Durable Progression Delivery |
+| Status | IMPLEMENTATION / EXECUTABLE |
+| Tipo | Durable LifeOS -> Logos Delivery |
+| Capability | INTEGRATION |
+| Feature | INT-001 — Durable Progression Delivery |
+| Requisito Funcional | RF-INT-001 — Entrega Durável de Progressão Externa |
 | User Story | US-READ-005-001 |
 | Product Decision | PD-READ-005 — APPROVED |
 | Product Identity | FROZEN |
@@ -32,7 +32,7 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | TASK-015G — DURABLE PROGRESSION DELIVERY GOVERNANCE |
+| Current Executable Unit | TASK-015I — DURABLE LIFEOS -> LOGOS PROGRESSION DELIVERY |
 | Slice 1 Status | INTEGRATED / FINALIZED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
@@ -72,12 +72,12 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
 `Alembic migration (Python 3.11)`.
 
-**AUTHORIZED NOW:** TASK-015G — register the durable LifeOS -> Logos progression
-delivery Feature, RF and traceability records.
+**AUTHORIZED NOW:** TASK-015I — implement the read-owned transactional
+LifeOS -> Logos progression delivery authorized by INT-001 / RF-INT-001.
 
-**NEXT AFTER TASK-015G:** TASK-015I — implement the read-owned transactional
-delivery intent, Alembic 0009 if required, immediate post-commit delivery,
-recoverable retry path, ordering and tests, within the scope authorized below.
+**GOVERNANCE REGISTERED:** TASK-015G-R registered Capability INTEGRATION,
+Feature INT-001, RF-INT-001, its PRD/User Story/acceptance criteria and the
+TASK-015 discovery traceability.
 
 ### Temporary human priority override
 
@@ -100,8 +100,8 @@ TASK-015G governance registration
     -> resume Slice 7
 ```
 
-TASK-015I is not implementation-authorized by this entry until TASK-015G has
-successfully registered the Feature, RF and traceability.
+TASK-015I is implementation-authorized by this entry within the registered
+INT-001 / RF-INT-001 scope.
 
 The authorized durable-delivery scope is limited to the proven ReadingSession
 -> Logos V3 use case: transactional delivery intent, Alembic 0009 if required,
@@ -490,7 +490,7 @@ integration.
 4. Transactional Write + Concurrency — IMPLEMENTED / DRAFT PR #46 / MERGE BLOCKED PENDING PYTHON 3.11 PLATFORM TRANSITION / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER.
 5. Dedicated Read Model / API.
 6. Migration 0008 + Backfill — CODE INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED.
-7. Best-Effort Event Seam.
+7. Best-Effort Event Seam — SUSPENDED / PRESERVED / RESUME AFTER DURABLE PROGRESSION MILESTONE.
 8. Full Regression + Governance.
 
 ## Pendências
@@ -498,8 +498,8 @@ integration.
 - READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTED AND PUBLISHED IN DRAFT PR #46 / SLICE 6 CODE INTEGRATED.
 - RF-READ-005: Slice 4 merge is blocked pending the Python 3.11 platform transition; runtime activation remains blocked pending coordinated cutover.
 - US-READ-005-001: Slice 7 remains suspended and its prior authorization is preserved.
-- TASK-015G: current governance registration is executable by explicit human override.
-- TASK-015I: implementation is not yet authorized; it follows only after TASK-015G traceability.
+- TASK-015G: governance registration COMPLETE; INT-001 / RF-INT-001 traceability registered.
+- TASK-015I: implementation AUTHORIZED within the INT-001 / RF-INT-001 scope.
 - Python platform: current integrated platform and required checks remain 3.10; future >=3.11 transition is human-approved and AUTHORIZED / NOT STARTED.
 - Migration 0008: CODE INTEGRATED; real local database NOT APPLIED.
 - Alembic: repository 0008 (head); real `lifeos.db` 0007.
@@ -526,14 +526,21 @@ Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md
 
 ## Próximo Gate
 
-TASK-015G — DURABLE PROGRESSION GOVERNANCE REGISTRATION
+TASK-015I — DURABLE LIFEOS -> LOGOS PROGRESSION DELIVERY
 
-Only TASK-015G is authorized now. TASK-015I becomes the next executable unit
-only after TASK-015G completes its Feature/RF/NEXT_TASK traceability gate.
+TASK-015I is authorized through Feature INT-001 and RF-INT-001. Its scope is
+transactional ReadingSession delivery intent, Alembic 0009 if required,
+immediate post-commit delivery, recoverable retry/replay, frozen configuration
+revision, per-subject ordering, tests, documentation and controlled recovery
+validation.
 
 Do not modify PR #46, apply Migration 0008 to real data, execute the
 coordinated cutover, or expand any future implementation beyond its explicit
 task scope. Do not introduce generic durable messaging infrastructure.
+
+Kafka, RabbitMQ, generic brokers, distributed exactly-once, Logos production
+changes, Noema changes, authentication redesign, namespace authorization
+redesign and multi-tenant identity redesign remain unauthorized.
 
 After the durable progression milestone is completed and frozen, resume Slice 7
 from the preserved context above.

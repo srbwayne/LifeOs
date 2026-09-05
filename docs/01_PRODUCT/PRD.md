@@ -2283,6 +2283,8 @@ RF-AI
 RF-REPORT
 
 RF-ADMIN
+
+RF-INT
 ```
 
 Cada grupo representa uma Capability do produto.
@@ -2331,6 +2333,7 @@ Todos os requisitos deverão utilizar o seguinte padrão de identificação.
 | Artificial Intelligence | RF-AI |
 | Reports | RF-REPORT |
 | Administration | RF-ADMIN |
+| Integration | RF-INT |
 
 Exemplos:
 
@@ -13312,3 +13315,202 @@ ADMIN
 ## Feature
 
 ADMIN-010
+
+---
+
+# RF-INT-001 — Entrega Durável de Progressão Externa
+
+## Objetivo
+
+Preservar de forma recuperável a intenção de entregar ao Logos os fatos de
+progressão produzidos por uma ReadingSession confirmada no LifeOS.
+
+## Descrição
+
+Quando uma ReadingSession que exige progressão externa for persistida com
+sucesso, o LifeOS deverá persistir atomicamente a intenção correspondente de
+entrega. Se o Logos estiver indisponível após o commit, a ReadingSession deverá
+continuar válida e a entrega deverá permanecer recuperável sem duplicar a
+progressão canônica.
+
+## Escopo
+
+Inclui:
+
+- ReadingSession → Logos;
+- intenção de entrega durável e atômica;
+- entrega at-least-once e tentativa imediata após o commit;
+- recuperação/reprocessamento preservando identidade, fatos e revisão de configuração;
+- ordenação por sujeito e evidência de entrega.
+
+Não inclui:
+
+- Kafka, RabbitMQ, broker ou plataforma genérica de mensageria;
+- exactly-once distribuído;
+- alterações de produção no Logos ou no Noema;
+- redesenho de autenticação, autorização de namespace ou identidade multi-tenant.
+
+## Dependências
+
+```text
+RF-READ-003
+RF-READ-009 (contexto funcional relacionado)
+```
+
+## Fonte dos Dados
+
+- Reading;
+- Logos, como sistema externo de progressão.
+
+## Entradas
+
+- ReadingSessionId;
+- UserId;
+- pages_read;
+- configuração `reading@2` congelada no evento.
+
+## Saídas
+
+- intenção de entrega durável;
+- entrega ao endpoint Logos V3;
+- evidência de estado da entrega.
+
+## Eventos Consumidos
+
+```text
+reading_session_recorded
+```
+
+## Eventos Produzidos
+
+Nenhum evento de domínio adicional é exigido por este requisito.
+
+## Impacto no Character
+
+Nenhum. XP, nível, stress, atributos e skills permanecem sob autoridade do
+Logos/Game Engine.
+
+## Regras de Negócio
+
+- ReadingSession e intenção de entrega são persistidas na mesma transação.
+- A indisponibilidade do Logos não invalida a ReadingSession.
+- Falhas permanecem recuperáveis.
+- Retries preservam `source`, `ReadingSessionId`, fatos e `reading@2`.
+- Entrega duplicada não pode aplicar progressão duas vezes.
+- Nenhum credential ou bearer token é persistido na intenção.
+- LifeOS não persiste progressão canônica.
+
+## Pré-condições
+
+- ReadingSession válida e persistida no contexto transacional do LifeOS.
+- Identidade de entrega e configuração do piloto disponíveis.
+
+## Fluxo Principal
+
+1. Persistir a ReadingSession.
+2. Persistir a intenção de entrega na mesma transação.
+3. Confirmar o commit.
+4. Tentar a entrega imediata ao Logos.
+5. Manter a intenção recuperável se a entrega falhar.
+
+## Fluxos Alternativos
+
+- Se a intenção não puder ser persistida, reverter a transação inteira.
+- Se o Logos falhar após o commit, manter a ReadingSession e reprocessar a intenção posteriormente.
+- Se a mesma identidade for reenviada, reutilizar a idempotência do Logos.
+
+## Exceções
+
+- falha de persistência transacional;
+- indisponibilidade, timeout ou erro do Logos;
+- conflito de identidade de execução;
+- configuração ou sujeito externo não provisionado.
+
+## Pós-condições
+
+- A ReadingSession confirmada possui uma intenção de entrega correspondente.
+- A entrega pode estar `PENDING`, `FAILED` ou `DELIVERED`.
+- A progressão canônica, quando aplicada, permanece no Logos.
+
+## Critérios de Aceite
+
+```gherkin
+Scenario: Persistir fato e intenção atomicamente
+Given uma ReadingSession que requer progressão externa
+When a transação de origem for confirmada
+Then a ReadingSession e a intenção de entrega serão confirmadas juntas
+
+Scenario: Reverter quando a intenção falhar
+Given uma ReadingSession em persistência
+When a intenção de entrega não puder ser persistida
+Then nenhum dos dois registros será confirmado
+
+Scenario: Isolar indisponibilidade externa
+Given a ReadingSession e a intenção confirmadas
+When o Logos estiver indisponível
+Then a ReadingSession permanecerá válida
+And a intenção permanecerá recuperável
+
+Scenario: Recuperar uma entrega
+Given uma intenção não resolvida
+When o Logos estiver novamente disponível
+Then a mesma identidade e os mesmos fatos poderão ser entregues
+
+Scenario: Evitar duplicação
+Given uma retry da mesma entrega
+Then o Logos não aplicará a progressão duas vezes
+
+Scenario: Preservar a revisão configurada
+Given uma intenção criada para reading@2
+When reading@3 se tornar corrente antes da entrega
+Then a entrega continuará solicitando reading@2
+
+Scenario: Preservar ordenação por sujeito
+Given duas intenções não resolvidas do mesmo sujeito
+When forem entregues
+Then a mais antiga será processada antes da mais nova
+
+Scenario: Não persistir credenciais
+Given uma intenção durável
+Then nenhum bearer token ou credencial será persistido nela
+```
+
+## Restrições
+
+- Sem infraestrutura genérica de mensageria.
+- Sem alteração do contrato ou produção do Logos nesta etapa.
+- Sem persistência de XP, nível, stress, atributos ou skills no LifeOS.
+
+## Auditoria
+
+- identidade da origem;
+- ReadingSessionId;
+- sujeito externo;
+- configuração e revisão pretendidas;
+- tentativas, timestamps, estado e último erro não sensível.
+
+## Segurança
+
+- Credenciais são resolvidas no momento da entrega.
+- Tokens não são armazenados nem registrados.
+- O isolamento multi-tenant existente deve ser preservado.
+
+## Performance
+
+- A confirmação da ReadingSession não depende da disponibilidade do Logos.
+- A tentativa imediata é best-effort após o commit.
+
+## Observações
+
+O requisito concretiza o gap demonstrado em TASK-013V-R e segue o desenho de
+TASK-015. A entrega é at-least-once; a aplicação idempotente é responsabilidade
+do Logos. A integração funcional de leitura existente em RF-READ-009 permanece
+inalterada e é apenas contexto relacionado.
+
+## Capability
+
+INTEGRATION
+
+## Feature
+
+INT-001

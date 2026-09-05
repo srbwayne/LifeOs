@@ -261,6 +261,17 @@ Responsável pela representação do Player.
 
 ---
 
+# INTEGRATION — Integrações
+
+Responsável por preservar e entregar intenções de integração entre fatos do
+LifeOS e sistemas externos autorizados.
+
+| ID | Feature |
+|----|----------|
+| INT-001 | Durable Progression Delivery |
+
+---
+
 # Convenções
 
 Toda nova funcionalidade deverá:
