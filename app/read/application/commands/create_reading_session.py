@@ -9,6 +9,10 @@ from sqlalchemy.exc import OperationalError
 
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_gateway import (
+    ProgressionGateway,
+    ReadingProgressionFact,
+)
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
 from app.read.domain.ports.book_completion_repository import IBookCompletionRepository
@@ -62,6 +66,7 @@ class CreateReadingSessionCommandHandler:
         progress_calculator: ReadingProgressCalculator,
         unit_of_work: ReadingSessionWriteUnitOfWork,
         sleeper: Callable[[float], None] = time.sleep,
+        progression_gateway: ProgressionGateway | None = None,
     ) -> None:
         self._book_repository = book_repository
         self._reading_session_repository = reading_session_repository
@@ -70,8 +75,10 @@ class CreateReadingSessionCommandHandler:
         self._progress_calculator = progress_calculator
         self._unit_of_work = unit_of_work
         self._sleeper = sleeper
+        self._progression_gateway = progression_gateway
 
     def __call__(self, command: CreateReadingSessionCommand) -> ReadingSessionDTO:
+        committed_session: ReadingSession | None = None
         for attempt in range(2):
             acquired = False
             try:
@@ -113,10 +120,21 @@ class CreateReadingSessionCommandHandler:
                         )
                     uow.flush()
                     uow.commit()
-                    return ReadingSessionDTO.from_session(session)
+                    committed_session = session
+                    break
             except OperationalError as error:
                 if acquired or not _is_retryable_acquisition_busy(error) or attempt == 1:
                     raise
                 self._sleeper(0.050)
 
-        raise AssertionError("unreachable")
+        if committed_session is None:
+            raise AssertionError("unreachable")
+        if self._progression_gateway is not None:
+            self._progression_gateway.evaluate_reading_session(
+                ReadingProgressionFact(
+                    source_event_id=committed_session.id.to_persistence(),
+                    user_id=committed_session.owner_id,
+                    pages_read=committed_session.pages_read,
+                )
+            )
+        return ReadingSessionDTO.from_session(committed_session)

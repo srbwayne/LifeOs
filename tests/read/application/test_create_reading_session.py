@@ -11,6 +11,7 @@ from app.read.application.commands.create_reading_session import (
 )
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_gateway import ProgressionDeliveryResult
 from app.read.domain.aggregates.book import Book
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
@@ -131,6 +132,16 @@ class FakeUnitOfWork:
         self.tracked_aggregates.append(aggregate)
 
 
+class FakeProgressionGateway:
+    def __init__(self) -> None:
+        self.facts = []
+        self.commit_counts = []
+
+    def evaluate_reading_session(self, fact):
+        self.facts.append(fact)
+        return ProgressionDeliveryResult(success=True, status_code=200)
+
+
 def valid_command(
     owner_id: UserId, book_id: BookId, **overrides: object
 ) -> CreateReadingSessionCommand:
@@ -152,6 +163,7 @@ def build_handler(
     sessions: tuple[ReadingSession, ...] = (),
     completion: BookCompletion | None = None,
     sleeper=lambda _: None,
+    progression_gateway=None,
 ) -> tuple[
     CreateReadingSessionCommandHandler,
     FakeBookRepository,
@@ -171,6 +183,7 @@ def build_handler(
         ReadingProgressCalculator(),
         unit_of_work,
         sleeper,
+        progression_gateway,
     )
     return handler, book_repository, session_repository, completion_repository, unit_of_work
 
@@ -203,6 +216,40 @@ def test_handler_creates_saves_commits_once_and_returns_dto() -> None:
     assert result.pages_read == 13
     assert unit_of_work.enter_count == 1
     assert unit_of_work.exit_count == 1
+    assert unit_of_work.commit_count == 1
+    assert unit_of_work.rollback_count == 0
+
+
+def test_progression_gateway_is_called_only_after_reading_session_commit() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    gateway = FakeProgressionGateway()
+    handler, _, _, _, unit_of_work = build_handler((book,), progression_gateway=gateway)
+
+    handler(valid_command(owner_id, book.id))
+
+    assert len(gateway.facts) == 1
+    assert gateway.facts[0].source_event_id
+    assert gateway.facts[0].user_id == owner_id
+    assert gateway.facts[0].pages_read == 13
+    assert unit_of_work.commit_count == 1
+
+
+def test_progression_gateway_failure_does_not_rollback_committed_reading_session() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+
+    class FailingGateway:
+        def evaluate_reading_session(self, fact):
+            return ProgressionDeliveryResult(success=False, error="timeout")
+
+    handler, _, sessions, _, unit_of_work = build_handler(
+        (book,), progression_gateway=FailingGateway()
+    )
+
+    handler(valid_command(owner_id, book.id))
+
+    assert len(sessions.saved) == 1
     assert unit_of_work.commit_count == 1
     assert unit_of_work.rollback_count == 0
 
