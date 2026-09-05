@@ -35,6 +35,7 @@ from app.read.infrastructure.persistence.repositories.reading_session_repository
     SqlAlchemyReadingSessionRepository,
 )
 from app.shared.application.event_bus import InMemoryEventBus
+from app.shared.domain.domain_event import DomainEvent
 from app.shared.domain.identifiers.user_id import UserId
 from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 
@@ -411,7 +412,8 @@ def test_book_completed_is_published_after_rows_are_durable(database_path: Path)
     event_bus = InMemoryEventBus()
     observations: list[tuple[BookCompleted, bool, bool]] = []
 
-    def observe(event: BookCompleted) -> None:
+    def observe(event: DomainEvent) -> None:
+        assert isinstance(event, BookCompleted)
         with session_factory() as verification_session:
             observations.append(
                 (
@@ -452,7 +454,8 @@ def test_subscriber_failure_does_not_undo_committed_rows_or_retry(database_path:
     event_bus = InMemoryEventBus()
     attempts: list[BookCompleted] = []
 
-    def fail(event: BookCompleted) -> None:
+    def fail(event: DomainEvent) -> None:
+        assert isinstance(event, BookCompleted)
         attempts.append(event)
         raise RuntimeError("subscriber failure")
 
@@ -489,7 +492,12 @@ def test_existing_completion_is_not_published(database_path: Path) -> None:
     session.commit()
     event_bus = InMemoryEventBus()
     published: list[BookCompleted] = []
-    event_bus.subscribe(BookCompleted, published.append)
+
+    def capture(event: DomainEvent) -> None:
+        assert isinstance(event, BookCompleted)
+        published.append(event)
+
+    event_bus.subscribe(BookCompleted, capture)
     try:
         _handler(session, event_bus=event_bus)(
             _command(UserId.from_value(owner), BookId.from_value(book), 1, 1)
