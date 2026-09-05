@@ -1,3 +1,17 @@
+## READ-005 Slice 5 Integrated / Slice 7 Pre-Flight Next — 2026-09-04
+
+- PR #53 foi marcado Ready sem mutação do source head e merged via Rebase and Merge em `2026-09-04T01:37:46Z`.
+- Source head revisado: `1e1e7697284a281e460562a9ed13a111ad36ddbc`; main canônico integrado: `38b8cff8436474e07a2761b3adee9938341ea3a4`; parent: `af88e826d5508374fed78bf97b55b893911e9c7b`.
+- Subject integrado: `feat(read): add book completions read model and api`.
+- Escopo exato Slice 5: 11 arquivos — quatro arquivos de aplicação/apresentação/infrastructure modificados e sete novos arquivos de implementação/testes.
+- Main CI `33826496903`: 3/3 SUCCESS, CPython 3.11.16, 502 testes, warning gate 502 PASS e 98.18% de cobertura.
+- A proteção de branch permaneceu inalterada, exigindo `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e `Alembic migration (Python 3.11)` com App ID 15368.
+- Slice 5 está INTEGRATED / FINALIZED. O repositório Alembic permanece em 0008 e o `lifeos.db` real permanece em 0007; Migration 0008 não foi executada em dados reais, não houve cutover coordenado, o runtime Slice 4 não foi ativado e Slice 5 não foi deployed.
+
+**Next Gate:** SLICE 7 — BEST-EFFORT EVENT SEAM — IMPLEMENTATION PRE-FLIGHT
+
+---
+
 ## READ-005 Slice 4 Integrated / Slice 5 Pre-Flight Next — 2026-09-03
 
 - PR #46 foi marcado Ready sem mutação de head e merged via Rebase and Merge.
