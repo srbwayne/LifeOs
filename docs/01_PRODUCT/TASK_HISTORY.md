@@ -1,3 +1,23 @@
+## READ-005 Slice 8 Full Regression and Governance Closure — 2026-09-05
+
+1. Slice 7 implementation was integrated through PR #55 via Rebase and Merge.
+2. The reviewed source head was `ba07b3b362813629240f5e9164820a0092c3fec0`; the integrated implementation commit was `f2c5fc23b9abdaf254541521b7d5df23490f0d38`.
+3. The initial PR CI failed only at Mypy because three test callbacks used a narrower `BookCompleted` signature than the existing `EventHandler` contract.
+4. The authorized test-only remediation produced `7f1b5745194b72801d02a9cbfa63bdc60fc3e459`.
+5. Corrective PR CI passed 3/3 under CPython 3.11.16 with 513 tests, warning gate 513 and 98.28% coverage.
+6. Remote Final Review passed; the PR was marked Ready without source mutation and merged with two linear rebased commits.
+7. Canonical main became `7f1b5745194b72801d02a9cbfa63bdc60fc3e459`; its parent is `f2c5fc23b9abdaf254541521b7d5df23490f0d38`.
+8. Main CI `33937874975` passed 3/3 under CPython 3.11.16 with 513 tests, warning gate 513 PASS, 98.28% coverage and Alembic 0008.
+9. Slice 8 full regression passed: architecture 12, AUTH 7, CHARACTER 11, READ 474, Slice 4 critical contracts 47, Slice 5 critical contracts 19, and Migration 0008 tests 6.
+10. The full suite and canonical warning gate each passed 513 tests; coverage passed at 98.28%, with Ruff, format, Mypy, application import, pip check and disposable Alembic 0008 validation passing.
+11. READ-005 source implementation is COMPLETE and governance closure is finalized. No production feature, test remediation, migration, cutover or runtime deployment was performed by Slice 8.
+12. The real `lifeos.db` remains at 0007; real Migration 0008, coordinated cutover, Slice 4 runtime activation, and Slice 5/7 deployment were not executed.
+13. Logos remains a separate parallel workstream and was not modified or reconciled.
+
+**Next Decision Gate:** READ-005 DEPLOYMENT / COORDINATED CUTOVER DECISION — NOT AUTHORIZED / REQUIRES NEW HUMAN DECISION
+
+---
+
 ## READ-005 Slice 5 Integration Finalized — 2026-09-04
 
 1. O pre-flight de implementação da Slice 5 passou.
