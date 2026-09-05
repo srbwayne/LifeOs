@@ -50,7 +50,7 @@ from app.read.infrastructure.persistence.repositories.reading_session_repository
 from app.read.infrastructure.persistence.repositories.reading_statistics_repository import (
     SqlAlchemyReadingStatisticsReadRepository,
 )
-from app.shared.application.event_bus import InMemoryEventBus
+from app.shared.application.event_bus import IEventBus, InMemoryEventBus
 from app.shared.infrastructure.database import get_db
 from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 
@@ -95,8 +95,15 @@ def get_reading_statistics_handler(
     return GetReadingStatisticsQueryHandler(repository)
 
 
-def get_book_uow(db: Session = Depends(get_db)) -> SqlAlchemyUnitOfWork:
-    return SqlAlchemyUnitOfWork(db, InMemoryEventBus())
+def get_read_event_bus() -> IEventBus:
+    return InMemoryEventBus()
+
+
+def get_book_uow(
+    db: Session = Depends(get_db),
+    event_bus: IEventBus = Depends(get_read_event_bus),
+) -> SqlAlchemyUnitOfWork:
+    return SqlAlchemyUnitOfWork(db, event_bus)
 
 
 def get_create_book_handler(
@@ -117,6 +124,7 @@ def get_create_reading_session_handler(
     reading_session_repository: IReadingSessionRepository = Depends(get_reading_session_repository),
     book_completion_repository: IBookCompletionRepository = Depends(get_book_completion_repository),
     unit_of_work: SqlAlchemyUnitOfWork = Depends(get_book_uow),
+    event_bus: IEventBus = Depends(get_read_event_bus),
 ) -> CreateReadingSessionCommandHandler:
     return CreateReadingSessionCommandHandler(
         book_repository,
@@ -125,6 +133,7 @@ def get_create_reading_session_handler(
         ReadingCoverageCalculator(),
         ReadingProgressCalculator(),
         unit_of_work,
+        event_bus=event_bus,
     )
 
 

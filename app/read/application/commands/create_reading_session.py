@@ -11,12 +11,14 @@ from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
+from app.read.domain.events.book_completed import BookCompleted
 from app.read.domain.ports.book_completion_repository import IBookCompletionRepository
 from app.read.domain.ports.book_repository import IBookRepository
 from app.read.domain.ports.reading_session_repository import IReadingSessionRepository
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
+from app.shared.application.event_bus import IEventBus
 from app.shared.domain.identifiers.user_id import UserId
 
 _SQLITE_BUSY_CODE: int = sqlite3.SQLITE_BUSY
@@ -62,6 +64,7 @@ class CreateReadingSessionCommandHandler:
         progress_calculator: ReadingProgressCalculator,
         unit_of_work: ReadingSessionWriteUnitOfWork,
         sleeper: Callable[[float], None] = time.sleep,
+        event_bus: IEventBus | None = None,
     ) -> None:
         self._book_repository = book_repository
         self._reading_session_repository = reading_session_repository
@@ -70,12 +73,14 @@ class CreateReadingSessionCommandHandler:
         self._progress_calculator = progress_calculator
         self._unit_of_work = unit_of_work
         self._sleeper = sleeper
+        self._event_bus = event_bus
 
     def __call__(self, command: CreateReadingSessionCommand) -> ReadingSessionDTO:
         for attempt in range(2):
             acquired = False
             try:
                 with self._unit_of_work as uow:
+                    new_completion: BookCompletion | None = None
                     uow.acquire_write_intent()
                     acquired = True
 
@@ -108,11 +113,20 @@ class CreateReadingSessionCommandHandler:
                     progress = self._progress_calculator.calculate_from_coverage(book, coverage)
                     self._reading_session_repository.save(session)
                     if progress.completed and completion is None:
-                        self._book_completion_repository.save(
-                            BookCompletion.create(book.id, session.ended_at)
-                        )
+                        new_completion = BookCompletion.create(book.id, session.ended_at)
+                        self._book_completion_repository.save(new_completion)
                     uow.flush()
                     uow.commit()
+                    if new_completion is not None and self._event_bus is not None:
+                        self._event_bus.publish(
+                            [
+                                BookCompleted(
+                                    completion_id=new_completion.id,
+                                    book_id=new_completion.book_id,
+                                    completed_at=new_completion.completed_at,
+                                )
+                            ]
+                        )
                     return ReadingSessionDTO.from_session(session)
             except OperationalError as error:
                 if acquired or not _is_retryable_acquisition_busy(error) or attempt == 1:
