@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE7-IMPLEMENTATION-PREFLIGHT |
+| ID | READ-005-S09-SLICE8-FULL-REGRESSION-GOVERNANCE-CLOSURE |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT PENDING / EXECUTABLE |
-| Tipo | Slice 7 Best-Effort Event Seam Pre-Flight |
+| Status | FULL REGRESSION + GOVERNANCE CLOSURE COMPLETE |
+| Tipo | Slice 8 Full Regression and Governance Closure |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -30,9 +30,9 @@
 | Human Technical Review | APPROVED |
 | Implementation Authorization Review | PASS |
 | Human Implementation Authorization | APPROVED |
-| Implementation Program | AUTHORIZED |
-| Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 7 — BEST-EFFORT EVENT SEAM — IMPLEMENTATION PRE-FLIGHT |
+| Implementation Program | READ-005 SOURCE IMPLEMENTATION COMPLETE |
+| Sprint 09 | READ-005 SOURCE CLOSURE COMPLETE |
+| Current Executable Unit | NONE — READ-005 SOURCE IMPLEMENTATION CLOSED |
 | Slice 1 Status | INTEGRATED / FINALIZED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
@@ -45,14 +45,23 @@
 | Slice 5 Main CI | `33826496903` — 3/3 SUCCESS |
 | Slice 5 Validation | CPython 3.11.16 / 502 tests / 502 warning-gate PASS / 98.18% coverage |
 | Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
-| Slice 7 Status | GATED / IMPLEMENTATION PRE-FLIGHT AUTHORIZED |
-| Slice 8 Status | GATED |
+| Slice 7 Status | INTEGRATED / FINALIZED |
+| Slice 8 Status | FULL REGRESSION + GOVERNANCE CLOSURE COMPLETE |
+| Slice 7 PR | #55 — MERGED |
+| Slice 7 Reviewed Source Head | `ba07b3b362813629240f5e9164820a0092c3fec0` |
+| Slice 7 Integrated Implementation | `f2c5fc23b9abdaf254541521b7d5df23490f0d38` |
+| Slice 7 Integrated Remediation / Main | `7f1b5745194b72801d02a9cbfa63bdc60fc3e459` |
+| Slice 7 Main CI | `33937874975` — 3/3 SUCCESS |
+| Slice 7 Validation | CPython 3.11.16 / 513 tests / 513 warning-gate PASS / 98.28% coverage |
 | Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
 | Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
 | Migration 0008 Real Execution | NO |
 | Coordinated Cutover | NO |
 | Slice 4 Runtime Activation | NO |
 | Slice 5 Deployment | NO |
+| Slice 7 Deployment | NO |
+| READ-005 Source Implementation | COMPLETE |
+| READ-005 Production Deployment | NOT EXECUTED |
 | Slice 4 PR | #46 — MERGED |
 | Slice 4 Reviewed Source Head | `3f23cdb4f991a0c8381801378b2b0f70267f7d97` |
 | Slice 4 Integrated Main | `8201cb9d6e3f79241808c01fe913b232c730188f` |
@@ -72,20 +81,20 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
 `Alembic migration (Python 3.11)`.
 
-**AUTHORIZED NOW:** SLICE 7 IMPLEMENTATION PRE-FLIGHT (READ-ONLY).
+**AUTHORIZED NOW:** READ-005 SOURCE CLOSURE ONLY.
 
 **NOT YET AUTHORIZED:**
 
-- implementar Slice 7 ou criar código/testes Slice 7;
-- publicar branch/PR Slice 7;
-- executar Slice 8;
 - aplicar Migration 0008 a dados reais;
 - executar o cutover coordenado;
-- ativar o runtime Slice 4.
+- ativar o runtime Slice 4;
 - deploy Slice 5 runtime.
 
-Slice 5 está integrada e finalizada. O próximo pre-flight é exclusivamente
-read-only e não congela ainda um allowlist de implementação para a Slice 7.
+**NEXT DECISION GATE:** READ-005 DEPLOYMENT / COORDINATED CUTOVER DECISION.
+
+Esse gate não está autorizado e requer nova decisão humana. A implementação de
+fonte READ-005 está completa; a Migration 0008 real, o cutover coordenado, a
+ativação de runtime e o deployment permanecem não executados.
 
 BookCompletion persistido permanece a fonte durável de verdade. A ocorrência
 BookCompleted permanece um seam best-effort in-process. Outbox, broker, Kafka,
