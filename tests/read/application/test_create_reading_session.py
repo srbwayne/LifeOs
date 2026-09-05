@@ -20,10 +20,12 @@ from app.read.domain.errors.reading_session_errors import (
     InvalidReadingSessionTimeError,
     ReadingBeyondBookError,
 )
+from app.read.domain.events.book_completed import BookCompleted
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
 from app.shared.domain.aggregate import AggregateRoot
+from app.shared.domain.domain_event import DomainEvent
 from app.shared.domain.identifiers.user_id import UserId
 
 UTC_START = datetime(2026, 8, 9, 14, 0, tzinfo=timezone.utc)
@@ -87,6 +89,19 @@ class FakeBookCompletionRepository:
         return self.completion
 
 
+class FakeEventBus:
+    def __init__(self, timeline: list[str]) -> None:
+        self.published: list[DomainEvent] = []
+        self._timeline = timeline
+
+    def publish(self, events: list[DomainEvent]) -> None:
+        self._timeline.append("publish")
+        self.published.extend(events)
+
+    def subscribe(self, event_type: type[DomainEvent], handler: object) -> None:
+        raise AssertionError("Application tests do not register subscribers.")
+
+
 class FakeUnitOfWork:
     def __init__(self) -> None:
         self.enter_count = 0
@@ -99,6 +114,8 @@ class FakeUnitOfWork:
         self.flush_error: Exception | None = None
         self.commit_error: Exception | None = None
         self.tracked_aggregates: list[AggregateRoot] = []
+        self.timeline: list[str] = []
+        self.event_bus = FakeEventBus(self.timeline)
 
     def __enter__(self) -> "FakeUnitOfWork":
         self.enter_count += 1
@@ -111,6 +128,7 @@ class FakeUnitOfWork:
 
     def flush(self) -> None:
         self.flush_count += 1
+        self.timeline.append("flush")
         if self.flush_error:
             raise self.flush_error
 
@@ -121,6 +139,7 @@ class FakeUnitOfWork:
 
     def commit(self) -> None:
         self.commit_count += 1
+        self.timeline.append("commit")
         if self.commit_error:
             raise self.commit_error
 
@@ -171,6 +190,7 @@ def build_handler(
         ReadingProgressCalculator(),
         unit_of_work,
         sleeper,
+        event_bus=unit_of_work.event_bus,
     )
     return handler, book_repository, session_repository, completion_repository, unit_of_work
 
@@ -433,3 +453,119 @@ def test_failures_after_acquisition_do_not_retry(failure_stage: str) -> None:
     assert uow.acquisition_count == 1
     assert uow.rollback_count == 1
     assert slept == []
+
+
+def _completion_handler() -> tuple[
+    CreateReadingSessionCommandHandler,
+    FakeBookCompletionRepository,
+    FakeUnitOfWork,
+    Book,
+]:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    existing = ReadingSession.create(owner_id, book.id, 1, 79, UTC_START, UTC_END, book.total_pages)
+    handler, _, _, completions, unit_of_work = build_handler((book,), (existing,))
+    return handler, completions, unit_of_work, book
+
+
+def test_book_completed_is_immutable_and_has_exact_domain_event_envelope() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    completion = BookCompletion.create(book.id, UTC_END)
+    event = BookCompleted(completion.id, completion.book_id, completion.completed_at)
+
+    assert event.event_id
+    assert event.occurred_at.tzinfo is timezone.utc
+    assert event.completion_id == completion.id
+    assert event.book_id == completion.book_id
+    assert event.completed_at == completion.completed_at
+    assert not hasattr(event, "owner_id")
+    assert not hasattr(event, "user_id")
+    with pytest.raises(FrozenInstanceError):
+        event.book_id = book.id  # type: ignore[misc]
+
+
+def test_first_completion_publishes_exactly_one_event_after_commit() -> None:
+    handler, completions, unit_of_work, book = _completion_handler()
+
+    handler(valid_command(book.owner_id, book.id, start_page=80, end_page=100))
+
+    assert len(completions.saved) == 1
+    completion = completions.saved[0]
+    assert len(unit_of_work.event_bus.published) == 1
+    event = unit_of_work.event_bus.published[0]
+    assert isinstance(event, BookCompleted)
+    assert (event.completion_id, event.book_id, event.completed_at) == (
+        completion.id,
+        completion.book_id,
+        completion.completed_at,
+    )
+    assert event.completed_at == UTC_END
+    assert unit_of_work.timeline[-3:] == ["flush", "commit", "publish"]
+    assert unit_of_work.tracked_aggregates == []
+
+
+def test_flush_failure_publishes_nothing() -> None:
+    handler, _, unit_of_work, book = _completion_handler()
+    unit_of_work.flush_error = RuntimeError("flush failure")
+
+    with pytest.raises(RuntimeError, match="flush failure"):
+        handler(valid_command(book.owner_id, book.id, start_page=80, end_page=100))
+
+    assert unit_of_work.event_bus.published == []
+
+
+def test_commit_failure_publishes_nothing() -> None:
+    handler, _, unit_of_work, book = _completion_handler()
+    unit_of_work.commit_error = RuntimeError("commit failure")
+
+    with pytest.raises(RuntimeError, match="commit failure"):
+        handler(valid_command(book.owner_id, book.id, start_page=80, end_page=100))
+
+    assert unit_of_work.event_bus.published == []
+
+
+def test_existing_completion_is_not_republished() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    existing_completion = BookCompletion.create(book.id, UTC_START)
+    handler, _, _, completions, unit_of_work = build_handler(
+        (book,), completion=existing_completion
+    )
+
+    handler(valid_command(owner_id, book.id))
+
+    assert completions.saved == []
+    assert unit_of_work.event_bus.published == []
+
+
+def test_busy_then_success_publishes_once() -> None:
+    handler, _, unit_of_work, book = _completion_handler()
+    unit_of_work.acquisition_errors = [_operational_error(_Busy())]
+
+    handler(valid_command(book.owner_id, book.id, start_page=80, end_page=100))
+
+    assert unit_of_work.acquisition_count == 2
+    assert len(unit_of_work.event_bus.published) == 1
+
+
+def test_busy_twice_publishes_nothing() -> None:
+    handler, _, unit_of_work, book = _completion_handler()
+    unit_of_work.acquisition_errors = [_operational_error(_Busy()), _operational_error(_Busy())]
+
+    with pytest.raises(OperationalError):
+        handler(valid_command(book.owner_id, book.id, start_page=80, end_page=100))
+
+    assert unit_of_work.event_bus.published == []
+
+
+def test_post_acquisition_failure_publishes_nothing() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    handler, book_repository, _, _, unit_of_work = build_handler((book,))
+    book_repository.get_error = OperationalError("SELECT", {}, Exception("failure"))
+
+    with pytest.raises(OperationalError, match="failure"):
+        handler(valid_command(owner_id, book.id))
+
+    assert unit_of_work.event_bus.published == []

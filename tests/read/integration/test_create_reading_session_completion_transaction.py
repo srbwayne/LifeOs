@@ -19,6 +19,7 @@ from app.read.application.commands.create_reading_session import (
 )
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
+from app.read.domain.events.book_completed import BookCompleted
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
@@ -83,8 +84,8 @@ def database_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 
 class _CountingUnitOfWork(SqlAlchemyUnitOfWork):
-    def __init__(self, session: Session) -> None:
-        super().__init__(session, InMemoryEventBus())
+    def __init__(self, session: Session, event_bus: InMemoryEventBus | None = None) -> None:
+        super().__init__(session, event_bus or InMemoryEventBus())
         self.acquisition_count = 0
         self.flush_count = 0
         self.commit_count = 0
@@ -142,15 +143,18 @@ def _handler(
     reading_session_repository: SqlAlchemyReadingSessionRepository | None = None,
     book_completion_repository: SqlAlchemyBookCompletionRepository | None = None,
     unit_of_work: SqlAlchemyUnitOfWork | None = None,
+    event_bus: InMemoryEventBus | None = None,
 ) -> CreateReadingSessionCommandHandler:
+    event_bus = event_bus or InMemoryEventBus()
     return CreateReadingSessionCommandHandler(
         SqlAlchemyBookRepository(session),
         reading_session_repository or SqlAlchemyReadingSessionRepository(session),
         book_completion_repository or SqlAlchemyBookCompletionRepository(session),
         ReadingCoverageCalculator(),
         ReadingProgressCalculator(),
-        unit_of_work or SqlAlchemyUnitOfWork(session, InMemoryEventBus()),
+        unit_of_work or SqlAlchemyUnitOfWork(session, event_bus),
         sleeper,
+        event_bus=event_bus,
     )
 
 
@@ -392,6 +396,105 @@ def test_concurrent_final_gaps_are_serialized_with_one_completion(database_path:
         }[observers[0]]
         assert completion.completed_at == expected_completed_at
         assert session.execute(text("PRAGMA foreign_key_check")).all() == []
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_book_completed_is_published_after_rows_are_durable(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+    event_bus = InMemoryEventBus()
+    observations: list[tuple[BookCompleted, bool, bool]] = []
+
+    def observe(event: BookCompleted) -> None:
+        with session_factory() as verification_session:
+            observations.append(
+                (
+                    event,
+                    verification_session.scalar(select(ReadingSessionModel.id)) is not None,
+                    verification_session.get(
+                        BookCompletionModel, event.completion_id.to_persistence()
+                    )
+                    is not None,
+                )
+            )
+
+    event_bus.subscribe(BookCompleted, observe)
+    try:
+        _handler(session, event_bus=event_bus)(
+            _command(UserId.from_value(owner), BookId.from_value(book), 100, 100)
+        )
+        assert len(observations) == 1
+        event, session_durable, completion_durable = observations[0]
+        assert session_durable is True
+        assert completion_durable is True
+        completion = session.get(BookCompletionModel, event.completion_id.to_persistence())
+        assert completion is not None
+        assert event.book_id.to_persistence() == completion.book_id
+        assert event.completed_at == completion.completed_at.replace(tzinfo=timezone.utc)
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_subscriber_failure_does_not_undo_committed_rows_or_retry(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+    event_bus = InMemoryEventBus()
+    attempts: list[BookCompleted] = []
+
+    def fail(event: BookCompleted) -> None:
+        attempts.append(event)
+        raise RuntimeError("subscriber failure")
+
+    event_bus.subscribe(BookCompleted, fail)
+    unit_of_work = _CountingUnitOfWork(session, event_bus)
+    try:
+        result = _handler(session, unit_of_work=unit_of_work, event_bus=event_bus)(
+            _command(UserId.from_value(owner), BookId.from_value(book), 100, 100)
+        )
+        assert result.id
+        assert len(attempts) == 1
+        assert unit_of_work.acquisition_count == 1
+        with session_factory() as verification_session:
+            assert verification_session.get(ReadingSessionModel, result.id) is not None
+            assert verification_session.scalar(
+                select(BookCompletionModel.id).where(BookCompletionModel.book_id == book)
+            )
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_existing_completion_is_not_published(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+    completion_repository = SqlAlchemyBookCompletionRepository(session)
+    completion_repository.save(
+        BookCompletion.create(BookId.from_value(book), datetime(2026, 1, 1, tzinfo=timezone.utc))
+    )
+    session.commit()
+    event_bus = InMemoryEventBus()
+    published: list[BookCompleted] = []
+    event_bus.subscribe(BookCompleted, published.append)
+    try:
+        _handler(session, event_bus=event_bus)(
+            _command(UserId.from_value(owner), BookId.from_value(book), 1, 1)
+        )
+        assert published == []
     finally:
         session.close()
         engine.dispose()
