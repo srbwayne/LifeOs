@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE5-IMPLEMENTATION-PREFLIGHT |
+| ID | READ-005-S09-SLICE7-IMPLEMENTATION-PREFLIGHT |
 | Iniciativa | READ-005 — Livros Concluídos |
 | Status | IMPLEMENTATION PRE-FLIGHT PENDING / EXECUTABLE |
-| Tipo | Slice 5 Dedicated Read Model and API Pre-Flight |
+| Tipo | Slice 7 Best-Effort Event Seam Pre-Flight |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,21 +32,27 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 5 — DEDICATED READ MODEL AND API — IMPLEMENTATION PRE-FLIGHT |
+| Current Executable Unit | SLICE 7 — BEST-EFFORT EVENT SEAM — IMPLEMENTATION PRE-FLIGHT |
 | Slice 1 Status | INTEGRATED / FINALIZED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
 | Slice 3 Status | INTEGRATED / FINALIZED |
 | Slice 4 Status | INTEGRATED / FINALIZED / MAIN CI PYTHON 3.11 3/3 SUCCESS / RUNTIME ACTIVATION BLOCKED PENDING COORDINATED CUTOVER |
-| Slice 5 Status | GATED / PRE-FLIGHT AUTHORIZED |
+| Slice 5 Status | INTEGRATED / FINALIZED / MAIN CI PYTHON 3.11 3/3 SUCCESS |
+| Slice 5 PR | #53 — MERGED |
+| Slice 5 Reviewed Source Head | `1e1e7697284a281e460562a9ed13a111ad36ddbc` |
+| Slice 5 Integrated Main | `38b8cff8436474e07a2761b3adee9938341ea3a4` |
+| Slice 5 Main CI | `33826496903` — 3/3 SUCCESS |
+| Slice 5 Validation | CPython 3.11.16 / 502 tests / 502 warning-gate PASS / 98.18% coverage |
 | Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
-| Slice 7 Status | GATED |
+| Slice 7 Status | GATED / IMPLEMENTATION PRE-FLIGHT AUTHORIZED |
 | Slice 8 Status | GATED |
 | Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
 | Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
 | Migration 0008 Real Execution | NO |
 | Coordinated Cutover | NO |
 | Slice 4 Runtime Activation | NO |
+| Slice 5 Deployment | NO |
 | Slice 4 PR | #46 — MERGED |
 | Slice 4 Reviewed Source Head | `3f23cdb4f991a0c8381801378b2b0f70267f7d97` |
 | Slice 4 Integrated Main | `8201cb9d6e3f79241808c01fe913b232c730188f` |
@@ -66,19 +72,24 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
 `Alembic migration (Python 3.11)`.
 
-**AUTHORIZED NOW:** SLICE 5 IMPLEMENTATION PRE-FLIGHT (READ-ONLY).
+**AUTHORIZED NOW:** SLICE 7 IMPLEMENTATION PRE-FLIGHT (READ-ONLY).
 
 **NOT YET AUTHORIZED:**
 
-- implementar Slice 5 ou criar código/testes Slice 5;
-- publicar PR Slice 5;
-- implementar Slice 7 ou Slice 8;
+- implementar Slice 7 ou criar código/testes Slice 7;
+- publicar branch/PR Slice 7;
+- executar Slice 8;
 - aplicar Migration 0008 a dados reais;
 - executar o cutover coordenado;
 - ativar o runtime Slice 4.
+- deploy Slice 5 runtime.
 
-Slice 4 está integrada e finalizada; o pre-flight deverá congelar o escopo antes
-de qualquer mutação de implementação da Slice 5.
+Slice 5 está integrada e finalizada. O próximo pre-flight é exclusivamente
+read-only e não congela ainda um allowlist de implementação para a Slice 7.
+
+BookCompletion persistido permanece a fonte durável de verdade. A ocorrência
+BookCompleted permanece um seam best-effort in-process. Outbox, broker, Kafka,
+RabbitMQ, entrega durável, GAME e Noema permanecem fora do escopo.
 
 **CURRENT-STATE CONTRADICTIONS:** 0
 
