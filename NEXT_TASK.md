@@ -8,9 +8,9 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE7-IMPLEMENTATION-PREFLIGHT |
+| ID | TASK-015G-DURABLE-PROGRESSION-GOVERNANCE |
 | Iniciativa | READ-005 — Livros Concluídos |
-| Status | IMPLEMENTATION PRE-FLIGHT PENDING / EXECUTABLE |
+| Status | GOVERNANCE REGISTRATION / EXECUTABLE |
 | Tipo | Slice 7 Best-Effort Event Seam Pre-Flight |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
@@ -32,7 +32,7 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | AUTHORIZED |
 | Sprint 09 | AUTHORIZED |
-| Current Executable Unit | SLICE 7 — BEST-EFFORT EVENT SEAM — IMPLEMENTATION PRE-FLIGHT |
+| Current Executable Unit | TASK-015G — DURABLE PROGRESSION DELIVERY GOVERNANCE |
 | Slice 1 Status | INTEGRATED / FINALIZED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
@@ -45,7 +45,7 @@
 | Slice 5 Main CI | `33826496903` — 3/3 SUCCESS |
 | Slice 5 Validation | CPython 3.11.16 / 502 tests / 502 warning-gate PASS / 98.18% coverage |
 | Slice 6 Status | MIGRATION 0008 + BACKFILL IMPLEMENTATION INTEGRATED / REAL-DATA APPLICATION NOT EXECUTED / COORDINATED CUTOVER NOT EXECUTED |
-| Slice 7 Status | GATED / IMPLEMENTATION PRE-FLIGHT AUTHORIZED |
+| Slice 7 Status | SUSPENDED / PRESERVED / NOT CANCELLED |
 | Slice 8 Status | GATED |
 | Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
 | Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
@@ -72,7 +72,51 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
 `Alembic migration (Python 3.11)`.
 
-**AUTHORIZED NOW:** SLICE 7 IMPLEMENTATION PRE-FLIGHT (READ-ONLY).
+**AUTHORIZED NOW:** TASK-015G — register the durable LifeOS -> Logos progression
+delivery Feature, RF and traceability records.
+
+**NEXT AFTER TASK-015G:** TASK-015I — implement the read-owned transactional
+delivery intent, Alembic 0009 if required, immediate post-commit delivery,
+recoverable retry path, ordering and tests, within the scope authorized below.
+
+### Temporary human priority override
+
+By explicit human decision, the current executable unit
+`SLICE 7 — BEST-EFFORT EVENT SEAM — IMPLEMENTATION PRE-FLIGHT` is temporarily
+**SUSPENDED**, not cancelled, abandoned or superseded. The reason is the
+validated LifeOS -> Logos delivery-loss gap: a committed ReadingSession can
+survive Logos unavailability while its progression delivery is lost.
+
+The suspension preserves Slice 7's prior authorization, decisions and
+resumption context. Slice 7 must resume after the durable progression delivery
+milestone is frozen.
+
+The temporary sequence is:
+
+```text
+TASK-015G governance registration
+    -> TASK-015I durable ReadingSession -> Logos delivery
+    -> controlled recovery validation and milestone freeze
+    -> resume Slice 7
+```
+
+TASK-015I is not implementation-authorized by this entry until TASK-015G has
+successfully registered the Feature, RF and traceability.
+
+The authorized durable-delivery scope is limited to the proven ReadingSession
+-> Logos V3 use case: transactional delivery intent, Alembic 0009 if required,
+immediate post-commit attempt, recoverable retry/replay, frozen configuration
+revision, per-subject ordering, tests and documentation. It does not authorize
+Logos or Noema changes, service-to-service authentication redesign, namespace
+or multi-tenant identity redesign, generic messaging infrastructure, Kafka,
+RabbitMQ or distributed exactly-once semantics.
+
+**SUSPENDED CONTEXT PRESERVED:** Slice 7 remains gated for later resumption;
+its former pre-flight text and implementation restrictions remain below and
+must not be treated as completed.
+
+**AUTHORIZED PREVIOUSLY, NOW SUSPENDED:** SLICE 7 IMPLEMENTATION PRE-FLIGHT
+(READ-ONLY).
 
 **NOT YET AUTHORIZED:**
 
@@ -84,12 +128,14 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 - ativar o runtime Slice 4.
 - deploy Slice 5 runtime.
 
-Slice 5 está integrada e finalizada. O próximo pre-flight é exclusivamente
-read-only e não congela ainda um allowlist de implementação para a Slice 7.
+Slice 5 está integrada e finalizada. O pre-flight da Slice 7 permanece
+read-only quando retomado e não autoriza implementação além do seu escopo aprovado.
 
 BookCompletion persistido permanece a fonte durável de verdade. A ocorrência
-BookCompleted permanece um seam best-effort in-process. Outbox, broker, Kafka,
-RabbitMQ, entrega durável, GAME e Noema permanecem fora do escopo.
+BookCompleted permanece um seam best-effort in-process. Generic outbox/broker
+infrastructure remains outside the temporary authorization; the specific
+ReadingSession -> Logos delivery intent is authorized only through TASK-015G
+and the subsequent TASK-015I gate. GAME and Noema remain outside the scope.
 
 **CURRENT-STATE CONTRADICTIONS:** 0
 
@@ -451,7 +497,9 @@ integration.
 
 - READ-005: SLICE 1 INTEGRATED / PRE-SLICE-2 REMEDIATION FINALIZED / SLICE 2 FINALIZED / SLICE 3 FINALIZED / SLICE 4 IMPLEMENTED AND PUBLISHED IN DRAFT PR #46 / SLICE 6 CODE INTEGRATED.
 - RF-READ-005: Slice 4 merge is blocked pending the Python 3.11 platform transition; runtime activation remains blocked pending coordinated cutover.
-- US-READ-005-001: only the Python 3.11 Platform Transition Implementation is executable.
+- US-READ-005-001: Slice 7 remains suspended and its prior authorization is preserved.
+- TASK-015G: current governance registration is executable by explicit human override.
+- TASK-015I: implementation is not yet authorized; it follows only after TASK-015G traceability.
 - Python platform: current integrated platform and required checks remain 3.10; future >=3.11 transition is human-approved and AUTHORIZED / NOT STARTED.
 - Migration 0008: CODE INTEGRATED; real local database NOT APPLIED.
 - Alembic: repository 0008 (head); real `lifeos.db` 0007.
@@ -478,10 +526,16 @@ Plan is approved and frozen at docs/10_AI_ENGINEERING/READ_005_TECHNICAL_PLAN.md
 
 ## Próximo Gate
 
-PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION
+TASK-015G — DURABLE PROGRESSION GOVERNANCE REGISTRATION
 
-ONLY THE PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION IS AUTHORIZED.
+Only TASK-015G is authorized now. TASK-015I becomes the next executable unit
+only after TASK-015G completes its Feature/RF/NEXT_TASK traceability gate.
 
-DO NOT MODIFY PR #46, APPLY MIGRATION 0008 TO REAL DATA, EXECUTE THE COORDINATED CUTOVER, OR EXPAND THE PYTHON 3.11 PLATFORM IMPLEMENTATION BEYOND THE FROZEN SIX-FILE ALLOWLIST.
+Do not modify PR #46, apply Migration 0008 to real data, execute the
+coordinated cutover, or expand any future implementation beyond its explicit
+task scope. Do not introduce generic durable messaging infrastructure.
+
+After the durable progression milestone is completed and frozen, resume Slice 7
+from the preserved context above.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
