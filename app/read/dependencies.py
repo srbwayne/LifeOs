@@ -8,6 +8,7 @@ from app.read.application.commands.create_reading_session import (
 from app.read.application.ports.book_completion_read_repository import (
     IBookCompletionReadRepository,
 )
+from app.read.application.ports.progression_gateway import ProgressionGateway
 from app.read.application.ports.reading_history_repository import (
     IReadingHistoryReadRepository,
 )
@@ -32,6 +33,7 @@ from app.read.domain.ports.reading_session_repository import IReadingSessionRepo
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_insights_calculator import ReadingInsightsCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
+from app.read.infrastructure.integrations.noop_progression_gateway import NoOpProgressionGateway
 from app.read.infrastructure.persistence.repositories.book_completion_read_repository import (
     SqlAlchemyBookCompletionReadRepository,
 )
@@ -99,6 +101,10 @@ def get_read_event_bus() -> IEventBus:
     return InMemoryEventBus()
 
 
+def get_progression_gateway() -> ProgressionGateway:
+    return NoOpProgressionGateway()
+
+
 def get_book_uow(
     db: Session = Depends(get_db),
     event_bus: IEventBus = Depends(get_read_event_bus),
@@ -125,6 +131,7 @@ def get_create_reading_session_handler(
     book_completion_repository: IBookCompletionRepository = Depends(get_book_completion_repository),
     unit_of_work: SqlAlchemyUnitOfWork = Depends(get_book_uow),
     event_bus: IEventBus = Depends(get_read_event_bus),
+    progression_gateway: ProgressionGateway = Depends(get_progression_gateway),
 ) -> CreateReadingSessionCommandHandler:
     return CreateReadingSessionCommandHandler(
         book_repository,
@@ -134,6 +141,7 @@ def get_create_reading_session_handler(
         ReadingProgressCalculator(),
         unit_of_work,
         event_bus=event_bus,
+        progression_gateway=progression_gateway,
     )
 
 

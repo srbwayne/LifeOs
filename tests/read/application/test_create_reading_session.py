@@ -11,6 +11,11 @@ from app.read.application.commands.create_reading_session import (
 )
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_gateway import (
+    ProgressionGateway,
+    ProgressionGatewayError,
+    ReadingProgressionOccurrence,
+)
 from app.read.domain.aggregates.book import Book
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
@@ -24,6 +29,7 @@ from app.read.domain.events.book_completed import BookCompleted
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
+from app.read.infrastructure.integrations.noop_progression_gateway import NoOpProgressionGateway
 from app.shared.domain.aggregate import AggregateRoot
 from app.shared.domain.domain_event import DomainEvent
 from app.shared.domain.identifiers.user_id import UserId
@@ -102,6 +108,17 @@ class FakeEventBus:
         raise AssertionError("Application tests do not register subscribers.")
 
 
+class FakeProgressionGateway:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.occurrences: list[ReadingProgressionOccurrence] = []
+        self.error = error
+
+    def record(self, occurrence: ReadingProgressionOccurrence) -> None:
+        self.occurrences.append(occurrence)
+        if self.error is not None:
+            raise self.error
+
+
 class FakeUnitOfWork:
     def __init__(self) -> None:
         self.enter_count = 0
@@ -171,6 +188,7 @@ def build_handler(
     sessions: tuple[ReadingSession, ...] = (),
     completion: BookCompletion | None = None,
     sleeper=lambda _: None,
+    progression_gateway: ProgressionGateway | None = None,
 ) -> tuple[
     CreateReadingSessionCommandHandler,
     FakeBookRepository,
@@ -191,6 +209,7 @@ def build_handler(
         unit_of_work,
         sleeper,
         event_bus=unit_of_work.event_bus,
+        progression_gateway=progression_gateway,
     )
     return handler, book_repository, session_repository, completion_repository, unit_of_work
 
@@ -225,6 +244,107 @@ def test_handler_creates_saves_commits_once_and_returns_dto() -> None:
     assert unit_of_work.exit_count == 1
     assert unit_of_work.commit_count == 1
     assert unit_of_work.rollback_count == 0
+
+
+def test_handler_records_committed_reading_session_occurrence() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    gateway = FakeProgressionGateway()
+    handler, _, sessions, _, unit_of_work = build_handler((book,), progression_gateway=gateway)
+
+    result = handler(valid_command(owner_id, book.id))
+
+    assert len(gateway.occurrences) == 1
+    occurrence = gateway.occurrences[0]
+    assert occurrence.owner_id == owner_id
+    assert occurrence.reading_session_id == sessions.saved[0].id
+    assert occurrence.pages_read == sessions.saved[0].pages_read
+    assert result.id == occurrence.reading_session_id.to_persistence()
+    assert unit_of_work.timeline[-1] == "commit"
+
+
+def test_incomplete_reading_records_progression_occurrence() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    gateway = FakeProgressionGateway()
+    handler, _, _, completions, _ = build_handler((book,), progression_gateway=gateway)
+
+    handler(valid_command(owner_id, book.id, start_page=1, end_page=2))
+
+    assert len(gateway.occurrences) == 1
+    assert gateway.occurrences[0].pages_read == 2
+    assert completions.saved == []
+
+
+def test_progression_is_recorded_for_first_and_later_sessions_after_completion() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 100)
+    existing = ReadingSession.create(owner_id, book.id, 1, 79, UTC_START, UTC_END, book.total_pages)
+    gateway = FakeProgressionGateway()
+    handler, _, sessions, completions, _ = build_handler(
+        (book,), (existing,), progression_gateway=gateway
+    )
+
+    handler(valid_command(owner_id, book.id, start_page=80, end_page=100))
+    handler(valid_command(owner_id, book.id, start_page=1, end_page=1))
+
+    assert len(gateway.occurrences) == 2
+    assert len(completions.saved) == 1
+    assert gateway.occurrences[0].reading_session_id == sessions.saved[0].id
+    assert gateway.occurrences[1].reading_session_id == sessions.saved[1].id
+
+
+def test_progression_occurrence_excludes_notes() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    gateway = FakeProgressionGateway()
+    handler, _, _, _, _ = build_handler((book,), progression_gateway=gateway)
+
+    handler(valid_command(owner_id, book.id, notes="private note"))
+
+    assert not hasattr(gateway.occurrences[0], "notes")
+
+
+def test_progression_gateway_error_preserves_successful_result_without_retry() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    gateway = FakeProgressionGateway(ProgressionGatewayError("unavailable"))
+    slept: list[float] = []
+    handler, _, sessions, _, unit_of_work = build_handler(
+        (book,), sleeper=slept.append, progression_gateway=gateway
+    )
+
+    result = handler(valid_command(owner_id, book.id))
+
+    assert result.id == sessions.saved[0].id.to_persistence()
+    assert unit_of_work.acquisition_count == 1
+    assert slept == []
+
+
+def test_noop_progression_gateway_preserves_normal_command_behavior() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    handler, _, sessions, _, unit_of_work = build_handler(
+        (book,), progression_gateway=NoOpProgressionGateway()
+    )
+
+    result = handler(valid_command(owner_id, book.id))
+
+    assert result.id == sessions.saved[0].id.to_persistence()
+    assert unit_of_work.commit_count == 1
+
+
+def test_unexpected_progression_error_is_not_swallowed() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    gateway = FakeProgressionGateway(RuntimeError("programming failure"))
+    handler, _, sessions, _, unit_of_work = build_handler((book,), progression_gateway=gateway)
+
+    with pytest.raises(RuntimeError, match="programming failure"):
+        handler(valid_command(owner_id, book.id))
+
+    assert len(sessions.saved) == 1
+    assert unit_of_work.commit_count == 1
 
 
 def test_dto_does_not_expose_owner_and_is_immutable() -> None:

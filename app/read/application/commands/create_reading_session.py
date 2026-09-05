@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 import time
 from collections.abc import Callable
@@ -9,6 +10,11 @@ from sqlalchemy.exc import OperationalError
 
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_gateway import (
+    ProgressionGateway,
+    ProgressionGatewayError,
+    ReadingProgressionOccurrence,
+)
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
 from app.read.domain.events.book_completed import BookCompleted
@@ -22,6 +28,7 @@ from app.shared.application.event_bus import IEventBus
 from app.shared.domain.identifiers.user_id import UserId
 
 _SQLITE_BUSY_CODE: int = sqlite3.SQLITE_BUSY
+logger = logging.getLogger(__name__)
 
 
 class ReadingSessionWriteUnitOfWork(Protocol):
@@ -65,6 +72,7 @@ class CreateReadingSessionCommandHandler:
         unit_of_work: ReadingSessionWriteUnitOfWork,
         sleeper: Callable[[float], None] = time.sleep,
         event_bus: IEventBus | None = None,
+        progression_gateway: ProgressionGateway | None = None,
     ) -> None:
         self._book_repository = book_repository
         self._reading_session_repository = reading_session_repository
@@ -74,8 +82,11 @@ class CreateReadingSessionCommandHandler:
         self._unit_of_work = unit_of_work
         self._sleeper = sleeper
         self._event_bus = event_bus
+        self._progression_gateway = progression_gateway
 
     def __call__(self, command: CreateReadingSessionCommand) -> ReadingSessionDTO:
+        committed_session: ReadingSession | None = None
+        committed_completion: BookCompletion | None = None
         for attempt in range(2):
             acquired = False
             try:
@@ -117,20 +128,45 @@ class CreateReadingSessionCommandHandler:
                         self._book_completion_repository.save(new_completion)
                     uow.flush()
                     uow.commit()
-                    if new_completion is not None and self._event_bus is not None:
-                        self._event_bus.publish(
-                            [
-                                BookCompleted(
-                                    completion_id=new_completion.id,
-                                    book_id=new_completion.book_id,
-                                    completed_at=new_completion.completed_at,
-                                )
-                            ]
-                        )
-                    return ReadingSessionDTO.from_session(session)
+                    committed_session = session
+                    committed_completion = new_completion
+                    break
             except OperationalError as error:
                 if acquired or not _is_retryable_acquisition_busy(error) or attempt == 1:
                     raise
                 self._sleeper(0.050)
 
-        raise AssertionError("unreachable")
+        if committed_session is None:
+            raise AssertionError("unreachable")
+
+        if committed_completion is not None and self._event_bus is not None:
+            self._event_bus.publish(
+                [
+                    BookCompleted(
+                        completion_id=committed_completion.id,
+                        book_id=committed_completion.book_id,
+                        completed_at=committed_completion.completed_at,
+                    )
+                ]
+            )
+
+        if self._progression_gateway is not None:
+            try:
+                self._progression_gateway.record(
+                    ReadingProgressionOccurrence(
+                        owner_id=committed_session.owner_id,
+                        reading_session_id=committed_session.id,
+                        pages_read=committed_session.pages_read,
+                    )
+                )
+            except ProgressionGatewayError:
+                logger.warning(
+                    "Progression occurrence delivery failed",
+                    exc_info=True,
+                    extra={
+                        "reading_session_id": committed_session.id.to_persistence(),
+                        "owner_id": committed_session.owner_id.to_persistence(),
+                    },
+                )
+
+        return ReadingSessionDTO.from_session(committed_session)

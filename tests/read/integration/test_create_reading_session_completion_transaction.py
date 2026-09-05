@@ -17,6 +17,10 @@ from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommand,
     CreateReadingSessionCommandHandler,
 )
+from app.read.application.ports.progression_gateway import (
+    ProgressionGatewayError,
+    ReadingProgressionOccurrence,
+)
 from app.read.domain.aggregates.book_completion import BookCompletion
 from app.read.domain.aggregates.reading_session import ReadingSession
 from app.read.domain.events.book_completed import BookCompleted
@@ -138,6 +142,20 @@ class _TrackingBookCompletionRepository(SqlAlchemyBookCompletionRepository):
         super().save(completion)
 
 
+class _RecordingProgressionGateway:
+    def __init__(self, error: Exception | None = None, timeline: list[str] | None = None) -> None:
+        self.occurrences: list[ReadingProgressionOccurrence] = []
+        self.error = error
+        self.timeline = timeline
+
+    def record(self, occurrence: ReadingProgressionOccurrence) -> None:
+        if self.timeline is not None:
+            self.timeline.append("progression")
+        self.occurrences.append(occurrence)
+        if self.error is not None:
+            raise self.error
+
+
 def _handler(
     session: Session,
     sleeper=lambda _: None,
@@ -145,6 +163,7 @@ def _handler(
     book_completion_repository: SqlAlchemyBookCompletionRepository | None = None,
     unit_of_work: SqlAlchemyUnitOfWork | None = None,
     event_bus: InMemoryEventBus | None = None,
+    progression_gateway: _RecordingProgressionGateway | None = None,
 ) -> CreateReadingSessionCommandHandler:
     event_bus = event_bus or InMemoryEventBus()
     return CreateReadingSessionCommandHandler(
@@ -156,6 +175,7 @@ def _handler(
         unit_of_work or SqlAlchemyUnitOfWork(session, event_bus),
         sleeper,
         event_bus=event_bus,
+        progression_gateway=progression_gateway,
     )
 
 
@@ -439,6 +459,92 @@ def test_book_completed_is_published_after_rows_are_durable(database_path: Path)
         assert completion is not None
         assert event.book_id.to_persistence() == completion.book_id
         assert event.completed_at == completion.completed_at.replace(tzinfo=timezone.utc)
+    finally:
+        session.close()
+        engine.dispose()
+
+
+def test_progression_is_called_after_commit_and_rows_are_durable(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book, end_page=0)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+    timeline: list[str] = []
+    gateway = _RecordingProgressionGateway(timeline=timeline)
+    unit_of_work = _CountingUnitOfWork(session)
+
+    result = _handler(
+        session,
+        unit_of_work=unit_of_work,
+        progression_gateway=gateway,
+    )(_command(UserId.from_value(owner), BookId.from_value(book), 1, 1))
+
+    assert timeline == ["progression"]
+    assert len(gateway.occurrences) == 1
+    assert gateway.occurrences[0].reading_session_id.to_persistence() == result.id
+    assert gateway.occurrences[0].pages_read == 1
+    with session_factory() as verification_session:
+        assert verification_session.get(ReadingSessionModel, result.id) is not None
+    session.close()
+    engine.dispose()
+
+
+def test_progression_failure_preserves_committed_rows_and_completion(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book, end_page=99)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+    gateway = _RecordingProgressionGateway(ProgressionGatewayError("unavailable"))
+    unit_of_work = _CountingUnitOfWork(session)
+    sleeps: list[float] = []
+
+    result = _handler(
+        session,
+        sleeper=sleeps.append,
+        unit_of_work=unit_of_work,
+        progression_gateway=gateway,
+    )(_command(UserId.from_value(owner), BookId.from_value(book), 100, 100))
+
+    assert result.id
+    assert unit_of_work.acquisition_count == 1
+    assert sleeps == []
+    with session_factory() as verification_session:
+        assert verification_session.get(ReadingSessionModel, result.id) is not None
+        assert (
+            verification_session.scalar(
+                select(BookCompletionModel.id).where(BookCompletionModel.book_id == book)
+            )
+            is not None
+        )
+    session.close()
+    engine.dispose()
+
+
+def test_book_completed_subscriber_failure_does_not_suppress_progression(
+    database_path: Path,
+) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session = sessionmaker(bind=engine)()
+    event_bus = InMemoryEventBus()
+    gateway = _RecordingProgressionGateway()
+
+    def fail(event: DomainEvent) -> None:
+        assert isinstance(event, BookCompleted)
+        raise RuntimeError("subscriber failure")
+
+    event_bus.subscribe(BookCompleted, fail)
+    try:
+        _handler(session, event_bus=event_bus, progression_gateway=gateway)(
+            _command(UserId.from_value(owner), BookId.from_value(book), 100, 100)
+        )
+        assert len(gateway.occurrences) == 1
     finally:
         session.close()
         engine.dispose()
