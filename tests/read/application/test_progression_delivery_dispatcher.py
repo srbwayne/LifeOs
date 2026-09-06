@@ -25,6 +25,7 @@ class _Repository:
         self.intent = intent
         self.commits = 0
         self.blocked = False
+        self.unresolved: tuple[ProgressionDeliveryIntent, ...] = (intent,)
 
     def get_by_id(self, delivery_id: str):
         return self.intent if delivery_id == self.intent.id else None
@@ -33,7 +34,7 @@ class _Repository:
         return self.intent if reading_session_id == self.intent.reading_session_id else None
 
     def list_unresolved(self):
-        return (self.intent,)
+        return self.unresolved
 
     def has_older_blocking(self, delivery_id: str):
         return self.blocked
@@ -73,14 +74,21 @@ class _Transaction:
 
 
 class _Gateway:
-    def __init__(self, error: ProgressionGatewayError | None = None) -> None:
+    def __init__(
+        self,
+        error: ProgressionGatewayError | None = None,
+        unexpected_error: Exception | None = None,
+    ) -> None:
         self.error = error
+        self.unexpected_error = unexpected_error
         self.occurrences: list[ReadingProgressionOccurrence] = []
 
     def record(self, occurrence: ReadingProgressionOccurrence) -> None:
         self.occurrences.append(occurrence)
         if self.error:
             raise self.error
+        if self.unexpected_error:
+            raise self.unexpected_error
 
 
 def _intent() -> ProgressionDeliveryIntent:
@@ -133,4 +141,38 @@ def test_blocked_delivery_does_not_attempt_or_increment() -> None:
     assert gateway.occurrences == []
     assert repository.intent.status == "PENDING"
     assert repository.intent.attempt_count == 0
+    assert repository.commits == 0
+
+
+def test_dispatch_unresolved_empty_returns_normally() -> None:
+    repository = _Repository(_intent())
+    repository.unresolved = ()
+    gateway = _Gateway()
+
+    _dispatcher(repository, gateway).dispatch_unresolved()
+
+    assert gateway.occurrences == []
+    assert repository.commits == 0
+
+
+def test_dispatch_unresolved_propagates_unexpected_errors() -> None:
+    repository = _Repository(_intent())
+    gateway = _Gateway(unexpected_error=RuntimeError("bug"))
+
+    try:
+        _dispatcher(repository, gateway).dispatch_unresolved()
+    except RuntimeError as error:
+        assert str(error) == "bug"
+    else:
+        raise AssertionError("unexpected errors must propagate")
+
+
+def test_dispatch_for_missing_reading_session_does_nothing() -> None:
+    repository = _Repository(_intent())
+    gateway = _Gateway()
+
+    _dispatcher(repository, gateway).dispatch_for_reading_session(ReadingSessionId.new())
+    _dispatcher(repository, gateway).dispatch("missing-delivery")
+
+    assert gateway.occurrences == []
     assert repository.commits == 0
