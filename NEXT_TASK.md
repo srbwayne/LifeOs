@@ -8,10 +8,10 @@
 
 | Campo | Valor |
 |---|---|
-| ID | READ-005-S09-SLICE8-FULL-REGRESSION-GOVERNANCE-CLOSURE |
-| Iniciativa | READ-005 — Livros Concluídos |
-| Status | FULL REGRESSION + GOVERNANCE CLOSURE COMPLETE |
-| Tipo | Slice 8 Full Regression and Governance Closure |
+| ID | LIFEOS-COORDINATED-DATABASE-CUTOVER-0007-0009-RUNTIME-ACTIVATION-REVIEW |
+| Iniciativa | LifeOS progression integration governance |
+| Status | ARCHITECTURE / OPERATIONAL REVIEW ONLY |
+| Tipo | Read-only coordinated cutover and runtime activation review |
 | Capability | READ |
 | Feature | READ-005 — Livros Concluídos |
 | Requisito Funcional | RF-READ-005 — Conclusão de Livro |
@@ -32,7 +32,7 @@
 | Human Implementation Authorization | APPROVED |
 | Implementation Program | READ-005 SOURCE IMPLEMENTATION COMPLETE |
 | Sprint 09 | READ-005 SOURCE CLOSURE COMPLETE |
-| Current Executable Unit | NONE — READ-005 SOURCE IMPLEMENTATION CLOSED |
+| Current Executable Unit | READ-ONLY ARCHITECTURE / OPERATIONAL REVIEW |
 | Slice 1 Status | INTEGRATED / FINALIZED |
 | Pre-Slice-2 Remediation Status | FINALIZED |
 | Slice 2 Status | INTEGRATED / FINALIZED |
@@ -53,13 +53,19 @@
 | Slice 7 Integrated Remediation / Main | `7f1b5745194b72801d02a9cbfa63bdc60fc3e459` |
 | Slice 7 Main CI | `33937874975` — 3/3 SUCCESS |
 | Slice 7 Validation | CPython 3.11.16 / 513 tests / 513 warning-gate PASS / 98.28% coverage |
-| Migration 0008 | CODE INTEGRATED / REAL LOCAL DATABASE NOT APPLIED |
-| Alembic | Repository: 0008 (head); real `lifeos.db`: 0007 |
+| Migration 0008 | CODE INTEGRATED / REAL DATABASE NOT APPLIED |
+| Migration 0009 | CODE INTEGRATED / REAL DATABASE NOT APPLIED |
+| Alembic | Repository: 0009 (head); real `lifeos.db`: 0007 |
 | Migration 0008 Real Execution | NO |
+| Migration 0009 Real Execution | NO |
 | Coordinated Cutover | NO |
 | Slice 4 Runtime Activation | NO |
 | Slice 5 Deployment | NO |
 | Slice 7 Deployment | NO |
+| TASK-015 Durable Delivery / Recovery | INTEGRATED / AT-LEAST-ONCE / EXPLICIT RECOVERY ENTRY POINT |
+| Progression Downstream | `NoOpProgressionGateway` remains the default |
+| TASK-015 Main | `1e3b1c72e19fa1e0b34a668ad636d79f75bd91e3` |
+| TASK-015 Main CI | `34034023199` — 3/3 SUCCESS |
 | READ-005 Source Implementation | COMPLETE |
 | READ-005 Production Deployment | NOT EXECUTED |
 | Slice 4 PR | #46 — MERGED |
@@ -81,24 +87,37 @@ Python >=3.11 está integrado em `main` pelo PR #49, e a proteção da branch ex
 `Static quality (Python 3.11)`, `Tests and coverage (Python 3.11)` e
 `Alembic migration (Python 3.11)`.
 
-**AUTHORIZED NOW:** READ-005 SOURCE CLOSURE ONLY.
+**AUTHORIZED NOW:** READ-ONLY ARCHITECTURE / OPERATIONAL REVIEW OF THE COORDINATED CUTOVER.
 
 **NOT YET AUTHORIZED:**
 
 - aplicar Migration 0008 a dados reais;
+- aplicar Migration 0009 a dados reais;
 - executar o cutover coordenado;
-- ativar o runtime Slice 4;
-- deploy Slice 5 runtime.
+- ativar o runtime READ/PROGRESSION;
+- deploy do runtime atual;
+- ativar Logos, scheduler, worker ou downstream real;
+- implementar qualquer nova funcionalidade.
 
-**NEXT DECISION GATE:** READ-005 DEPLOYMENT / COORDINATED CUTOVER DECISION.
+**NEXT DECISION GATE:** `LIFEOS COORDINATED DATABASE CUTOVER 0007 → 0009 + READ/PROGRESSION RUNTIME ACTIVATION — ARCHITECTURE / OPERATIONAL REVIEW`.
 
-Esse gate não está autorizado e requer nova decisão humana. A implementação de
-fonte READ-005 está completa; a Migration 0008 real, o cutover coordenado, a
-ativação de runtime e o deployment permanecem não executados.
+Esse gate é somente para análise e planejamento operacional e requer nova decisão
+humana antes de qualquer execução. A sequência obrigatória a revisar é
+`0007 → 0008 → 0009 → compatible runtime activation`; o backfill histórico da
+0008 deve ocorrer com exclusão de escrita em ReadingSession, conforme o requisito
+de cutover coordenado do READ-005.
+
+O source de entrega durável TASK-015 está integrado no repositório, mas a
+Migration 0008 e a Migration 0009 reais, o cutover, o deployment e a ativação de
+runtime permanecem não executados. `dispatch_unresolved()` existe como entrada
+explícita de recuperação, mas não é invocado automaticamente. A semântica de
+entrega é at-least-once; não há garantia exactly-once.
 
 BookCompletion persistido permanece a fonte durável de verdade. A ocorrência
-BookCompleted permanece um seam best-effort in-process. Outbox, broker, Kafka,
-RabbitMQ, entrega durável, GAME e Noema permanecem fora do escopo.
+BookCompleted permanece um seam best-effort in-process. O `NoOpProgressionGateway`
+permanece o downstream padrão. Logos continua separado; nenhum contrato HTTP,
+auth ou configuração externa foi integrado. Scheduler, worker, Outbox, broker,
+Kafka, RabbitMQ, GAME e Noema permanecem fora do escopo desta revisão.
 
 **CURRENT-STATE CONTRADICTIONS:** 0
 

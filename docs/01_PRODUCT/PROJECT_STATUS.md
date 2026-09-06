@@ -1,3 +1,37 @@
+## LifeOS Progression Integration / Post-Merge Governance — 2026-09-06
+
+- Canonical `main` is `1e3b1c72e19fa1e0b34a668ad636d79f75bd91e3`.
+- PR #57 integrated the LifeOS-owned progression seam while preserving
+  `NoOpProgressionGateway` as the default downstream.
+- PR #58 integrated durable progression delivery and recovery through the
+  canonical chain `f15037339530a5351e477ee751b0622015332ac2` →
+  `6cc2c5d62dc4dec88383259705f87668af75d68c` →
+  `1e3b1c72e19fa1e0b34a668ad636d79f75bd91e3`.
+- TASK-015 now includes atomic durable intents, `progression_delivery_records`,
+  retryable and terminal failure handling, same-owner ordering, independent
+  owner recovery, and the explicit `dispatch_unresolved()` entry point. Delivery
+  remains at-least-once; recovery is not automated.
+- Repository Alembic head is `0009`; the relevant deployment dependency is
+  `0007 → 0008 → 0009`.
+- The real `lifeos.db` remains documented at `0007`. No real Migration 0008 or
+  0009, coordinated cutover, deployment, or runtime activation has occurred.
+- The current `READ`/progression runtime is not activated, and no real Logos
+  adapter or HTTP/auth/configuration contract is integrated. Scheduler and worker
+  recovery remain inactive.
+- Main CI run `34034023199` passed 3/3 under CPython 3.11.16: 542 tests,
+  warning gate 542, 98.24% coverage, 2,609 statements, 46 missed, Ruff,
+  format, Mypy, application import, and disposable Alembic 0009 validation all
+  passed.
+
+**Next Decision Gate:** `LIFEOS COORDINATED DATABASE CUTOVER 0007 → 0009 +
+READ/PROGRESSION RUNTIME ACTIVATION — ARCHITECTURE / OPERATIONAL REVIEW`.
+This gate is read-only planning and does not authorize migration, deployment,
+runtime activation, or Logos adapter work. The READ-005 0008 historical backfill
+must be planned under ReadingSession write exclusion before compatible runtime
+activation.
+
+---
+
 ## READ-005 Source Implementation Complete / Governance Closure — 2026-09-05
 
 - Slice 7 was integrated through PR #55 via Rebase and Merge. The reviewed source head was `ba07b3b362813629240f5e9164820a0092c3fec0`; the two integrated linear commits are `f2c5fc23b9abdaf254541521b7d5df23490f0d38` and `7f1b5745194b72801d02a9cbfa63bdc60fc3e459`.

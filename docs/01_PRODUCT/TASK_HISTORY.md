@@ -1,3 +1,43 @@
+## TASK-015 / INT-001 Integration Finalization — 2026-09-06
+
+1. PR #57, `feat(read): add progression integration seam`, integrated the
+   LifeOS-owned progression seam and preserved `NoOpProgressionGateway` as the
+   default downstream.
+2. PR #58, `feat(read): add durable progression delivery`, integrated durable
+   progression intent persistence and recovery after Rebase and Merge.
+3. The canonical chain is
+   `f15037339530a5351e477ee751b0622015332ac2` →
+   `6cc2c5d62dc4dec88383259705f87668af75d68c` →
+   `1e3b1c72e19fa1e0b34a668ad636d79f75bd91e3`.
+4. The rebased commits preserve the reviewed PR #58 candidate trees; no content
+   drift was found.
+5. Repository Alembic head is `0009`. Migration `0009` depends on `0008` and
+   creates `progression_delivery_records` with its constraints and indexes.
+6. The integrated recovery contract includes recoverable `PENDING + NULL` and
+   retryable `FAILED`, terminal `http_status_400`/`http_status_409`, same-owner
+   ordering, independent owner recovery, and explicit `dispatch_unresolved()`.
+7. Delivery is at-least-once. Recovery is not automatic, and no exactly-once
+   guarantee exists.
+8. Main CI `34034023199` passed 3/3 under CPython 3.11.16: 542 full tests,
+   542 warning-gate tests, 98.24% coverage, 2,609 statements, 46 missed,
+   Ruff, format, Mypy, application import, and disposable Alembic validation
+   ending at `0009 (head)`.
+9. The real `lifeos.db` remains documented at `0007`. No real Migration 0008 or
+   0009 and no coordinated database cutover were executed.
+10. The current READ/progression runtime was not deployed or activated. No
+    scheduler or worker recovery was activated, `dispatch_unresolved()` was not
+    automatically invoked, and no real Logos/downstream adapter or
+    HTTP/auth/configuration contract was integrated.
+11. Logos remains a separate workstream. This integration does not authorize
+    migration, deployment, runtime activation, scheduler/worker behavior, or
+    exactly-once delivery.
+
+**Next Gate:** `LIFEOS COORDINATED DATABASE CUTOVER 0007 → 0009 +
+READ/PROGRESSION RUNTIME ACTIVATION — ARCHITECTURE / OPERATIONAL REVIEW` —
+read-only planning and review only.
+
+---
+
 ## READ-005 Slice 8 Full Regression and Governance Closure — 2026-09-05
 
 1. Slice 7 implementation was integrated through PR #55 via Rebase and Merge.
