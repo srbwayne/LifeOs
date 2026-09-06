@@ -57,6 +57,15 @@ class ProgressionDeliveryDispatcher:
         if intent is not None:
             self.dispatch(intent.id)
 
+    def dispatch_unresolved(self) -> None:
+        with self._transaction_factory() as transaction:
+            delivery_ids = tuple(intent.id for intent in transaction.repository.list_unresolved())
+        for delivery_id in delivery_ids:
+            try:
+                self.dispatch(delivery_id)
+            except ProgressionGatewayError:
+                continue
+
     def dispatch(self, delivery_id: str) -> None:
         try:
             with self._transaction_factory() as transaction:
