@@ -17,6 +17,9 @@ from app.read.application.commands.create_reading_session import (
     CreateReadingSessionCommand,
     CreateReadingSessionCommandHandler,
 )
+from app.read.application.ports.progression_delivery_repository import (
+    ProgressionDeliveryRepository,
+)
 from app.read.application.ports.progression_gateway import (
     ProgressionGatewayError,
     ReadingProgressionOccurrence,
@@ -28,12 +31,18 @@ from app.read.domain.services.reading_coverage_calculator import ReadingCoverage
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
 from app.read.domain.value_objects.book_id import BookId
 from app.read.infrastructure.persistence.models.book_completion_model import BookCompletionModel
+from app.read.infrastructure.persistence.models.progression_delivery_model import (
+    ProgressionDeliveryModel,
+)
 from app.read.infrastructure.persistence.models.reading_session_model import ReadingSessionModel
 from app.read.infrastructure.persistence.repositories.book_completion_repository import (
     SqlAlchemyBookCompletionRepository,
 )
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
+)
+from app.read.infrastructure.persistence.repositories.progression_delivery_repository import (
+    SqlAlchemyProgressionDeliveryRepository,
 )
 from app.read.infrastructure.persistence.repositories.reading_session_repository import (
     SqlAlchemyReadingSessionRepository,
@@ -84,7 +93,7 @@ def _seed(path: Path, owner: str, book: str, *, total_pages: int = 100, end_page
 def database_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     path = tmp_path / "slice4.db"
     monkeypatch.setenv("LIFEOS_DATABASE_URL", f"sqlite:///{path.as_posix()}")
-    command.upgrade(_config(path), "0008")
+    command.upgrade(_config(path), "0009")
     return path
 
 
@@ -164,6 +173,7 @@ def _handler(
     unit_of_work: SqlAlchemyUnitOfWork | None = None,
     event_bus: InMemoryEventBus | None = None,
     progression_gateway: _RecordingProgressionGateway | None = None,
+    progression_delivery_repository: ProgressionDeliveryRepository | None = None,
 ) -> CreateReadingSessionCommandHandler:
     event_bus = event_bus or InMemoryEventBus()
     return CreateReadingSessionCommandHandler(
@@ -176,6 +186,7 @@ def _handler(
         sleeper,
         event_bus=event_bus,
         progression_gateway=progression_gateway,
+        progression_delivery_repository=progression_delivery_repository,
     )
 
 
@@ -420,6 +431,88 @@ def test_concurrent_final_gaps_are_serialized_with_one_completion(database_path:
     finally:
         session.close()
         engine.dispose()
+
+
+def test_reading_session_and_progression_intent_commit_together(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book, end_page=0)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+
+    result = _handler(
+        session,
+        progression_delivery_repository=SqlAlchemyProgressionDeliveryRepository(session),
+    )(_command(UserId.from_value(owner), BookId.from_value(book), 1, 1))
+
+    with session_factory() as verification_session:
+        intent = verification_session.scalar(
+            select(ProgressionDeliveryModel).where(
+                ProgressionDeliveryModel.reading_session_id == result.id
+            )
+        )
+        assert intent is not None
+        assert intent.owner_id == owner
+        assert intent.pages_read == 1
+        assert intent.status == "PENDING"
+        assert intent.attempt_count == 0
+        assert verification_session.get(ReadingSessionModel, result.id) is not None
+    session.close()
+    engine.dispose()
+
+
+def test_expected_gateway_failure_preserves_pending_intent_and_rows(
+    database_path: Path,
+) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book, end_page=99)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session_factory = sessionmaker(bind=engine)
+    session = session_factory()
+    gateway = _RecordingProgressionGateway(ProgressionGatewayError("offline"))
+
+    result = _handler(
+        session,
+        progression_gateway=gateway,
+        progression_delivery_repository=SqlAlchemyProgressionDeliveryRepository(session),
+    )(_command(UserId.from_value(owner), BookId.from_value(book), 100, 100))
+
+    with session_factory() as verification_session:
+        intent = verification_session.scalar(
+            select(ProgressionDeliveryModel).where(
+                ProgressionDeliveryModel.reading_session_id == result.id
+            )
+        )
+        assert verification_session.get(ReadingSessionModel, result.id) is not None
+        assert intent is not None
+        assert intent.status == "PENDING"
+        assert intent.attempt_count == 0
+        assert verification_session.scalar(select(BookCompletionModel.id)) is not None
+    session.close()
+    engine.dispose()
+
+
+def test_commit_failure_prevents_progression_attempt(database_path: Path) -> None:
+    owner = _id()
+    book = _id()
+    _seed(database_path, owner, book, end_page=0)
+    engine = create_engine(f"sqlite:///{database_path}")
+    session = sessionmaker(bind=engine)()
+    gateway = _RecordingProgressionGateway()
+
+    with pytest.raises(RuntimeError, match="commit failure"):
+        _handler(
+            session,
+            unit_of_work=_FailingCommitUnitOfWork(session),
+            progression_gateway=gateway,
+            progression_delivery_repository=SqlAlchemyProgressionDeliveryRepository(session),
+        )(_command(UserId.from_value(owner), BookId.from_value(book), 1, 1))
+
+    assert gateway.occurrences == []
+    session.close()
+    engine.dispose()
 
 
 def test_book_completed_is_published_after_rows_are_durable(database_path: Path) -> None:

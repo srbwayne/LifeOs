@@ -10,6 +10,10 @@ from sqlalchemy.exc import OperationalError
 
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_delivery_repository import (
+    ProgressionDeliveryIntent,
+    ProgressionDeliveryRepository,
+)
 from app.read.application.ports.progression_gateway import (
     ProgressionGateway,
     ProgressionGatewayError,
@@ -26,6 +30,7 @@ from app.read.domain.services.reading_progress_calculator import ReadingProgress
 from app.read.domain.value_objects.book_id import BookId
 from app.shared.application.event_bus import IEventBus
 from app.shared.domain.identifiers.user_id import UserId
+from app.shared.domain.tsid import new_tsid
 
 _SQLITE_BUSY_CODE: int = sqlite3.SQLITE_BUSY
 logger = logging.getLogger(__name__)
@@ -73,6 +78,7 @@ class CreateReadingSessionCommandHandler:
         sleeper: Callable[[float], None] = time.sleep,
         event_bus: IEventBus | None = None,
         progression_gateway: ProgressionGateway | None = None,
+        progression_delivery_repository: ProgressionDeliveryRepository | None = None,
     ) -> None:
         self._book_repository = book_repository
         self._reading_session_repository = reading_session_repository
@@ -83,6 +89,7 @@ class CreateReadingSessionCommandHandler:
         self._sleeper = sleeper
         self._event_bus = event_bus
         self._progression_gateway = progression_gateway
+        self._progression_delivery_repository = progression_delivery_repository
 
     def __call__(self, command: CreateReadingSessionCommand) -> ReadingSessionDTO:
         committed_session: ReadingSession | None = None
@@ -126,6 +133,20 @@ class CreateReadingSessionCommandHandler:
                     if progress.completed and completion is None:
                         new_completion = BookCompletion.create(book.id, session.ended_at)
                         self._book_completion_repository.save(new_completion)
+                    if self._progression_delivery_repository is not None:
+                        # The delivery record references the session.  Flush
+                        # the parent rows first because these repositories add
+                        # independent SQLAlchemy mappers without ORM
+                        # relationships between them.
+                        uow.flush()
+                        self._progression_delivery_repository.save(
+                            ProgressionDeliveryIntent(
+                                id=new_tsid(),
+                                reading_session_id=session.id,
+                                owner_id=session.owner_id,
+                                pages_read=session.pages_read,
+                            )
+                        )
                     uow.flush()
                     uow.commit()
                     committed_session = session
