@@ -8,6 +8,9 @@ from app.read.application.commands.create_reading_session import (
 from app.read.application.ports.book_completion_read_repository import (
     IBookCompletionReadRepository,
 )
+from app.read.application.ports.progression_delivery_repository import (
+    ProgressionDeliveryRepository,
+)
 from app.read.application.ports.progression_gateway import ProgressionGateway
 from app.read.application.ports.reading_history_repository import (
     IReadingHistoryReadRepository,
@@ -42,6 +45,9 @@ from app.read.infrastructure.persistence.repositories.book_completion_repository
 )
 from app.read.infrastructure.persistence.repositories.book_repository import (
     SqlAlchemyBookRepository,
+)
+from app.read.infrastructure.persistence.repositories.progression_delivery_repository import (
+    SqlAlchemyProgressionDeliveryRepository,
 )
 from app.read.infrastructure.persistence.repositories.reading_history_repository import (
     SqlAlchemyReadingHistoryReadRepository,
@@ -105,6 +111,12 @@ def get_progression_gateway() -> ProgressionGateway:
     return NoOpProgressionGateway()
 
 
+def get_progression_delivery_repository(
+    db: Session = Depends(get_db),
+) -> ProgressionDeliveryRepository:
+    return SqlAlchemyProgressionDeliveryRepository(db)
+
+
 def get_book_uow(
     db: Session = Depends(get_db),
     event_bus: IEventBus = Depends(get_read_event_bus),
@@ -132,6 +144,9 @@ def get_create_reading_session_handler(
     unit_of_work: SqlAlchemyUnitOfWork = Depends(get_book_uow),
     event_bus: IEventBus = Depends(get_read_event_bus),
     progression_gateway: ProgressionGateway = Depends(get_progression_gateway),
+    progression_delivery_repository: ProgressionDeliveryRepository = Depends(
+        get_progression_delivery_repository
+    ),
 ) -> CreateReadingSessionCommandHandler:
     return CreateReadingSessionCommandHandler(
         book_repository,
@@ -142,6 +157,7 @@ def get_create_reading_session_handler(
         unit_of_work,
         event_bus=event_bus,
         progression_gateway=progression_gateway,
+        progression_delivery_repository=progression_delivery_repository,
     )
 
 

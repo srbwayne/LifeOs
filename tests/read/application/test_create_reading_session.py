@@ -1,6 +1,7 @@
 import sqlite3
 from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
+from typing import cast
 
 import pytest
 from sqlalchemy.exc import IntegrityError, OperationalError
@@ -11,6 +12,10 @@ from app.read.application.commands.create_reading_session import (
 )
 from app.read.application.dtos.reading_session_dto import ReadingSessionDTO
 from app.read.application.errors.book_errors import BookNotFoundError
+from app.read.application.ports.progression_delivery_repository import (
+    ProgressionDeliveryIntent,
+    ProgressionDeliveryRepository,
+)
 from app.read.application.ports.progression_gateway import (
     ProgressionGateway,
     ProgressionGatewayError,
@@ -119,6 +124,17 @@ class FakeProgressionGateway:
             raise self.error
 
 
+class FakeProgressionDeliveryRepository:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.saved: list[ProgressionDeliveryIntent] = []
+        self.error = error
+
+    def save(self, intent: ProgressionDeliveryIntent) -> None:
+        if self.error is not None:
+            raise self.error
+        self.saved.append(intent)
+
+
 class FakeUnitOfWork:
     def __init__(self) -> None:
         self.enter_count = 0
@@ -189,6 +205,7 @@ def build_handler(
     completion: BookCompletion | None = None,
     sleeper=lambda _: None,
     progression_gateway: ProgressionGateway | None = None,
+    progression_delivery_repository: FakeProgressionDeliveryRepository | None = None,
 ) -> tuple[
     CreateReadingSessionCommandHandler,
     FakeBookRepository,
@@ -210,8 +227,50 @@ def build_handler(
         sleeper,
         event_bus=unit_of_work.event_bus,
         progression_gateway=progression_gateway,
+        progression_delivery_repository=cast(
+            ProgressionDeliveryRepository | None,
+            progression_delivery_repository,
+        ),
     )
     return handler, book_repository, session_repository, completion_repository, unit_of_work
+
+
+def test_handler_persists_one_intent_before_flush_and_commit() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    delivery_repository = FakeProgressionDeliveryRepository()
+    handler, _, sessions, _, unit_of_work = build_handler(
+        (book,), progression_delivery_repository=delivery_repository
+    )
+
+    result = handler(valid_command(owner_id, book.id))
+
+    assert len(delivery_repository.saved) == 1
+    intent = delivery_repository.saved[0]
+    assert intent.owner_id == owner_id
+    assert intent.reading_session_id == sessions.saved[0].id
+    assert intent.pages_read == sessions.saved[0].pages_read
+    assert intent.status == "PENDING"
+    assert intent.attempt_count == 0
+    assert unit_of_work.timeline[-2:] == ["flush", "commit"]
+    assert result.id == intent.reading_session_id.to_persistence()
+
+
+def test_intent_failure_rolls_back_creation() -> None:
+    owner_id = UserId.new()
+    book = Book.create(owner_id, "Book", "Author", 300)
+    delivery_repository = FakeProgressionDeliveryRepository(RuntimeError("intent failure"))
+    handler, _, sessions, completions, unit_of_work = build_handler(
+        (book,), progression_delivery_repository=delivery_repository
+    )
+
+    with pytest.raises(RuntimeError, match="intent failure"):
+        handler(valid_command(owner_id, book.id))
+
+    assert len(sessions.saved) == 1
+    assert completions.saved == []
+    assert unit_of_work.commit_count == 0
+    assert unit_of_work.rollback_count == 1
 
 
 def test_command_is_immutable() -> None:
