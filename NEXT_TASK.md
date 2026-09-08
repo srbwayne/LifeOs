@@ -4,7 +4,53 @@
 
 ---
 
-# Estado Atual
+# Estado Atual — Governança de Encerramento Operacional
+
+| Campo | Valor |
+|---|---|
+| ID | LIFEOS-READ-005-TASK-015-OPERATIONAL-CUTOVER-CLOSED |
+| Status | OPERATIONAL CUTOVER COMPLETE / GOVERNANCE CLOSURE |
+| Capability | READ |
+| Feature | READ-005 |
+| Source implementation | COMPLETE |
+| TASK-015 durable progression groundwork | COMPLETE |
+| Real DB preservation reconciliation | COMPLETE |
+| Real database discovered revision | 0009, noncanonical state reconciled to canonical 0009 |
+| Real database reconciliation | COMPLETED VIA PRESERVATION RECONCILIATION; ORDINARY ALEMBIC 0007->0008->0009 EXECUTION NOT ESTABLISHED |
+| Canonical progression schema | RECONCILED / 0009 |
+| FK integrity | CLEAN |
+| First canonical write canary | PASS |
+| Writable canonical runtime activation | PASS |
+| Local runtime | OPERATIONAL |
+| Progression downstream | `NoOpProgressionGateway` remains the default |
+| Current unresolved delivery records | 3 at closure |
+| Automatic recovery | NO |
+| Logos | NOT ACTIVATED |
+| Scheduler / worker | NOT ACTIVATED |
+| Current Executable Unit | NONE — OPERATIONAL CLOSURE COMPLETE |
+| Canonical main | `a1692f0c95aa124e4def51f601b7d6ec7aa3800b` |
+
+The observed real-database history was not a normal coordinated Alembic
+`0007 -> 0008 -> 0009` execution. The database was discovered already marked
+`0009`, with an intermediate/noncanonical progression shape, and was reconciled
+through the approved preservation procedure. The ordinary planned migration
+execution is therefore not established by this record.
+
+The three unresolved records remain accepted operational history. They are not
+to be dispatched as part of this closure. `dispatch_unresolved()` remains an
+explicit recovery entry point only.
+
+No new feature is authorized by this closure. Without a new human-selected gate,
+the following remain NOT AUTHORIZED: dispatch of unresolved records; Logos
+adapter, configuration, authentication or HTTP integration; scheduler/worker;
+automatic recovery; new migrations; new product functionality; cleanup or
+deletion of the accepted canary; and backup restoration.
+
+The planning state below is retained as historical context. Where it conflicts
+with this closure section, this section is authoritative for current
+operational status.
+
+# Historical Planning State — Superseded
 
 | Campo | Valor |
 |---|---|

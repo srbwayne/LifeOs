@@ -12,12 +12,42 @@ Date: 2026-08-17
 Implementation at Technical Plan approval: NOT AUTHORIZED
 Sprint 09 at Technical Plan approval: NOT AUTHORIZED
 
-Current execution state is governed by `NEXT_TASK.md` and subsequent approved
-governance. Migration 0008 code is integrated. Slice 4 implementation is complete,
-locally reviewed, and published in draft PR #46, but its merge is blocked by the
-separately approved future Python >=3.11 platform prerequisite. The current
-integrated platform remains Python 3.10. Runtime activation remains coupled to the
-coordinated cutover.
+Historical planning status at the time of this plan: execution state was
+governed by `NEXT_TASK.md` and subsequent approved governance. Migration 0008
+code was integrated. Slice 4 implementation was complete, locally reviewed,
+and published in draft PR #46, but its merge was blocked by the separately
+approved future Python >=3.11 platform prerequisite. The integrated platform
+was then Python 3.10, and runtime activation was coupled to the coordinated
+cutover. The Operational Closure Amendment below is authoritative for the
+subsequent execution and deployment status.
+
+## Operational Closure Amendment — 2026-09-07
+
+This amendment updates execution and deployment status only. Product, domain and
+architecture decisions in the frozen plan remain unchanged. The historical
+status text below is retained as a contemporaneous planning record. Where those
+historical “current state” statements conflict with this amendment, this
+amendment is authoritative for operational status.
+
+- READ-005 source implementation and the Python 3.11 prerequisite are integrated.
+- Canonical repository head is `0009`.
+- The real database was discovered already marked `0009`, but with a
+  noncanonical/intermediate progression schema; provenance of that state is
+  undetermined.
+- The ordinary planned `0007 -> 0008 -> 0009` execution was not established.
+- Preservation reconciliation completed, including canonical progression schema
+  reconciliation and FK cleanup through the approved preservation procedure.
+- Read-only runtime activation passed.
+- The first canonical write canary passed.
+- Writable canonical runtime activation passed.
+- `NoOpProgressionGateway` remains the default downstream.
+- Three unresolved progression records remained at operational closure.
+- No automatic dispatch or recovery runs at startup; `dispatch_unresolved()` is
+  an explicit recovery entry point only.
+- Logos, scheduler and worker remain outside the activated scope.
+
+The operational cutover record is maintained in
+`docs/10_AI_ENGINEERING/READ_005_OPERATIONAL_CUTOVER.md`.
 
 ## 1. Domain
 
