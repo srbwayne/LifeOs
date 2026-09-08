@@ -91,6 +91,10 @@ app/therapy/
 │   ├── dtos/
 │   │   ├── therapist_dto.py
 │   │   └── therapy_session_dto.py
+│   ├── ports/
+│   │   ├── __init__.py
+│   │   ├── therapist_read_repository.py
+│   │   └── therapy_session_read_repository.py
 │   └── queries/
 │       ├── get_therapist.py
 │       ├── list_therapists.py
@@ -106,7 +110,9 @@ app/therapy/
 │       │   └── therapy_session_model.py
 │       └── repositories/
 │           ├── therapist_repository.py
-│           └── therapy_session_repository.py
+│           ├── therapist_read_repository.py
+│           ├── therapy_session_repository.py
+│           └── therapy_session_read_repository.py
 └── presentation/
     └── api/fastapi/
         ├── routers.py
@@ -131,8 +137,6 @@ Therapist
 - owner_id: UserId
 - name: normalized non-empty string
 - active: bool
-- created_at: datetime
-- updated_at: datetime
 ```
 
 Rules:
@@ -145,8 +149,6 @@ Rules:
   trustworthy identity and the business contract did not forbid duplicates;
 - no `specialty_or_focus`, credentials, license, phone, email or clinical
   profile is present in V1;
-- timestamps follow the existing technical persistence convention.
-
 Therapist is not deleted by the V1 API. Deactivation is the V1 lifecycle
 operation for making the reference unavailable to new sessions. TherapySession
 is also a separate Aggregate Root and references Therapist only by
@@ -161,7 +163,6 @@ TherapySession
 - therapist_id: TherapistId
 - occurred_at: timezone-aware UTC datetime
 - private_note: optional normalized private owner-authored text
-- created_at / updated_at: technical persistence timestamps
 ```
 
 `private_note` is the implementation-neutral name for the one optional field.
@@ -240,7 +241,8 @@ class ITherapySessionRepository(Protocol):
     def delete(self, session: TherapySession) -> None: ...
 ```
 
-Read ports are separate projection contracts and do not mutate aggregates:
+Read ports are separate projection contracts under
+`app/therapy/application/ports/` and do not mutate aggregates:
 
 ```python
 class ITherapistReadRepository(Protocol):
@@ -292,8 +294,8 @@ delete; no bulk cleanup or cascade is provided.
 
 - structural fields (`owner_id`, `therapist_id`, `occurred_at`) are immutable
   after creation;
-- the private note is editable through `UpdatePrivateNote` before or after
-  creation, including clearing it with null;
+- the private note may be provided during creation and, after creation, may be
+  replaced or cleared through `UpdatePrivateNote`;
 - no event sourcing, revision history or distributed compensation is added;
 - duplicate correction is a separate owner-authorized delete/create decision,
   not an implicit merge;
@@ -302,7 +304,8 @@ delete; no bulk cleanup or cascade is provided.
 
 This preserves the historical occurrence while allowing the owner to correct
 private text. No event sourcing, revision table or audit-history table is part
-of V1.
+of V1. `PRIVATE NOTE AUDIT TRAIL: NO — THERAPY V1`; future audit/version
+semantics are deferred.
 
 ## 11. Delete and retention decision
 
@@ -328,9 +331,8 @@ Consequences:
 
 Therapist deletion is not a V1 API operation. If introduced later, referenced
 Therapists must be `RESTRICT`ed rather than cascading into historical sessions.
-Hard delete removes the canonical database row; V1 does not promise erasure
-from historical backups because backup-purge semantics are not established.
-No legal retention claim is made.
+Long-term privacy/retention review is deferred. No legal retention claim is
+made.
 
 ## 12. Therapist deactivation
 
@@ -480,7 +482,11 @@ Status proposal:
 - `401` missing/invalid authentication;
 - `404` invalid, missing or foreign-owner IDs without existence disclosure;
 - `409` inactive Therapist on session creation;
-- `422` invalid TSID, blank/oversized name/note or invalid datetime.
+- `422` malformed or non-canonical TSID, blank/oversized name/note or invalid
+  datetime.
+
+A well-formed but missing or foreign-owner TherapistId/TherapySessionId uses
+the indistinguishable `404` path; it is never reported as `422`.
 
 ## 17. Transaction boundary
 
@@ -641,11 +647,14 @@ checks pass. No Logos, Noema, progression or real migration is included.
 
 ## 22. Technical open questions
 
-- Does private-note editing require an audit trail before implementation?
-- Is hard deletion sufficient for owner control in the local product context,
-  subject to future privacy review?
-- What exact privacy/security review is required before any future consumer?
-- Do documentation reconciliation changes need their own governance PR?
+No unresolved technical question blocks THERAPY-003A through THERAPY-003E.
+Future matters are deferred:
+
+- audit/history mechanism for private-note edits;
+- future replacement of the hard-delete policy;
+- encryption-at-rest;
+- privacy/security review before any future external consumer;
+- documentation reconciliation governance.
 
 ## 23. Deferred
 
