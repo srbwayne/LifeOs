@@ -449,8 +449,10 @@ POST   /therapy/therapists/{therapist_id}/deactivate
 POST   /therapy/therapists/{therapist_id}/activate
 ```
 
-Create request: `name` only. Responses contain `id`, `name`, `active`,
-`created_at` and `updated_at`; no `user_id` input is accepted.
+Create request: `name` only. V1 responses contain `id`, `name` and `active`;
+`created_at` and `updated_at` remain persistence-only columns and are not
+exposed without a separately justified use case. No `user_id` input is
+accepted.
 
 ### Therapy sessions
 
@@ -480,7 +482,8 @@ Status proposal:
 - `200` reads, activation/deactivation and note update;
 - `204` hard delete;
 - `401` missing/invalid authentication;
-- `404` invalid, missing or foreign-owner IDs without existence disclosure;
+- `404` well-formed but missing or foreign-owner IDs without existence
+  disclosure;
 - `409` inactive Therapist on session creation;
 - `422` malformed or non-canonical TSID, blank/oversized name/note or invalid
   datetime.
