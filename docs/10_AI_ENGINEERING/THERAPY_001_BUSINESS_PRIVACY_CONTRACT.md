@@ -36,8 +36,9 @@ fields. No Therapy implementation, model, repository, command or API exists
 under `app`.
 
 Those planning references are evidence, not approved implementation
-requirements. This document proposes a bounded business/privacy contract for
-review. `OPEN` means that LifeOS has not established a safe answer.
+requirements. This document records the approved bounded business/privacy
+contract for Therapy V1. `OPEN` means that LifeOS has not established a safe
+answer for the deferred technical detail.
 
 ## 2. Business meaning
 
@@ -210,7 +211,7 @@ preserving the occurrence fact. Whether edits are versioned, timestamped or
 simply replace content is OPEN.
 
 No progression-triggered immutability is proposed. Progression eligibility is
-independent and currently unresolved.
+independent and is explicitly NO for Therapy V1.
 
 ## 11. Correction semantics
 
