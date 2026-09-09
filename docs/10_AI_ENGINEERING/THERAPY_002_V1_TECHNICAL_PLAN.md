@@ -199,9 +199,14 @@ For each ID:
 
 - value-object location: `app/therapy/domain/value_objects/`;
 - generation: the aggregate factory calls the `new()` class method;
-- parsing: `from_value()` validates canonical TSID representation;
-- serialization: `to_persistence()` returns the 26-character string;
-- persistence: `String(26)` primary/foreign-key columns;
+- parsing: `from_value()` validates parseability and the canonical round-trip
+  produced by `tsidpy`;
+- serialization: `to_persistence()` returns the canonical TSID string produced
+  by the repository's existing `new_tsid()` convention; at the pinned
+  dependency behavior, generated values are 13 characters, but character count
+  is not a separate Domain invariant;
+- persistence: `String(26)` primary/foreign-key columns remain as schema
+  capacity, not as a required value length;
 - API: IDs are serialized as opaque strings;
 - no UUID and no external-system identifier is introduced.
 
