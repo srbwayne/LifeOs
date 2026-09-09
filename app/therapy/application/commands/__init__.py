@@ -19,3 +19,9 @@ __all__ = [
     "ReactivateTherapistCommand",
     "ReactivateTherapistCommandHandler",
 ]
+from app.therapy.application.commands.create_therapy_session import (
+    CreateTherapySessionCommand,
+    CreateTherapySessionCommandHandler,
+)
+
+__all__ = ["CreateTherapySessionCommand", "CreateTherapySessionCommandHandler"]
