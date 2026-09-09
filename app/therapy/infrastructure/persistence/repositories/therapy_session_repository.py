@@ -7,6 +7,7 @@ from app.shared.domain.identifiers.user_id import UserId
 from app.therapy.domain.aggregates.therapy_session import TherapySession
 from app.therapy.domain.ports.therapy_session_repository import ITherapySessionRepository
 from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
+from app.therapy.infrastructure.persistence.datetime import canonicalize_utc_datetime
 from app.therapy.infrastructure.persistence.mappers.therapy_session_mapper import (
     TherapySessionMapper,
 )
@@ -25,9 +26,14 @@ class SqlAlchemyTherapySessionRepository(ITherapySessionRepository):
         if existing is None:
             self._session.add(model)
             return
-        existing.user_id = model.user_id
-        existing.therapist_id = model.therapist_id
-        existing.occurred_at = model.occurred_at
+
+        if (
+            existing.user_id != model.user_id
+            or existing.therapist_id != model.therapist_id
+            or canonicalize_utc_datetime(existing.occurred_at) != therapy_session.occurred_at
+        ):
+            raise ValueError("TherapySession immutable persistence fields conflict")
+
         existing.private_note = model.private_note
         existing.updated_at = datetime.datetime.now()
 

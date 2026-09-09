@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 
@@ -16,4 +16,4 @@ class TherapySessionDetailDTO:
     therapist_id: str
     therapist_name: str
     occurred_at: datetime
-    private_note: str | None
+    private_note: str | None = field(repr=False)

@@ -1,8 +1,8 @@
-from app.read.infrastructure.persistence.datetime import canonicalize_utc_datetime
 from app.shared.domain.identifiers.user_id import UserId
 from app.therapy.domain.aggregates.therapy_session import TherapySession
 from app.therapy.domain.value_objects.therapist_id import TherapistId
 from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
+from app.therapy.infrastructure.persistence.datetime import canonicalize_utc_datetime
 from app.therapy.infrastructure.persistence.models.therapy_session_model import (
     TherapySessionModel,
 )
