@@ -23,6 +23,12 @@ from app.read.infrastructure.persistence.models.reading_session_model import (  
     ReadingSessionModel,
 )
 from app.shared.infrastructure.database import Base
+from app.therapy.infrastructure.persistence.models.therapist_model import (  # noqa: F401
+    TherapistModel,
+)
+from app.therapy.infrastructure.persistence.models.therapy_session_model import (  # noqa: F401
+    TherapySessionModel,
+)
 
 config = context.config
 if config.config_file_name is not None:
