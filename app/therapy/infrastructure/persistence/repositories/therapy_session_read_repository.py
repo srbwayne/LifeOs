@@ -1,7 +1,6 @@
 from sqlalchemy import and_, func, select
 from sqlalchemy.orm import Session
 
-from app.read.infrastructure.persistence.datetime import canonicalize_utc_datetime
 from app.shared.domain.identifiers.user_id import UserId
 from app.therapy.application.dtos.therapy_session_dto import (
     TherapySessionDetailDTO,
@@ -11,6 +10,7 @@ from app.therapy.application.ports.therapy_session_read_repository import (
     ITherapySessionReadRepository,
 )
 from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
+from app.therapy.infrastructure.persistence.datetime import canonicalize_utc_datetime
 from app.therapy.infrastructure.persistence.models.therapist_model import TherapistModel
 from app.therapy.infrastructure.persistence.models.therapy_session_model import (
     TherapySessionModel,

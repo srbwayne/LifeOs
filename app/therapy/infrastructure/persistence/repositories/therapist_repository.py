@@ -21,8 +21,10 @@ class SqlAlchemyTherapistRepository(ITherapistRepository):
         if existing is None:
             self._session.add(model)
             return
-        existing.user_id = model.user_id
-        existing.name = model.name
+
+        if existing.user_id != model.user_id or existing.name != model.name:
+            raise ValueError("Therapist immutable persistence fields conflict")
+
         existing.active = model.active
         existing.updated_at = datetime.datetime.now()
 

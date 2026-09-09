@@ -148,6 +148,35 @@ def test_therapist_repository_is_owner_scoped_and_persists_active_state(session:
     assert restored.active is False
 
 
+def test_therapist_repository_rejects_owner_transfer_and_rename(session: Session) -> None:
+    owner_a = UserId.new()
+    owner_b = UserId.new()
+    add_user(session, owner_a)
+    add_user(session, owner_b)
+    therapist = create_therapist(session, owner_a, "Original")
+    repository = SqlAlchemyTherapistRepository(session)
+
+    forged_owner = Therapist.restore(therapist.id, owner_b, "Original", True)
+    with pytest.raises(ValueError):
+        repository.save(forged_owner)
+    session.flush()
+
+    persisted = session.get(TherapistModel, therapist.id.value)
+    assert persisted is not None
+    assert persisted.user_id == owner_a.value
+    assert persisted.name == "Original"
+
+    forged_name = Therapist.restore(therapist.id, owner_a, "Changed", True)
+    with pytest.raises(ValueError):
+        repository.save(forged_name)
+    session.flush()
+
+    persisted = session.get(TherapistModel, therapist.id.value)
+    assert persisted is not None
+    assert persisted.user_id == owner_a.value
+    assert persisted.name == "Original"
+
+
 def test_therapy_session_repository_supports_owner_scope_update_and_delete(
     session: Session,
 ) -> None:
@@ -172,6 +201,56 @@ def test_therapy_session_repository_supports_owner_scope_update_and_delete(
     repository.delete(therapy_session)
     session.flush()
     assert repository.get_by_id_and_owner(therapy_session.id, owner_a) is None
+
+
+def test_therapy_session_repository_rejects_structural_mutations(session: Session) -> None:
+    owner_a = UserId.new()
+    owner_b = UserId.new()
+    add_user(session, owner_a)
+    add_user(session, owner_b)
+    therapist_a = create_therapist(session, owner_a, "A")
+    therapist_b = create_therapist(session, owner_b, "B")
+    therapy_session = create_session(session, owner_a, therapist_a.id, UTC_NOW, "Original")
+    repository = SqlAlchemyTherapySessionRepository(session)
+
+    forged_owner = TherapySession.restore(
+        therapy_session.id, owner_b, therapist_b.id, UTC_NOW, "Forged"
+    )
+    with pytest.raises(ValueError):
+        repository.save(forged_owner)
+    session.flush()
+
+    forged_therapist = TherapySession.restore(
+        therapy_session.id, owner_a, TherapistId.new(), UTC_NOW, "Forged"
+    )
+    with pytest.raises(ValueError):
+        repository.save(forged_therapist)
+    session.flush()
+
+    forged_time = TherapySession.restore(
+        therapy_session.id,
+        owner_a,
+        therapist_a.id,
+        UTC_NOW - timedelta(minutes=1),
+        "Forged",
+    )
+    with pytest.raises(ValueError):
+        repository.save(forged_time)
+    session.flush()
+
+    persisted = session.get(TherapySessionModel, therapy_session.id.value)
+    assert persisted is not None
+    assert persisted.user_id == owner_a.value
+    assert persisted.therapist_id == therapist_a.id.value
+    assert persisted.occurred_at == UTC_NOW.replace(tzinfo=None)
+    assert persisted.private_note == "Original"
+
+
+def test_therapy_session_detail_dto_repr_does_not_expose_private_note() -> None:
+    secret = "known-sensitive-value"
+    dto = TherapySessionDetailDTO("session", "therapist", "Name", UTC_NOW, secret)
+
+    assert secret not in repr(dto)
 
 
 def test_database_rejects_cross_owner_composite_therapist_reference(session: Session) -> None:
