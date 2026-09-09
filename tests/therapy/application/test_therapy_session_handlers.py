@@ -182,6 +182,23 @@ def test_list_sessions_calculates_pagination():
     assert not hasattr(result.items[0], "private_note")
 
 
+def test_list_sessions_empty_history_has_zero_pages():
+    class EmptyRead:
+        def get_by_id_and_owner(self, *_):
+            return None
+
+        def count_by_owner(self, _):
+            return 0
+
+        def list_page_by_owner(self, *_):
+            return ()
+
+    result = ListTherapySessionsQueryHandler(EmptyRead())(
+        ListTherapySessionsQuery(UserId.new(), 1, 20)
+    )
+    assert result.total_pages == 0 and result.items == ()
+
+
 def test_get_session_owner_safe_detail_and_not_found():
     owner = UserId.new()
     session_id = TherapySessionId.new()

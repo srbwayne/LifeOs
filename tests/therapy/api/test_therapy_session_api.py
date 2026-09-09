@@ -11,6 +11,7 @@ from app.shared.domain.identifiers.user_id import UserId
 from app.shared.infrastructure.database import Base, get_db
 from app.therapy.domain.aggregates.therapist import Therapist
 from app.therapy.domain.value_objects.therapist_id import TherapistId
+from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
 from app.therapy.infrastructure.persistence.repositories.therapist_repository import (
     SqlAlchemyTherapistRepository,
 )
@@ -272,5 +273,74 @@ def test_unrelated_validation_error_keeps_normal_detail_structure():
         response = client.get("/therapy/sessions?page=0")
         assert response.status_code == 422
         assert response.json()["detail"][0]["loc"][-1] == "page"
+    app.dependency_overrides.clear()
+    engine.dispose()
+
+
+def test_session_detail_missing_foreign_and_history_ordering_privacy():
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    app = create_app()
+    owner = UserId.new()
+    other = UserId.new()
+    with factory() as db:
+        for user in (owner, other):
+            db.add(
+                UserModel(
+                    id=user.value,
+                    email=f"{user.value}@test",
+                    hashed_password="x",
+                    created_at=datetime.now(),
+                    updated_at=datetime.now(),
+                )
+            )
+        therapist = Therapist.create(owner, "Dr. A")
+        other_therapist = Therapist.create(other, "Foreign")
+        repo = SqlAlchemyTherapistRepository(db)
+        repo.save(therapist)
+        repo.save(other_therapist)
+        db.commit()
+
+    def db_override():
+        with factory() as db:
+            yield db
+
+    app.dependency_overrides[get_db] = db_override
+    current = [owner]
+    app.dependency_overrides[get_current_user_id] = lambda: current[0]
+    with TestClient(app) as client:
+        first = client.post(
+            "/therapy/sessions",
+            json={
+                "therapist_id": therapist.id.value,
+                "occurred_at": "2026-01-01T12:00:00Z",
+                "private_note": "known-sensitive-value",
+            },
+        ).json()
+        second = client.post(
+            "/therapy/sessions",
+            json={
+                "therapist_id": therapist.id.value,
+                "occurred_at": "2026-01-02T12:00:00Z",
+                "private_note": "second",
+            },
+        ).json()
+        history = client.get("/therapy/sessions").json()
+        assert history["page"] == 1 and history["size"] == 20 and history["total_items"] == 2
+        assert history["items"][0]["id"] == second["id"]
+        assert all(
+            set(item) == {"id", "therapist_id", "therapist_name", "occurred_at"}
+            for item in history["items"]
+        )
+        assert "known-sensitive-value" not in str(history)
+        missing = client.get(f"/therapy/sessions/{TherapySessionId.new().value}")
+        current[0] = other
+        foreign = client.get(f"/therapy/sessions/{first['id']}")
+        assert (
+            missing.status_code == foreign.status_code == 404 and missing.json() == foreign.json()
+        )
     app.dependency_overrides.clear()
     engine.dispose()
