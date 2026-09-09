@@ -320,7 +320,7 @@ def test_session_detail_missing_foreign_and_history_ordering_privacy():
                 "private_note": "known-sensitive-value",
             },
         ).json()
-        second = client.post(
+        _second = client.post\(
             "/therapy/sessions",
             json={
                 "therapist_id": therapist.id.value,
@@ -356,3 +356,4 @@ def test_session_detail_missing_foreign_and_history_ordering_privacy():
         )
     app.dependency_overrides.clear()
     engine.dispose()
+
