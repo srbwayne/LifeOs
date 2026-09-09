@@ -67,7 +67,11 @@ def test_therapist_api_create_list_actions_and_fresh_session(api) -> None:
     deactivated = client.post(f"/therapy/therapists/{therapist_id}/deactivate")
     assert deactivated.status_code == 200 and deactivated.json()["active"] is False
     assert client.post(f"/therapy/therapists/{therapist_id}/deactivate").json()["active"] is False
-    assert client.post(f"/therapy/therapists/{therapist_id}/reactivate").json()["active"] is True
+    reactivated = client.post(f"/therapy/therapists/{therapist_id}/reactivate")
+    assert reactivated.status_code == 200 and reactivated.json()["active"] is True
+    repeated_reactivation = client.post(f"/therapy/therapists/{therapist_id}/reactivate")
+    assert repeated_reactivation.status_code == 200
+    assert repeated_reactivation.json()["active"] is True
     with fresh() as session:
         from app.therapy.infrastructure.persistence.models.therapist_model import TherapistModel
 
@@ -122,7 +126,15 @@ def test_therapist_api_invalid_id_is_422(api, value: str) -> None:
 
 def test_therapist_api_missing_and_forbidden_fields(api) -> None:
     client, _, _, _ = api
-    assert client.get(f"/therapy/therapists/{TherapistId.new().value}").status_code == 404
+    missing_id = TherapistId.new().value
+    assert client.get(f"/therapy/therapists/{missing_id}").status_code == 404
+    missing_deactivate = client.post(f"/therapy/therapists/{missing_id}/deactivate")
+    missing_reactivate = client.post(f"/therapy/therapists/{missing_id}/reactivate")
+    assert missing_deactivate.status_code == 404
+    assert missing_reactivate.status_code == 404
+    assert (
+        missing_deactivate.json() == missing_reactivate.json() == {"detail": "Therapist not found."}
+    )
     assert client.post("/therapy/therapists", json={"name": "", "owner_id": "x"}).status_code == 422
     assert client.post("/therapy/therapists", json={"name": "x" * 151}).status_code == 422
     assert client.delete("/therapy/therapists/foo").status_code == 405
