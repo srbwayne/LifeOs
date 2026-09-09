@@ -51,8 +51,13 @@ def test_restore_preserves_id_and_state() -> None:
     assert therapist.active is False
 
 
-def test_therapist_has_no_domain_events_or_structural_mutator() -> None:
+@pytest.mark.parametrize("attribute", ["id", "owner_id", "name", "active"])
+def test_therapist_structural_attributes_are_read_only(attribute: str) -> None:
     therapist = Therapist.create(UserId.new(), "Example")
 
-    assert therapist.domain_events == []
-    assert not {"update", "change_owner", "change_name"}.intersection(dir(therapist))
+    with pytest.raises(AttributeError):
+        setattr(therapist, attribute, object())
+
+
+def test_therapist_has_no_domain_events() -> None:
+    assert Therapist.create(UserId.new(), "Example").domain_events == []

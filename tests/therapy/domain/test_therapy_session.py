@@ -117,10 +117,24 @@ def test_restore_preserves_id_and_normalizes_persisted_values() -> None:
     assert session.private_note == "Restored"
 
 
-def test_therapy_session_has_no_structural_mutators_or_domain_events() -> None:
+@pytest.mark.parametrize("attribute", ["id", "owner_id", "therapist_id", "occurred_at"])
+def test_therapy_session_structural_attributes_are_read_only(attribute: str) -> None:
     session = create_session()
 
+    with pytest.raises(AttributeError):
+        setattr(session, attribute, object())
+
+
+def test_private_note_is_only_supported_business_mutation_and_repr_is_safe() -> None:
+    secret = "private therapy reflection"
+    session = create_session(private_note=secret)
+    structural = (session.id, session.owner_id, session.therapist_id, session.occurred_at)
+
+    session.update_private_note("Updated reflection")
+    assert session.private_note == "Updated reflection"
+    session.update_private_note(None)
+
+    assert session.private_note is None
+    assert (session.id, session.owner_id, session.therapist_id, session.occurred_at) == structural
+    assert secret not in repr(session)
     assert session.domain_events == []
-    assert not {"update", "change_owner", "change_therapist", "change_occurred_at"}.intersection(
-        dir(session)
-    )

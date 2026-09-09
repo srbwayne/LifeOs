@@ -10,7 +10,7 @@ class InvalidTherapistNameError(DomainError):
 class InvalidTherapySessionTimeError(DomainError):
     @property
     def message(self) -> str:
-        return "Therapy session occurrence must be timezone-aware UTC and not in the future."
+        return "Therapy session occurrence must be timezone-aware and not in the future."
 
 
 class InvalidPrivateNoteError(DomainError):
