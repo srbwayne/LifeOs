@@ -81,7 +81,15 @@ def list_sessions(
 ) -> TherapySessionHistoryPageResponse:
     result: TherapySessionHistoryPageDTO = handler(ListTherapySessionsQuery(user_id, page, size))
     return TherapySessionHistoryPageResponse(
-        items=[TherapySessionHistoryItemResponse(**item.__dict__) for item in result.items],
+        items=[
+            TherapySessionHistoryItemResponse(
+                id=item.id,
+                therapist_id=item.therapist_id,
+                therapist_name=item.therapist_name,
+                occurred_at=item.occurred_at,
+            )
+            for item in result.items
+        ],
         page=result.page,
         size=result.size,
         total_items=result.total_items,
