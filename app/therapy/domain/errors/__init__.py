@@ -1,0 +1,1 @@
+"""Therapy domain errors."""
