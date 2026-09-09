@@ -328,14 +328,26 @@ def test_session_detail_missing_foreign_and_history_ordering_privacy():
                 "private_note": "second",
             },
         ).json()
+        tie = client.post(
+            "/therapy/sessions",
+            json={
+                "therapist_id": therapist.id.value,
+                "occurred_at": "2026-01-02T12:00:00Z",
+                "private_note": "tie",
+            },
+        ).json()
         history = client.get("/therapy/sessions").json()
-        assert history["page"] == 1 and history["size"] == 20 and history["total_items"] == 2
-        assert history["items"][0]["id"] == second["id"]
+        assert history["page"] == 1 and history["size"] == 20 and history["total_items"] == 3
+        assert history["items"][0]["id"] == tie["id"]
         assert all(
             set(item) == {"id", "therapist_id", "therapist_name", "occurred_at"}
             for item in history["items"]
         )
         assert "known-sensitive-value" not in str(history)
+        assert (
+            client.post(f"/therapy/therapists/{therapist.id.value}/deactivate").status_code == 200
+        )
+        assert client.get(f"/therapy/sessions/{first['id']}").status_code == 200
         missing = client.get(f"/therapy/sessions/{TherapySessionId.new().value}")
         current[0] = other
         foreign = client.get(f"/therapy/sessions/{first['id']}")
