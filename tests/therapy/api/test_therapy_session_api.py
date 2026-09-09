@@ -68,3 +68,91 @@ def test_therapy_session_api_create_detail_history_and_authentication():
 def test_therapy_session_api_requires_authentication():
     client = TestClient(create_app())
     assert client.get("/therapy/sessions").status_code == 401
+
+
+def test_private_note_validation_does_not_echo_oversized_sentinel_before_fix():
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    app = create_app()
+    owner = UserId.new()
+    with factory() as db:
+        db.add(
+            UserModel(
+                id=owner.value,
+                email=f"{owner.value}@test",
+                hashed_password="x",
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+            )
+        )
+        therapist = Therapist.create(owner, "Dr. A")
+        SqlAlchemyTherapistRepository(db).save(therapist)
+        db.commit()
+
+    def db_override():
+        with factory() as db:
+            yield db
+
+    app.dependency_overrides[get_db] = db_override
+    app.dependency_overrides[get_current_user_id] = lambda: owner
+    sentinel = "known-sensitive-value"
+    with TestClient(app) as client:
+        response = client.post(
+            "/therapy/sessions",
+            json={
+                "therapist_id": therapist.id.value,
+                "occurred_at": "2026-01-01T12:00:00Z",
+                "private_note": sentinel * 500,
+            },
+        )
+        assert response.status_code == 422
+        assert sentinel not in response.text
+    app.dependency_overrides.clear()
+    engine.dispose()
+
+
+def test_private_note_validation_does_not_echo_wrong_type_sentinel_before_fix():
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    app = create_app()
+    owner = UserId.new()
+    with factory() as db:
+        db.add(
+            UserModel(
+                id=owner.value,
+                email=f"{owner.value}@test",
+                hashed_password="x",
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+            )
+        )
+        therapist = Therapist.create(owner, "Dr. A")
+        SqlAlchemyTherapistRepository(db).save(therapist)
+        db.commit()
+
+    def db_override():
+        with factory() as db:
+            yield db
+
+    app.dependency_overrides[get_db] = db_override
+    app.dependency_overrides[get_current_user_id] = lambda: owner
+    sentinel = "known-sensitive-value"
+    with TestClient(app) as client:
+        response = client.post(
+            "/therapy/sessions",
+            json={
+                "therapist_id": therapist.id.value,
+                "occurred_at": "2026-01-01T12:00:00Z",
+                "private_note": {"secret": sentinel},
+            },
+        )
+        assert response.status_code == 422
+        assert sentinel not in response.text
+    app.dependency_overrides.clear()
+    engine.dispose()

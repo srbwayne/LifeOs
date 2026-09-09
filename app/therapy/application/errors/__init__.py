@@ -4,6 +4,8 @@ from app.therapy.application.errors.therapy_session_errors import (
     TherapySessionNotFoundError,
 )
 
-__all__ = ["InactiveTherapistError", "TherapistNotFoundError", "TherapySessionNotFoundError"]
-
-__all__ = ["TherapistNotFoundError"]
+__all__ = [
+    "InactiveTherapistError",
+    "TherapistNotFoundError",
+    "TherapySessionNotFoundError",
+]

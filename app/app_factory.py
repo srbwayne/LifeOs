@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
+from typing import cast
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.auth.domain.errors.user_errors import (
@@ -100,6 +102,21 @@ def create_app() -> FastAPI:
                 content={"detail": str(exc)},
             ),
         )
+
+    async def validation_exception_handler(_: Request, exc: Exception) -> JSONResponse:
+        validation_error = cast(RequestValidationError, exc)
+        errors = []
+        for error in validation_error.errors():
+            sanitized = dict(error)
+            if "private_note" in tuple(sanitized.get("loc", ())):
+                sanitized.pop("input", None)
+            errors.append(sanitized)
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={"detail": errors},
+        )
+
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
     @app.get("/")
     def read_root():
