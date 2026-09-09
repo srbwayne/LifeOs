@@ -82,13 +82,15 @@ class FakeReadRepository:
 
 def test_create_normalizes_name_and_commits() -> None:
     repository, uow = FakeRepository(), FakeUow()
+    owner = UserId.new()
     result = CreateTherapistCommandHandler(repository, uow)(
-        CreateTherapistCommand(UserId.new(), "  Dr. Example  ")
+        CreateTherapistCommand(owner, "  Dr. Example  ")
     )
 
     assert result.name == "Dr. Example"
     assert result.active is True
-    assert repository.saved[0].owner_id != UserId.new()
+    assert repository.saved[0].owner_id == owner
+    assert len(repository.saved) == 1
     assert uow.commits == 1
 
 
@@ -115,7 +117,32 @@ def test_commands_and_queries_are_owner_safe_and_idempotent() -> None:
     assert reactivate(ReactivateTherapistCommand(owner, therapist.id)).active is True
     with pytest.raises(TherapistNotFoundError):
         deactivate(DeactivateTherapistCommand(foreign, therapist.id))
+    with pytest.raises(TherapistNotFoundError):
+        deactivate(DeactivateTherapistCommand(owner, TherapistId.new()))
+    with pytest.raises(TherapistNotFoundError):
+        reactivate(ReactivateTherapistCommand(foreign, therapist.id))
+    with pytest.raises(TherapistNotFoundError):
+        reactivate(ReactivateTherapistCommand(owner, TherapistId.new()))
     assert uow.commits == 4
+
+
+def test_get_own_returns_dto_and_list_preserves_inactive_order() -> None:
+    owner = UserId.new()
+    therapist = Therapist.create(owner, "A")
+    repository = FakeRepository()
+    repository.save(therapist)
+    result = GetTherapistQueryHandler(repository)(GetTherapistQuery(owner, therapist.id))
+    assert result == TherapistDTO(therapist.id.value, "A", True)
+
+    inactive = Therapist.create(owner, "Inactive")
+    inactive.deactivate()
+    ordered = (
+        TherapistDTO(inactive.id.value, "Inactive", False),
+        TherapistDTO(therapist.id.value, "A", True),
+    )
+    read = FakeReadRepository(ordered)
+    assert ListTherapistsQueryHandler(read)(ListTherapistsQuery(owner)) == ordered
+    assert read.owner == owner
 
 
 def test_get_missing_and_foreign_are_same_error_and_list_delegates() -> None:

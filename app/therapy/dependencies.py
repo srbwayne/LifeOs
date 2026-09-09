@@ -3,7 +3,7 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.auth.dependencies import get_uow
+from app.shared.application.event_bus import IEventBus, InMemoryEventBus
 from app.shared.application.unit_of_work import IUnitOfWork
 from app.shared.infrastructure.database import get_db
 from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
@@ -30,8 +30,15 @@ def get_therapist_read_repository(db: Session = Depends(get_db)) -> ITherapistRe
     return SqlAlchemyTherapistReadRepository(db)
 
 
-def get_therapy_uow(uow: SqlAlchemyUnitOfWork = Depends(get_uow)) -> IUnitOfWork:
-    return uow
+def get_therapy_event_bus() -> IEventBus:
+    return InMemoryEventBus()
+
+
+def get_therapy_uow(
+    db: Session = Depends(get_db),
+    event_bus: IEventBus = Depends(get_therapy_event_bus),
+) -> IUnitOfWork:
+    return SqlAlchemyUnitOfWork(db, event_bus)
 
 
 def get_create_therapist_handler(
