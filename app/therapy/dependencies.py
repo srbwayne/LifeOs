@@ -1,5 +1,8 @@
 # ruff: noqa: B008
 
+from collections.abc import Callable
+from datetime import datetime, timezone
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -8,17 +11,32 @@ from app.shared.application.unit_of_work import IUnitOfWork
 from app.shared.infrastructure.database import get_db
 from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 from app.therapy.application.commands.create_therapist import CreateTherapistCommandHandler
+from app.therapy.application.commands.create_therapy_session import (
+    CreateTherapySessionCommandHandler,
+)
 from app.therapy.application.commands.deactivate_therapist import DeactivateTherapistCommandHandler
 from app.therapy.application.commands.reactivate_therapist import ReactivateTherapistCommandHandler
 from app.therapy.application.ports.therapist_read_repository import ITherapistReadRepository
+from app.therapy.application.ports.therapy_session_read_repository import (
+    ITherapySessionReadRepository,
+)
 from app.therapy.application.queries.get_therapist import GetTherapistQueryHandler
+from app.therapy.application.queries.get_therapy_session import GetTherapySessionQueryHandler
 from app.therapy.application.queries.list_therapists import ListTherapistsQueryHandler
+from app.therapy.application.queries.list_therapy_sessions import ListTherapySessionsQueryHandler
 from app.therapy.domain.ports.therapist_repository import ITherapistRepository
+from app.therapy.domain.ports.therapy_session_repository import ITherapySessionRepository
 from app.therapy.infrastructure.persistence.repositories.therapist_read_repository import (
     SqlAlchemyTherapistReadRepository,
 )
 from app.therapy.infrastructure.persistence.repositories.therapist_repository import (
     SqlAlchemyTherapistRepository,
+)
+from app.therapy.infrastructure.persistence.repositories.therapy_session_read_repository import (
+    SqlAlchemyTherapySessionReadRepository,
+)
+from app.therapy.infrastructure.persistence.repositories.therapy_session_repository import (
+    SqlAlchemyTherapySessionRepository,
 )
 
 
@@ -72,3 +90,40 @@ def get_reactivate_therapist_handler(
     unit_of_work: IUnitOfWork = Depends(get_therapy_uow),
 ) -> ReactivateTherapistCommandHandler:
     return ReactivateTherapistCommandHandler(repository, unit_of_work)
+
+
+def get_therapy_session_repository(db: Session = Depends(get_db)) -> ITherapySessionRepository:
+    return SqlAlchemyTherapySessionRepository(db)
+
+
+def get_therapy_session_read_repository(
+    db: Session = Depends(get_db),
+) -> ITherapySessionReadRepository:
+    return SqlAlchemyTherapySessionReadRepository(db)
+
+
+def get_therapy_utc_now_provider() -> Callable[[], datetime]:
+    return lambda: datetime.now(timezone.utc)
+
+
+def get_create_therapy_session_handler(
+    therapist_repository: ITherapistRepository = Depends(get_therapist_repository),
+    session_repository: ITherapySessionRepository = Depends(get_therapy_session_repository),
+    unit_of_work: IUnitOfWork = Depends(get_therapy_uow),
+    now_provider: Callable[[], datetime] = Depends(get_therapy_utc_now_provider),
+) -> CreateTherapySessionCommandHandler:
+    return CreateTherapySessionCommandHandler(
+        therapist_repository, session_repository, unit_of_work, now_provider
+    )
+
+
+def get_get_therapy_session_handler(
+    repository: ITherapySessionReadRepository = Depends(get_therapy_session_read_repository),
+) -> GetTherapySessionQueryHandler:
+    return GetTherapySessionQueryHandler(repository)
+
+
+def get_list_therapy_sessions_handler(
+    repository: ITherapySessionReadRepository = Depends(get_therapy_session_read_repository),
+) -> ListTherapySessionsQueryHandler:
+    return ListTherapySessionsQueryHandler(repository)

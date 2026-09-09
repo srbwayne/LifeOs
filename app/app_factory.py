@@ -32,9 +32,18 @@ from app.read.presentation.api.fastapi.routers import (
     statistics_router,
 )
 from app.read.presentation.api.fastapi.routers import router as read_router
-from app.therapy.application.errors import TherapistNotFoundError
-from app.therapy.domain.errors.therapy_errors import InvalidTherapistNameError
+from app.therapy.application.errors import (
+    InactiveTherapistError,
+    TherapistNotFoundError,
+    TherapySessionNotFoundError,
+)
+from app.therapy.domain.errors.therapy_errors import (
+    InvalidPrivateNoteError,
+    InvalidTherapistNameError,
+    InvalidTherapySessionTimeError,
+)
 from app.therapy.presentation.api.fastapi.routers import router as therapy_router
+from app.therapy.presentation.api.fastapi.session_routers import session_router
 
 
 @asynccontextmanager
@@ -58,6 +67,7 @@ def create_app() -> FastAPI:
     app.include_router(statistics_router)
     app.include_router(completion_router)
     app.include_router(therapy_router)
+    app.include_router(session_router)
 
     error_statuses = {
         UserAlreadyExistsError: status.HTTP_409_CONFLICT,
@@ -77,6 +87,10 @@ def create_app() -> FastAPI:
         InvalidReadingSessionTimeError: status.HTTP_422_UNPROCESSABLE_ENTITY,
         InvalidTherapistNameError: status.HTTP_422_UNPROCESSABLE_ENTITY,
         TherapistNotFoundError: status.HTTP_404_NOT_FOUND,
+        TherapySessionNotFoundError: status.HTTP_404_NOT_FOUND,
+        InactiveTherapistError: status.HTTP_409_CONFLICT,
+        InvalidTherapySessionTimeError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        InvalidPrivateNoteError: status.HTTP_422_UNPROCESSABLE_ENTITY,
     }
     for error_type, status_code in error_statuses.items():
         app.add_exception_handler(
