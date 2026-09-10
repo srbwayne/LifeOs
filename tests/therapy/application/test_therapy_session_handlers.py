@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -105,7 +105,10 @@ def test_create_session_injects_clock_and_normalizes_note():
         now_provider,
     )(
         CreateTherapySessionCommand(
-            owner, therapist.id, datetime(2026, 1, 1, 21, tzinfo=timezone.utc), "  note  "
+            owner,
+            therapist.id,
+            datetime(2026, 1, 1, 18, tzinfo=timezone(timedelta(hours=-3))),
+            "  note  ",
         )
     )
     assert result.therapist_name == "Dr. A" and result.private_note == "note"
@@ -139,6 +142,17 @@ def test_create_session_missing_or_inactive_therapist_does_not_commit():
     with pytest.raises(TherapistNotFoundError):
         handler(CreateTherapySessionCommand(owner, TherapistId.new(), datetime.now(timezone.utc)))
     assert uow.commits == 0
+
+
+def test_create_session_foreign_therapist_is_not_found_without_commit():
+    owner_a, owner_b = UserId.new(), UserId.new()
+    therapist_b = Therapist.create(owner_b, "B")
+    sessions, uow = Sessions(), Uow()
+    with pytest.raises(TherapistNotFoundError):
+        CreateTherapySessionCommandHandler(
+            Repo(therapist_b), sessions, uow, lambda: datetime.now(timezone.utc)
+        )(CreateTherapySessionCommand(owner_a, therapist_b.id, datetime.now(timezone.utc)))
+    assert not sessions.saved and uow.commits == 0
 
 
 def test_create_session_rejects_invalid_time_and_note_without_commit():
@@ -199,7 +213,7 @@ def test_list_sessions_empty_history_has_zero_pages():
     assert result.total_pages == 0 and result.items == ()
 
 
-def test_get_session_owner_safe_detail_and_not_found():
+def test_get_session_own_detail_returns_note():
     owner = UserId.new()
     session_id = TherapySessionId.new()
     detail = TherapySessionDetailDTO("s", "t", "Dr. A", datetime.now(timezone.utc), "note")
@@ -221,6 +235,19 @@ def test_get_session_owner_safe_detail_and_not_found():
         GetTherapySessionQueryHandler(Read(detail))(GetTherapySessionQuery(owner, session_id))
         == detail
     )
-    for value in (None,):
-        with pytest.raises(TherapySessionNotFoundError):
-            GetTherapySessionQueryHandler(Read(value))(GetTherapySessionQuery(owner, session_id))
+
+
+def test_get_session_missing_is_not_found():
+    owner = UserId.new()
+    with pytest.raises(TherapySessionNotFoundError):
+        GetTherapySessionQueryHandler(type("Read", (), {"get_by_id_and_owner": lambda *_: None})())(
+            GetTherapySessionQuery(owner, TherapySessionId.new())
+        )
+
+
+def test_get_session_foreign_is_not_found():
+    owner_a, _owner_b = UserId.new(), UserId.new()
+    with pytest.raises(TherapySessionNotFoundError):
+        GetTherapySessionQueryHandler(type("Read", (), {"get_by_id_and_owner": lambda *_: None})())(
+            GetTherapySessionQuery(owner_a, TherapySessionId.new())
+        )
