@@ -424,3 +424,68 @@ def test_session_api_future_inactive_and_fresh_commit():
         assert persisted.private_note == "normalized"
     app.dependency_overrides.clear()
     engine.dispose()
+
+
+def test_session_history_owner_isolation_pagination_and_inactive_therapist():
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    app = create_app()
+    owner_a, owner_b = UserId.new(), UserId.new()
+    with factory() as db:
+        for owner in (owner_a, owner_b):
+            db.add(
+                UserModel(
+                    id=owner.value,
+                    email=f"{owner.value}@test",
+                    hashed_password="x",
+                    created_at=datetime.now(),
+                    updated_at=datetime.now(),
+                )
+            )
+        db.commit()
+
+    def db_override():
+        with factory() as db:
+            yield db
+
+    app.dependency_overrides[get_db] = db_override
+    current = [owner_a]
+    app.dependency_overrides[get_current_user_id] = lambda: current[0]
+    with TestClient(app) as client:
+        therapist_a = client.post("/therapy/therapists", json={"name": "Owner A"}).json()
+        current[0] = owner_b
+        therapist_b = client.post("/therapy/therapists", json={"name": "Owner B"}).json()
+        session_b = client.post(
+            "/therapy/sessions",
+            json={"therapist_id": therapist_b["id"], "occurred_at": "2026-01-01T12:00:00Z"},
+        ).json()
+        current[0] = owner_a
+        session_ids = []
+        for day in range(1, 6):
+            created = client.post(
+                "/therapy/sessions",
+                json={
+                    "therapist_id": therapist_a["id"],
+                    "occurred_at": f"2026-01-{day:02d}T12:00:00Z",
+                },
+            )
+            assert created.status_code == 201
+            session_ids.append(created.json()["id"])
+        owner_a_history = client.get("/therapy/sessions").json()
+        assert owner_a_history["total_items"] == 5
+        assert session_b["id"] not in {item["id"] for item in owner_a_history["items"]}
+        page = client.get("/therapy/sessions?page=2&size=2").json()
+        assert page["page"] == 2 and page["size"] == 2
+        assert page["total_items"] == 5 and page["total_pages"] == 3
+        assert len(page["items"]) == 2
+        assert [item["id"] for item in page["items"]] == [session_ids[2], session_ids[1]]
+        assert client.post(f"/therapy/therapists/{therapist_a['id']}/deactivate").status_code == 200
+        assert client.get(f"/therapy/sessions/{session_ids[0]}").status_code == 200
+        assert session_ids[0] in {
+            item["id"] for item in client.get("/therapy/sessions").json()["items"]
+        }
+    app.dependency_overrides.clear()
+    engine.dispose()
