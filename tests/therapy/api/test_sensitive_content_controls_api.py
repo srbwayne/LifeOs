@@ -102,6 +102,8 @@ def test_private_note_update_and_delete_api_with_disposable_db():
             f"/therapy/sessions/{sid}/private-note", json={"private_note": "after inactive"}
         )
         assert inactive_update.status_code == 200
+        assert client.get(f"/therapy/sessions/{sid}").json()["private_note"] == "after inactive"
+        assert sid in {item["id"] for item in client.get("/therapy/sessions").json()["items"]}
         deleted = client.delete(f"/therapy/sessions/{sid}")
         assert deleted.status_code == 204 and deleted.content == b""
         assert client.get(f"/therapy/sessions/{sid}").status_code == 404
@@ -136,5 +138,105 @@ def test_private_note_routes_require_authentication_with_disposable_db():
             == 401
         )
         assert client.delete(f"/therapy/sessions/{sid}").status_code == 401
+    app.dependency_overrides.clear()
+    engine.dispose()
+
+
+def test_private_note_owner_isolation_and_real_pagination():
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    app = create_app()
+    owner_a, owner_b = UserId.new(), UserId.new()
+    with factory() as db:
+        for owner in (owner_a, owner_b):
+            db.add(
+                UserModel(
+                    id=owner.value,
+                    email=f"{owner.value}@test",
+                    hashed_password="x",
+                    created_at=datetime.now(),
+                    updated_at=datetime.now(),
+                )
+            )
+        ta, tb = Therapist.create(owner_a, "A Therapist"), Therapist.create(owner_b, "B Therapist")
+        repo = SqlAlchemyTherapistRepository(db)
+        repo.save(ta)
+        repo.save(tb)
+        db.commit()
+
+    def db_override():
+        with factory() as db:
+            yield db
+
+    current_owner = owner_a
+    app.dependency_overrides[get_db] = db_override
+    app.dependency_overrides[get_current_user_id] = lambda: current_owner
+    with TestClient(app) as client:
+        current_owner = owner_b
+        foreign = client.post(
+            "/therapy/sessions",
+            json={
+                "therapist_id": tb.id.value,
+                "occurred_at": "2026-01-01T12:00:00Z",
+                "private_note": "owner-b-note",
+            },
+        ).json()
+        current_owner = owner_a
+        own_ids = []
+        for i in range(5):
+            response = client.post(
+                "/therapy/sessions",
+                json={
+                    "therapist_id": ta.id.value,
+                    "occurred_at": f"2026-01-0{i + 1}T12:00:00Z",
+                    "private_note": f"note-{i}",
+                },
+            )
+            own_ids.append(response.json()["id"])
+        history = client.get("/therapy/sessions").json()
+        assert history["total_items"] == 5
+        assert foreign["id"] not in {item["id"] for item in history["items"]}
+        page = client.get("/therapy/sessions?page=2&size=2").json()
+        assert (
+            page["page"] == 2
+            and page["size"] == 2
+            and page["total_items"] == 5
+            and page["total_pages"] == 3
+        )
+        assert [item["id"] for item in page["items"]] == [item["id"] for item in history["items"]][
+            2:4
+        ]
+        assert all(
+            set(item) == {"id", "therapist_id", "therapist_name", "occurred_at"}
+            for item in history["items"]
+        )
+        current_owner = owner_b
+        assert client.get(f"/therapy/sessions/{foreign['id']}").status_code == 200
+        current_owner = owner_a
+        missing = TherapySessionId.new().value
+        patch_foreign = client.patch(
+            f"/therapy/sessions/{foreign['id']}/private-note", json={"private_note": "x"}
+        )
+        delete_foreign = client.delete(f"/therapy/sessions/{foreign['id']}")
+        patch_missing = client.patch(
+            f"/therapy/sessions/{missing}/private-note", json={"private_note": "x"}
+        )
+        delete_missing = client.delete(f"/therapy/sessions/{missing}")
+        assert (
+            patch_foreign.status_code == patch_missing.status_code == 404
+            and patch_foreign.json() == patch_missing.json()
+        )
+        assert (
+            delete_foreign.status_code == delete_missing.status_code == 404
+            and delete_foreign.json() == delete_missing.json()
+        )
+        current_owner = owner_b
+        assert (
+            client.get(f"/therapy/sessions/{foreign['id']}").json()["private_note"]
+            == "owner-b-note"
+        )
     app.dependency_overrides.clear()
     engine.dispose()

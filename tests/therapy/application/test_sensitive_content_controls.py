@@ -25,8 +25,10 @@ class Repo:
         self.session = session
         self.saved = []
         self.deleted = []
+        self.lookups = []
 
     def get_by_id_and_owner(self, session_id, owner_id):
+        self.lookups.append((session_id, owner_id))
         if self.session and self.session.id == session_id and self.session.owner_id == owner_id:
             return self.session
         return None
@@ -80,6 +82,7 @@ def test_update_private_note_is_owner_scoped_and_minimized():
     )
     assert result == TherapySessionPrivateNoteDTO(session.id.value, "revised")
     assert session.private_note == "revised" and len(repo.saved) == 1 and uow.commits == 1
+    assert repo.lookups == [(session.id, owner)]
     assert "revised" not in repr(result)
     assert "revised" not in repr(UpdatePrivateNoteCommand(owner, session.id, "revised"))
     assert "known-sensitive-value" not in repr(
@@ -87,6 +90,31 @@ def test_update_private_note_is_owner_scoped_and_minimized():
             owner, session.therapist_id, session.occurred_at, "known-sensitive-value"
         )
     )
+
+
+@pytest.mark.parametrize("note", [None, "   "])
+def test_update_private_note_clear_preserves_structure(note):
+    owner = UserId.new()
+    session = make_session(owner)
+    before = (session.owner_id, session.therapist_id, session.occurred_at)
+    repo, uow = Repo(session), Uow()
+    result = UpdatePrivateNoteCommandHandler(repo, uow)(
+        UpdatePrivateNoteCommand(owner, session.id, note)
+    )
+    assert session.private_note is None and result.private_note is None
+    assert len(repo.saved) == 1 and uow.commits == 1
+    assert (session.owner_id, session.therapist_id, session.occurred_at) == before
+
+
+def test_update_private_note_foreign_owner_is_not_found():
+    owner_a, owner_b = UserId.new(), UserId.new()
+    session = make_session(owner_b)
+    repo, uow = Repo(session), Uow()
+    with pytest.raises(TherapySessionNotFoundError):
+        UpdatePrivateNoteCommandHandler(repo, uow)(
+            UpdatePrivateNoteCommand(owner_a, session.id, "x")
+        )
+    assert not repo.saved and uow.commits == 0
 
 
 def test_update_private_note_failures_do_not_save_or_commit():
@@ -119,11 +147,21 @@ def test_delete_private_session_is_owner_scoped_and_commits_once():
     assert repo.deleted == [session] and uow.commits == 1
 
 
-def test_delete_missing_or_foreign_session_does_not_delete_or_commit():
+def test_delete_missing_session_does_not_delete_or_commit():
     owner = UserId.new()
     repo, uow = Repo(), Uow()
     with pytest.raises(TherapySessionNotFoundError):
         DeleteTherapySessionCommandHandler(repo, uow)(
             DeleteTherapySessionCommand(owner, TherapySessionId.new())
+        )
+    assert not repo.deleted and uow.commits == 0
+
+
+def test_delete_foreign_session_does_not_delete_or_commit():
+    owner_a, owner_b = UserId.new(), UserId.new()
+    repo, uow = Repo(make_session(owner_b)), Uow()
+    with pytest.raises(TherapySessionNotFoundError):
+        DeleteTherapySessionCommandHandler(repo, uow)(
+            DeleteTherapySessionCommand(owner_a, repo.session.id)
         )
     assert not repo.deleted and uow.commits == 0
