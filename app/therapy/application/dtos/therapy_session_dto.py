@@ -26,3 +26,9 @@ class TherapySessionHistoryPageDTO:
     size: int
     total_items: int
     total_pages: int
+
+
+@dataclass(frozen=True)
+class TherapySessionPrivateNoteDTO:
+    id: str
+    private_note: str | None = field(repr=False)
