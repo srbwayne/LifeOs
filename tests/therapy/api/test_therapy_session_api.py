@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
 from sqlalchemy import StaticPool, create_engine
@@ -12,6 +12,7 @@ from app.shared.infrastructure.database import Base, get_db
 from app.therapy.domain.aggregates.therapist import Therapist
 from app.therapy.domain.value_objects.therapist_id import TherapistId
 from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
+from app.therapy.infrastructure.persistence.models.therapy_session_model import TherapySessionModel
 from app.therapy.infrastructure.persistence.repositories.therapist_repository import (
     SqlAlchemyTherapistRepository,
 )
@@ -354,5 +355,72 @@ def test_session_detail_missing_foreign_and_history_ordering_privacy():
         assert (
             missing.status_code == foreign.status_code == 404 and missing.json() == foreign.json()
         )
+    app.dependency_overrides.clear()
+    engine.dispose()
+
+
+def test_session_api_future_inactive_and_fresh_commit():
+    engine = create_engine(
+        "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
+    factory = sessionmaker(bind=engine)
+    Base.metadata.create_all(engine)
+    app = create_app()
+    owner = UserId.new()
+    with factory() as db:
+        db.add(
+            UserModel(
+                id=owner.value,
+                email=f"{owner.value}@test",
+                hashed_password="x",
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+            )
+        )
+        therapist = Therapist.create(owner, "Dr. A")
+        SqlAlchemyTherapistRepository(db).save(therapist)
+        db.commit()
+
+    def db_override():
+        with factory() as db:
+            yield db
+
+    app.dependency_overrides[get_db] = db_override
+    app.dependency_overrides[get_current_user_id] = lambda: owner
+    with TestClient(app) as client:
+        base = {
+            "therapist_id": therapist.id.value,
+            "occurred_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+        }
+        assert client.post("/therapy/sessions", json=base).status_code == 422
+        assert (
+            client.post(f"/therapy/therapists/{therapist.id.value}/deactivate").status_code == 200
+        )
+        inactive = client.post(
+            "/therapy/sessions",
+            json={**base, "occurred_at": datetime.now(timezone.utc).isoformat()},
+        )
+        assert inactive.status_code == 409 and inactive.json() == {
+            "detail": "Therapist is inactive."
+        }
+        client.post(f"/therapy/therapists/{therapist.id.value}/reactivate")
+        created = client.post(
+            "/therapy/sessions",
+            json={
+                **base,
+                "occurred_at": "2026-01-01T18:00:00-03:00",
+                "private_note": " normalized ",
+            },
+        )
+        assert created.status_code == 201
+        body = created.json()
+    with factory() as db:
+        persisted = db.get(TherapySessionModel, body["id"])
+        assert (
+            persisted is not None
+            and persisted.user_id == owner.value
+            and persisted.therapist_id == therapist.id.value
+        )
+        assert persisted.private_note == "normalized"
     app.dependency_overrides.clear()
     engine.dispose()
