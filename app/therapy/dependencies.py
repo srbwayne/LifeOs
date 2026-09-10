@@ -15,7 +15,11 @@ from app.therapy.application.commands.create_therapy_session import (
     CreateTherapySessionCommandHandler,
 )
 from app.therapy.application.commands.deactivate_therapist import DeactivateTherapistCommandHandler
+from app.therapy.application.commands.delete_therapy_session import (
+    DeleteTherapySessionCommandHandler,
+)
 from app.therapy.application.commands.reactivate_therapist import ReactivateTherapistCommandHandler
+from app.therapy.application.commands.update_private_note import UpdatePrivateNoteCommandHandler
 from app.therapy.application.ports.therapist_read_repository import ITherapistReadRepository
 from app.therapy.application.ports.therapy_session_read_repository import (
     ITherapySessionReadRepository,
@@ -127,3 +131,17 @@ def get_list_therapy_sessions_handler(
     repository: ITherapySessionReadRepository = Depends(get_therapy_session_read_repository),
 ) -> ListTherapySessionsQueryHandler:
     return ListTherapySessionsQueryHandler(repository)
+
+
+def get_update_private_note_handler(
+    repository: ITherapySessionRepository = Depends(get_therapy_session_repository),
+    unit_of_work: IUnitOfWork = Depends(get_therapy_uow),
+) -> UpdatePrivateNoteCommandHandler:
+    return UpdatePrivateNoteCommandHandler(repository, unit_of_work)
+
+
+def get_delete_therapy_session_handler(
+    repository: ITherapySessionRepository = Depends(get_therapy_session_repository),
+    unit_of_work: IUnitOfWork = Depends(get_therapy_uow),
+) -> DeleteTherapySessionCommandHandler:
+    return DeleteTherapySessionCommandHandler(repository, unit_of_work)

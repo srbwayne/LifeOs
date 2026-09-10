@@ -1,6 +1,6 @@
 # ruff: noqa: B008
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
 from app.composition_root import get_current_user_id
 from app.shared.domain.identifiers.user_id import UserId
@@ -8,9 +8,18 @@ from app.therapy.application.commands.create_therapy_session import (
     CreateTherapySessionCommand,
     CreateTherapySessionCommandHandler,
 )
+from app.therapy.application.commands.delete_therapy_session import (
+    DeleteTherapySessionCommand,
+    DeleteTherapySessionCommandHandler,
+)
+from app.therapy.application.commands.update_private_note import (
+    UpdatePrivateNoteCommand,
+    UpdatePrivateNoteCommandHandler,
+)
 from app.therapy.application.dtos.therapy_session_dto import (
     TherapySessionDetailDTO,
     TherapySessionHistoryPageDTO,
+    TherapySessionPrivateNoteDTO,
 )
 from app.therapy.application.queries.get_therapy_session import (
     GetTherapySessionQuery,
@@ -22,8 +31,10 @@ from app.therapy.application.queries.list_therapy_sessions import (
 )
 from app.therapy.dependencies import (
     get_create_therapy_session_handler,
+    get_delete_therapy_session_handler,
     get_get_therapy_session_handler,
     get_list_therapy_sessions_handler,
+    get_update_private_note_handler,
 )
 from app.therapy.domain.value_objects.therapist_id import TherapistId
 from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
@@ -32,6 +43,8 @@ from app.therapy.presentation.api.fastapi.schemas import (
     TherapySessionDetailResponse,
     TherapySessionHistoryItemResponse,
     TherapySessionHistoryPageResponse,
+    TherapySessionPrivateNoteResponse,
+    UpdatePrivateNoteRequest,
 )
 
 session_router = APIRouter(prefix="/therapy/sessions", tags=["Therapy"])
@@ -105,3 +118,30 @@ def get_session(
 ) -> TherapySessionDetailResponse:
     parsed = _id(session_id, TherapySessionId, "Invalid therapy session ID.")
     return _detail(handler(GetTherapySessionQuery(user_id, parsed)))
+
+
+@session_router.patch(
+    "/{session_id}/private-note", response_model=TherapySessionPrivateNoteResponse
+)
+def update_private_note(
+    session_id: str,
+    request: UpdatePrivateNoteRequest,
+    user_id: UserId = Depends(get_current_user_id),
+    handler: UpdatePrivateNoteCommandHandler = Depends(get_update_private_note_handler),
+) -> TherapySessionPrivateNoteResponse:
+    parsed = _id(session_id, TherapySessionId, "Invalid therapy session ID.")
+    result: TherapySessionPrivateNoteDTO = handler(
+        UpdatePrivateNoteCommand(user_id, parsed, request.private_note)
+    )
+    return TherapySessionPrivateNoteResponse(id=result.id, private_note=result.private_note)
+
+
+@session_router.delete("/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_session(
+    session_id: str,
+    user_id: UserId = Depends(get_current_user_id),
+    handler: DeleteTherapySessionCommandHandler = Depends(get_delete_therapy_session_handler),
+) -> Response:
+    parsed = _id(session_id, TherapySessionId, "Invalid therapy session ID.")
+    handler(DeleteTherapySessionCommand(user_id, parsed))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 from app.shared.application.unit_of_work import IUnitOfWork
@@ -17,7 +17,7 @@ class CreateTherapySessionCommand:
     owner_id: UserId
     therapist_id: TherapistId
     occurred_at: datetime
-    private_note: str | None = None
+    private_note: str | None = field(default=None, repr=False)
 
 
 class CreateTherapySessionCommandHandler:

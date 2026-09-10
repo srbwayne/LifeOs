@@ -19,7 +19,7 @@ class CreateTherapySessionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     therapist_id: str
     occurred_at: datetime
-    private_note: str | None = Field(default=None, max_length=10_000)
+    private_note: str | None = Field(default=None, max_length=10_000, repr=False)
 
 
 class TherapySessionDetailResponse(BaseModel):
@@ -27,7 +27,17 @@ class TherapySessionDetailResponse(BaseModel):
     therapist_id: str
     therapist_name: str
     occurred_at: datetime
-    private_note: str | None
+    private_note: str | None = Field(repr=False)
+
+
+class UpdatePrivateNoteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    private_note: str | None = Field(..., max_length=10_000, repr=False)
+
+
+class TherapySessionPrivateNoteResponse(BaseModel):
+    id: str
+    private_note: str | None = Field(repr=False)
 
 
 class TherapySessionHistoryItemResponse(BaseModel):
