@@ -70,12 +70,36 @@ def test_private_note_update_and_delete_api_with_disposable_db():
             ).json()["private_note"]
             is None
         )
+        assert client.get(f"/therapy/sessions/{sid}").json()["private_note"] is None
+        assert (
+            client.patch(
+                f"/therapy/sessions/{sid}/private-note", json={"private_note": "restored"}
+            ).status_code
+            == 200
+        )
         assert (
             client.patch(
                 f"/therapy/sessions/{sid}/private-note", json={"private_note": "   "}
             ).json()["private_note"]
             is None
         )
+        assert client.get(f"/therapy/sessions/{sid}").json()["private_note"] is None
+        malformed_patch = client.patch(
+            "/therapy/sessions/not-a-tsid/private-note", json={"private_note": "x"}
+        )
+        malformed_delete = client.delete("/therapy/sessions/not-a-tsid")
+        assert malformed_patch.status_code == malformed_delete.status_code == 422
+        assert (
+            malformed_patch.json()["detail"]
+            == malformed_delete.json()["detail"]
+            == "Invalid therapy session ID."
+        )
+        for extra in ("owner_id", "user_id", "therapist_id", "occurred_at"):
+            response = client.patch(
+                f"/therapy/sessions/{sid}/private-note",
+                json={"private_note": "x", extra: "extra"},
+            )
+            assert response.status_code == 422
         assert client.patch(f"/therapy/sessions/{sid}/private-note", json={}).status_code == 422
         oversized = client.patch(
             f"/therapy/sessions/{sid}/private-note",
@@ -225,6 +249,8 @@ def test_private_note_owner_isolation_and_real_pagination():
             f"/therapy/sessions/{missing}/private-note", json={"private_note": "x"}
         )
         delete_missing = client.delete(f"/therapy/sessions/{missing}")
+        assert "known-sensitive-value" not in patch_foreign.text
+        assert "known-sensitive-value" not in delete_foreign.text
         assert (
             patch_foreign.status_code == patch_missing.status_code == 404
             and patch_foreign.json() == patch_missing.json()

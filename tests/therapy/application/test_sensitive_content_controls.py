@@ -12,12 +12,21 @@ from app.therapy.application.commands.update_private_note import (
     UpdatePrivateNoteCommand,
     UpdatePrivateNoteCommandHandler,
 )
-from app.therapy.application.dtos.therapy_session_dto import TherapySessionPrivateNoteDTO
+from app.therapy.application.dtos.therapy_session_dto import (
+    TherapySessionDetailDTO,
+    TherapySessionPrivateNoteDTO,
+)
 from app.therapy.application.errors import TherapySessionNotFoundError
 from app.therapy.domain.aggregates.therapy_session import TherapySession
 from app.therapy.domain.errors.therapy_errors import InvalidPrivateNoteError
 from app.therapy.domain.value_objects.therapist_id import TherapistId
 from app.therapy.domain.value_objects.therapy_session_id import TherapySessionId
+from app.therapy.presentation.api.fastapi.schemas import (
+    CreateTherapySessionRequest,
+    TherapySessionDetailResponse,
+    TherapySessionPrivateNoteResponse,
+    UpdatePrivateNoteRequest,
+)
 
 
 class Repo:
@@ -165,3 +174,44 @@ def test_delete_foreign_session_does_not_delete_or_commit():
             DeleteTherapySessionCommand(owner_a, repo.session.id)
         )
     assert not repo.deleted and uow.commits == 0
+
+
+def test_sensitive_repr_matrix_excludes_note_but_serialization_preserves_it():
+    sentinel = "known-sensitive-value"
+    owner = UserId.new()
+    session = make_session(owner)
+    command = CreateTherapySessionCommand(
+        owner, session.therapist_id, session.occurred_at, sentinel
+    )
+    update_command = UpdatePrivateNoteCommand(owner, session.id, sentinel)
+    detail_dto = TherapySessionDetailDTO(
+        session.id.value, session.therapist_id.value, "Dr", session.occurred_at, sentinel
+    )
+    objects = [
+        session,
+        detail_dto,
+        command,
+        update_command,
+        TherapySessionPrivateNoteDTO(session.id.value, sentinel),
+        CreateTherapySessionRequest(
+            therapist_id=session.therapist_id.value,
+            occurred_at=session.occurred_at,
+            private_note=sentinel,
+        ),
+        UpdatePrivateNoteRequest(private_note=sentinel),
+        TherapySessionDetailResponse(
+            id=session.id.value,
+            therapist_id=session.therapist_id.value,
+            therapist_name="Dr",
+            occurred_at=session.occurred_at,
+            private_note=sentinel,
+        ),
+        TherapySessionPrivateNoteResponse(id=session.id.value, private_note=sentinel),
+    ]
+    assert all(sentinel not in repr(obj) for obj in objects)
+    assert (
+        TherapySessionPrivateNoteResponse(id="x", private_note=sentinel).model_dump()[
+            "private_note"
+        ]
+        == sentinel
+    )
