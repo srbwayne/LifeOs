@@ -205,7 +205,7 @@ def test_private_note_owner_isolation_and_real_pagination():
             json={
                 "therapist_id": tb.id.value,
                 "occurred_at": "2026-01-01T12:00:00Z",
-                "private_note": "owner-b-note",
+                "private_note": "known-sensitive-value",
             },
         ).json()
         current_owner = owner_a
@@ -262,7 +262,7 @@ def test_private_note_owner_isolation_and_real_pagination():
         current_owner = owner_b
         assert (
             client.get(f"/therapy/sessions/{foreign['id']}").json()["private_note"]
-            == "owner-b-note"
+            == "known-sensitive-value"
         )
     app.dependency_overrides.clear()
     engine.dispose()
