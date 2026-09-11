@@ -60,7 +60,7 @@ Therapy V1 excludes appointments, scheduling, diagnosis, treatment records, clin
 - 003E — Sensitive Content Control — CLOSED (PR #68)
 - 003F — closeout and isolated operational validation
 
-The canonical final main is `100a8536f29ce7b756add6487f92d628c6af0ce6`. Earlier slice details remain in Git history and the merged PR records; no unsupported historical SHA claims are added here.
+The canonical Therapy V1 implementation baseline before this documentation-only closeout is `100a8536f29ce7b756add6487f92d628c6af0ce6`. Earlier slice details remain in Git history and the merged PR records; no unsupported historical SHA claims are added here.
 
 ## Operational state
 
