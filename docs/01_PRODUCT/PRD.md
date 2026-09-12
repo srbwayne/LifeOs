@@ -6116,9 +6116,9 @@ THER-008
 
 # 25. Requisitos Funcionais — Habits (RF-HAB)
 
-A Capability **Habits** é responsável pelo gerenciamento dos hábitos do Player.
+A Capability **Habits** é responsável pelo gerenciamento de definições de hábitos e fatos binários de conclusão do Player.
 
-Seu objetivo é permitir a criação, organização, execução e acompanhamento de hábitos recorrentes, fornecendo informações para a Game Engine, Analytics e Inteligência Artificial.
+No V1, Habits é owner-scoped e owner-private: inclui HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 (Sequência/Streak), HAB-004 (Frequência) e HAB-005 (Estatísticas) permanecem DEFERRED. Não há integração atual com Game/Logos, Analytics ou Inteligência Artificial.
 
 Os requisitos deste capítulo descrevem o comportamento esperado para o gerenciamento dos hábitos do Player durante toda sua jornada no LifeOS.
 
@@ -6179,7 +6179,7 @@ HAB-001
 
 ---
 
-# RF-HAB-002 — Gerenciamento de Rotinas
+# RF-HAB-002 — Gerenciamento de Rotinas (DEFERRED / NON-V1)
 
 ## Objetivo
 
@@ -6229,7 +6229,7 @@ HAB
 
 ## Feature
 
-HAB-002
+DEFERRED / NON-V1 — sem Feature canônica; este requisito não é HAB-002.
 
 ---
 
@@ -6245,7 +6245,7 @@ Permitir registrar a execução de um hábito.
 
 O sistema deverá registrar cada execução realizada pelo Player.
 
-Cada execução representa um evento oficial da plataforma.
+Cada registro é um fato binário de conclusão para uma data civil explícita (`record_date`). A existência de uma HabitCompletion representa a conclusão; não há evento oficial ou despacho externo no V1.
 
 ---
 
@@ -6273,7 +6273,7 @@ Cada execução representa um evento oficial da plataforma.
 ## Critérios de Aceite
 
 - Cada execução deverá compor o histórico do hábito.
-- O evento deverá ser disponibilizado para a Game Engine.
+- O fato deverá permanecer consultável no histórico owner-scoped; não há despacho para Game Engine/Logos no V1.
 
 ---
 
@@ -6285,11 +6285,13 @@ HAB
 
 ## Feature
 
-HAB-003
+HAB-002 — Checklist diário
+
+V1: binário, idempotente por `(owner_id, habit_id, record_date)` e com correção por remoção.
 
 ---
 
-# RF-HAB-004 — Controle de Frequência
+# RF-HAB-004 — Controle de Frequência (DEFERRED / NON-V1)
 
 ## Objetivo
 
@@ -6339,11 +6341,13 @@ HAB
 
 ## Feature
 
-HAB-004
+HAB-004 — Frequência
+
+DEFERRED / NON-V1.
 
 ---
 
-# RF-HAB-005 — Controle de Streaks
+# RF-HAB-005 — Controle de Streaks (DEFERRED / NON-V1)
 
 ## Objetivo
 
@@ -6395,7 +6399,9 @@ HAB
 
 ## Feature
 
-HAB-005
+HAB-003 — Sequência (Streak)
+
+DEFERRED / NON-V1.
 
 ---
 
@@ -6448,11 +6454,13 @@ HAB
 
 ## Feature
 
-HAB-006
+HAB-002 — Checklist diário
+
+V1: consulta dos fatos binários de conclusão.
 
 ---
 
-# RF-HAB-007 — Visualização de Estatísticas
+# RF-HAB-007 — Visualização de Estatísticas (DEFERRED / NON-V1)
 
 ## Objetivo
 
@@ -6501,11 +6509,13 @@ HAB
 
 ## Feature
 
-HAB-007
+HAB-005 — Estatísticas
+
+DEFERRED / NON-V1.
 
 ---
 
-# RF-HAB-008 — Visualização da Evolução dos Hábitos
+# RF-HAB-008 — Visualização da Evolução dos Hábitos (DEFERRED / CROSS-DOMAIN FUTURE)
 
 ## Objetivo
 
@@ -6554,11 +6564,11 @@ HAB
 
 ## Feature
 
-HAB-008
+DEFERRED / CROSS-DOMAIN FUTURE — sem Feature canônica.
 
 ---
 
-# RF-HAB-009 — Integração com a Game Engine
+# RF-HAB-009 — Integração com a Game Engine (DEFERRED / NOT AUTHORIZED)
 
 ## Objetivo
 
@@ -6568,7 +6578,7 @@ Disponibilizar eventos de hábitos para processamento pela Game Engine.
 
 ## Descrição
 
-Toda execução registrada deverá gerar um evento oficial para processamento pela Game Engine.
+A integração com Game Engine/Logos é DEFERRED / NOT AUTHORIZED; HabitCompletion não gera evento externo no V1.
 
 A Capability Habits não deverá calcular experiência, níveis, recompensas ou progressão.
 
@@ -6582,16 +6592,13 @@ A Capability Habits não deverá calcular experiência, níveis, recompensas ou 
 
 ## Fluxo Principal
 
-1. Registrar execução.
-2. Persistir informações.
-3. Publicar evento de domínio.
-4. Disponibilizar o evento para a Game Engine.
+Este fluxo é DEFERRED / NOT AUTHORIZED no V1; nenhum evento é publicado.
 
 ---
 
 ## Pós-condições
 
-- Evento disponível para processamento.
+- Nenhum evento externo é produzido pelo V1.
 
 ---
 
@@ -6599,7 +6606,7 @@ A Capability Habits não deverá calcular experiência, níveis, recompensas ou 
 
 - Habits não deverá alterar diretamente o Character.
 - Toda evolução deverá ocorrer exclusivamente pela Game Engine.
-- O evento deverá permanecer disponível para os módulos autorizados.
+- A evolução e qualquer integração permanecem fora do V1.
 
 ---
 
@@ -6611,7 +6618,7 @@ HAB
 
 ## Feature
 
-HAB-003
+DEFERRED / NOT AUTHORIZED — sem associação a HAB-003.
 
 ---
 
@@ -6625,15 +6632,10 @@ Permitir visualizar todos os hábitos do Player em uma única consulta.
 
 ## Descrição
 
-O sistema deverá apresentar uma visão consolidada contendo:
+No V1, a consulta consolidada representa apenas as definições de hábitos do proprietário (HAB-001). Os demais itens abaixo são futuros/deferred:
 
-- hábitos cadastrados;
-- rotinas;
-- frequência;
-- streaks;
-- histórico;
-- estatísticas;
-- evolução.
+- hábitos cadastrados (V1);
+- rotinas, frequência, streaks, histórico agregado, estatísticas e evolução (DEFERRED).
 
 ---
 
@@ -6673,7 +6675,7 @@ HAB
 
 ## Feature
 
-HAB-006
+HAB-001 — Cadastro de hábitos
 
 ---
 
