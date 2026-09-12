@@ -861,3 +861,13 @@ A Sprint 01 foi concluída com sucesso, entregando a fundação arquitetural e a
 **Next Gate:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW
 
 ---
+## Habits V1 Business Contract / Therapy Operational Closure — 2026-09-12
+
+- Canonical `main` baseline: `2d9dd73364bc92725ed4870c3b59616e44c2812f`.
+- Therapy V1 implementation is CLOSED; operational cutover passed and the operational DB is at `0010`; THERAPY-OPS-001 is CLOSED.
+- Habits discovery completed and reconciled conflicting legacy feature numbering. `FEATURE_CATALOG.md` remains the Feature-ID authority.
+- Habits V1 business contract is approved: V1 = HAB-001 (Cadastro de hábitos) + HAB-002 (Checklist diário); HAB-003..005 are deferred.
+- No Habits source, database schema, or migration `0011` exists; no Habits implementation is authorized by this governance update.
+- Habits has no progression eligibility, Logos integration, or Noema/AI integration. The next gate is HABITS V1 TECHNICAL PLAN / ARCHITECTURE REVIEW.
+
+---

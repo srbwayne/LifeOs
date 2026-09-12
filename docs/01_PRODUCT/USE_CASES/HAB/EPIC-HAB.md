@@ -8,7 +8,7 @@ HAB
 
 Gerenciar os hábitos do Player dentro do LifeOS.
 
-A Capability Habits é responsável por registrar, acompanhar e incentivar a execução contínua de hábitos, promovendo consistência ao longo do tempo e contribuindo para a evolução do Character por meio das regras oficiais da Game Engine.
+A Capability Habits é responsável por registrar definições de hábitos e fatos binários de conclusão do Player. No V1, é owner-private e limitada a HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003..005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
 
 ---
 
@@ -17,53 +17,40 @@ A Capability Habits é responsável por registrar, acompanhar e incentivar a exe
 A Capability Habits é responsável por:
 
 - Cadastro de Hábitos;
-- Organização de Rotinas;
-- Execução de Hábitos;
-- Controle de Frequência;
-- Controle de Streaks;
-- Histórico de Execuções;
-- Estatísticas de Consistência;
-- Acompanhamento da Evolução.
+- Checklist diário e histórico de HabitCompletion (HAB-002);
+- Frequência (HAB-004) — DEFERRED;
+- Sequência/Streak (HAB-003) — DEFERRED;
+- Estatísticas (HAB-005) — DEFERRED;
+- Rotinas e evolução — conceitos futuros DEFERRED.
 
 ---
 
 ## Features
 
 - HAB-001 — Cadastro de Hábitos;
-- HAB-002 — Rotinas;
-- HAB-003 — Registro de Execução;
-- HAB-004 — Frequência;
-- HAB-005 — Streaks;
-- HAB-006 — Histórico;
-- HAB-007 — Estatísticas;
-- HAB-008 — Evolução dos Hábitos.
+- HAB-002 — Checklist diário
+- HAB-003 — Sequência (Streak)
+- HAB-004 — Frequência
+- HAB-005 — Estatísticas
+
+V1 = HAB-001 + HAB-002. HAB-003..005 = DEFERRED.
 
 ---
 
 ## Dependências
 
 - AUTH;
-- CHAR;
-- GAME.
+- persistência owner-scoped do LifeOS.
 
-Authentication garante a identidade do Player.
+CHAR, GAME, Analytics e AI/Noema são dependências futuras, não ativadas no V1.
 
-Character representa quem evolui.
-
-Game Engine aplica as regras oficiais de experiência, progressão, missões, recompensas e demais mecanismos relacionados aos hábitos.
+Authentication garante a identidade do Player. O V1 registra fatos no LifeOS; não calcula evolução nem envia dados à Game Engine.
 
 ---
 
 ## Consumidores
 
-A Capability Habits disponibiliza informações para:
-
-- Character;
-- Dashboard;
-- Analytics;
-- AI Mentor;
-- AI Coaching;
-- Reports.
+A Capability Habits disponibiliza dados ao próprio proprietário e às telas internas autorizadas do LifeOS. Exposição externa, Logos, Noema/AI e Analytics permanecem DEFERRED.
 
 ---
 
@@ -72,68 +59,41 @@ A Capability Habits disponibiliza informações para:
 Habits deverá garantir que:
 
 - cada hábito pertença exclusivamente ao Player autenticado;
-- toda execução seja registrada no histórico;
-- o histórico nunca seja sobrescrito;
-- a frequência seja calculada automaticamente;
-- os Streaks sejam calculados pelas regras oficiais da Game Engine;
-- a experiência obtida seja processada exclusivamente pela Game Engine;
-- Analytics e Inteligência Artificial possam utilizar os dados registrados para produção de indicadores e recomendações.
+- cada Habit pertença exclusivamente ao proprietário autenticado;
+- HabitCompletion seja um fato binário único por proprietário, hábito e data civil;
+- a repetição da marcação seja idempotente e a remoção permita correção histórica;
+- desativação preserve fatos históricos e impeça novas conclusões;
+- não haja despacho de eventos, progressão, Logos ou Noema/AI no V1.
 
 ---
 
 ## Fluxo Simplificado
 
 ```text
-Player
+Player autenticado
 
 ↓
 
-Execução do hábito
+Cadastro do Habit (HAB-001)
 
 ↓
 
-Validação
+Marcação explícita de record_date (HAB-002)
 
 ↓
 
-Persistência
+Validação owner-scoped
 
 ↓
 
-Game Engine
-
-↓
-
-Atualização do Character
-
-↓
-
-Analytics
-
-↓
-
-IA
-
-↓
-
-Dashboard
+Persistência do fato binário / consulta do histórico
 ```
 
 ---
 
 ## Integração com a Plataforma
 
-A Capability Habits integra-se principalmente com:
-
-- Character;
-- Game Engine;
-- Dashboard;
-- Analytics;
-- AI Mentor;
-- AI Coaching;
-- Reports.
-
-Os hábitos representam uma das principais fontes de evolução contínua do Character, alimentando os mecanismos de Progression, Experience, Streaks, Quests, Missions e Rewards definidos pela Game Engine.
+No V1, a Capability Habits não integra Game/Logos, Progression, Analytics ou AI/Noema e não despacha eventos externos. Integrações futuras permanecem uma possibilidade arquitetural DEFERRED.
 
 ---
 
@@ -141,11 +101,9 @@ Os hábitos representam uma das principais fontes de evolução contínua do Cha
 
 A Capability Habits será considerada completa quando:
 
-- todas as Features HAB estiverem implementadas;
-- hábitos puderem ser cadastrados e organizados;
-- execuções puderem ser registradas;
-- o histórico permanecer disponível para consulta;
-- os Streaks forem calculados corretamente;
-- a Game Engine processar corretamente a evolução do Character;
-- Analytics e Inteligência Artificial consumirem corretamente os dados produzidos por Habits;
+- HAB-001 e HAB-002 forem implementados conforme autorização futura;
+- hábitos puderem ser cadastrados, desativados e reativados;
+- fatos binários puderem ser marcados, consultados e corrigidos por data civil;
+- o histórico permanecer owner-scoped;
+- HAB-003..005 forem tratados como escopo separado e DEFERRED;
 - todas as regras permanecerem compatíveis com a arquitetura oficial do LifeOS.
