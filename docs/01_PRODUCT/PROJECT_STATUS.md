@@ -7,7 +7,9 @@
 - No Habits source, database schema, or migration `0011` exists; no Habits implementation is authorized by this governance update.
 - Habits has no progression eligibility, Logos integration, or Noema/AI integration. The next gate is HABITS V1 TECHNICAL PLAN / ARCHITECTURE REVIEW.
 
----\n\n## LifeOS Progression Integration / Post-Merge Governance — 2026-09-06
+---
+
+## LifeOS Progression Integration / Post-Merge Governance — 2026-09-06
 
 - Canonical `main` is `1e3b1c72e19fa1e0b34a668ad636d79f75bd91e3`.
 - PR #57 integrated the LifeOS-owned progression seam while preserving
@@ -870,5 +872,3 @@ A Sprint 01 foi concluída com sucesso, entregando a fundação arquitetural e a
 **Next Gate:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW
 
 ---
-
-\n
