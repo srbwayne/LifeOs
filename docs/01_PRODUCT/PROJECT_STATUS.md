@@ -1,3 +1,13 @@
+## Habits V1 Technical Plan / Architecture Review — 2026-09-12
+
+- HABITS-002R is CLOSED and MERGED; the approved Habits business contract remains canonical.
+- HABITS-003 technical architecture discovery is complete and HABITS-004 technical plan is approved.
+- Habits implementation remains unauthorized and migration `0011` is absent.
+- Progression, Logos and Noema/AI remain unchanged and inactive for Habits.
+- The next gate is HABITS V1 IMPLEMENTATION SLICING / SLICE 1 AUTHORIZATION.
+
+---
+
 ## Habits V1 Business Contract / Therapy Operational Closure — 2026-09-12
 
 - Canonical `main` baseline: `2d9dd73364bc92725ed4870c3b59616e44c2812f`.
