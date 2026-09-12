@@ -58,7 +58,6 @@ A Capability Habits disponibiliza dados ao próprio proprietário e às telas in
 
 Habits deverá garantir que:
 
-- cada hábito pertença exclusivamente ao Player autenticado;
 - cada Habit pertença exclusivamente ao proprietário autenticado;
 - HabitCompletion seja um fato binário único por proprietário, hábito e data civil;
 - a repetição da marcação seja idempotente e a remoção permita correção histórica;

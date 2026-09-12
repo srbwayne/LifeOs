@@ -6441,8 +6441,9 @@ O sistema deverá apresentar o histórico completo das execuções registradas p
 
 ## Critérios de Aceite
 
-- Nenhuma execução poderá ser perdida.
-- O histórico deverá permanecer em ordem cronológica.
+- Os fatos de HabitCompletion devem permanecer disponíveis, salvo quando explicitamente removidos pelo proprietário por meio da operação de correção do V1.
+- Corrigir um fato não pode remover nem alterar fatos de conclusão não relacionados.
+- O histórico retorna os fatos de conclusão atualmente registrados e owner-scoped, em ordem cronológica.
 
 ---
 
