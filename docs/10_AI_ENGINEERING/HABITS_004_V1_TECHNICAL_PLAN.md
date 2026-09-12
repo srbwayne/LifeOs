@@ -70,7 +70,7 @@ The correctness boundary is the database unique key `(user_id, habit_id, record_
 
 The first and repeated responses use the same completion representation. The existing SQLite write-intent capability is concrete infrastructure only and is not part of the application protocol. If Habits later needs to reuse it, that must be proven by infrastructure tests and exposed through an explicitly reviewed application abstraction. Unique-constraint enforcement plus conflict recovery is mandatory.
 
-## 5. Unmark and transactions
+## 5. Mark, unmark and transactions
 
 Use `POST /habits/{habit_id}/completions` with body `{ "record_date": "YYYY-MM-DD" }`. The response is `HabitCompletionResponse` with `id`, `habit_id`, and `record_date`; it does not expose `owner_id` or require `created_at`. First persistence returns `201`; an existing completion, concurrent winner resolution, or inactive Habit with an existing completion returns `200`; inactive without an existing completion returns `409`; malformed Habit ID or date returns `422`; missing/foreign Habit returns `404`.
 
@@ -139,7 +139,7 @@ Checklist and history use projection-oriented read repositories where useful. No
 
 ## 10. Errors and composition
 
-Use `InvalidHabitNameError` → `422`, `HabitNotFoundError` → `404`, `HabitAlreadyExistsError` (or the existing conflict equivalent) → `409`, `InactiveHabitError` → `409`, and `HabitCompletionNotFoundError` → `404` where required by the unmark/history application contract. Foreign-owner and absent resources share the same observable not-found path.
+Use `InvalidHabitNameError` → `422`, `HabitNotFoundError` → `404`, `HabitAlreadyExistsError` (or the existing conflict equivalent) → `409`, `InactiveHabitError` → `409`, and `HabitCompletionNotFoundError` → `404` only for an absent owner-scoped completion targeted by the unmark command. A missing or foreign Habit in history uses `HabitNotFoundError` → `404`; an existing owner Habit with zero completion facts returns `200` with an empty page. `HabitCompletionNotFoundError` is not used for an empty history result. Foreign-owner and absent resources share the same observable not-found path.
 
 Future integration points are the new `app/habits/` module and `app/app_factory.py` for router and exception registration. `app/composition_root.py` remains UNCHANGED; Habits follows the Therapy module-local `dependencies.py` composition pattern and consumes the existing `get_current_user_id`. These files are not modified by this plan.
 
