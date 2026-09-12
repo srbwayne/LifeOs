@@ -1,3 +1,14 @@
+## Habits V1 Business Contract / Therapy Operational Closure ? 2026-09-12
+
+- Canonical main baseline: `2d9dd73364bc92725ed4870c3b59616e44c2812f`.
+- Therapy V1 implementation is CLOSED; operational cutover passed and the operational DB is now at `0010`.
+- THERAPY-OPS-001 is CLOSED.
+- Habits discovery is complete and found conflicting legacy Habits feature numbering. `FEATURE_CATALOG.md` is confirmed as Feature-ID authority.
+- Habits V1 product contract is approved: V1 = HAB-001 + HAB-002; HAB-003..005 are deferred.
+- No Habits source or database schema exists; no migration `0011` exists.
+- Habits progression eligibility is NO; there is no Logos or Noema/AI integration.
+- Next gate: Habits V1 technical plan / architecture review.
+
 ## LifeOS Progression Integration / Post-Merge Governance — 2026-09-06
 
 - Canonical `main` is `1e3b1c72e19fa1e0b34a668ad636d79f75bd91e3`.

@@ -1,151 +1,25 @@
-# EPIC-HAB — Habits
-
-## Código
-
-HAB
+# EPIC-HAB ? Habits
 
 ## Objetivo
 
-Gerenciar os hábitos do Player dentro do LifeOS.
-
-A Capability Habits é responsável por registrar, acompanhar e incentivar a execução contínua de hábitos, promovendo consistência ao longo do tempo e contribuindo para a evolução do Character por meio das regras oficiais da Game Engine.
-
----
-
-## Responsabilidades
-
-A Capability Habits é responsável por:
-
-- Cadastro de Hábitos;
-- Organização de Rotinas;
-- Execução de Hábitos;
-- Controle de Frequência;
-- Controle de Streaks;
-- Histórico de Execuções;
-- Estatísticas de Consistência;
-- Acompanhamento da Evolução.
-
----
+Gerenciar defini??es de h?bitos e o checklist di?rio do Player dentro do LifeOS. Habits V1 ? owner-scoped, owner-private e n?o integra com Game/Logos, Analytics externo, AI/Noema ou eventos externos.
 
 ## Features
 
-- HAB-001 — Cadastro de Hábitos;
-- HAB-002 — Rotinas;
-- HAB-003 — Registro de Execução;
-- HAB-004 — Frequência;
-- HAB-005 — Streaks;
-- HAB-006 — Histórico;
-- HAB-007 — Estatísticas;
-- HAB-008 — Evolução dos Hábitos.
+- HAB-001 ? Cadastro de h?bitos
+- HAB-002 ? Checklist di?rio
+- HAB-003 ? Sequ?ncia (Streak)
+- HAB-004 ? Frequ?ncia
+- HAB-005 ? Estat?sticas
 
----
+V1 = HAB-001 + HAB-002. HAB-003..005 = DEFERRED. Rotinas, execu??o quantitativa, frequ?ncia, streaks e estat?sticas permanecem conceitos futuros; registro de execu??o/checklist pertence a HAB-002.
 
-## Dependências
+## Regras V1
 
-- AUTH;
-- CHAR;
-- GAME.
+Habit ? uma defini??o reutiliz?vel com owner, nome obrigat?rio e ?nico por owner, descri??o opcional e estado ativo. O owner pode desativar e reativar; n?o h? rename ou delete em V1.
 
-Authentication garante a identidade do Player.
+HabitCompletion ? bin?rio e representa a conclus?o declarada pelo owner para uma data civil expl?cita (`record_date`). Existe no m?ximo um fato por `(owner_id, habit_id, record_date)`; repeti??o ? idempotente e remo??o corrige o fato. H?bito inativo n?o aceita nova conclus?o, mas o hist?rico existente continua consult?vel.
 
-Character representa quem evolui.
+## Conceitos futuros
 
-Game Engine aplica as regras oficiais de experiência, progressão, missões, recompensas e demais mecanismos relacionados aos hábitos.
-
----
-
-## Consumidores
-
-A Capability Habits disponibiliza informações para:
-
-- Character;
-- Dashboard;
-- Analytics;
-- AI Mentor;
-- AI Coaching;
-- Reports.
-
----
-
-## Regras Gerais
-
-Habits deverá garantir que:
-
-- cada hábito pertença exclusivamente ao Player autenticado;
-- toda execução seja registrada no histórico;
-- o histórico nunca seja sobrescrito;
-- a frequência seja calculada automaticamente;
-- os Streaks sejam calculados pelas regras oficiais da Game Engine;
-- a experiência obtida seja processada exclusivamente pela Game Engine;
-- Analytics e Inteligência Artificial possam utilizar os dados registrados para produção de indicadores e recomendações.
-
----
-
-## Fluxo Simplificado
-
-```text
-Player
-
-↓
-
-Execução do hábito
-
-↓
-
-Validação
-
-↓
-
-Persistência
-
-↓
-
-Game Engine
-
-↓
-
-Atualização do Character
-
-↓
-
-Analytics
-
-↓
-
-IA
-
-↓
-
-Dashboard
-```
-
----
-
-## Integração com a Plataforma
-
-A Capability Habits integra-se principalmente com:
-
-- Character;
-- Game Engine;
-- Dashboard;
-- Analytics;
-- AI Mentor;
-- AI Coaching;
-- Reports.
-
-Os hábitos representam uma das principais fontes de evolução contínua do Character, alimentando os mecanismos de Progression, Experience, Streaks, Quests, Missions e Rewards definidos pela Game Engine.
-
----
-
-## Critérios de Aceite da Capability
-
-A Capability Habits será considerada completa quando:
-
-- todas as Features HAB estiverem implementadas;
-- hábitos puderem ser cadastrados e organizados;
-- execuções puderem ser registradas;
-- o histórico permanecer disponível para consulta;
-- os Streaks forem calculados corretamente;
-- a Game Engine processar corretamente a evolução do Character;
-- Analytics e Inteligência Artificial consumirem corretamente os dados produzidos por Habits;
-- todas as regras permanecerem compatíveis com a arquitetura oficial do LifeOS.
+Rotinas, agendas recorrentes, lembretes, notifica??es, frequ?ncia, Streak, estat?sticas, evolu??o, analytics, Game Engine, progression, Logos e AI/Noema podem ser considerados em decis?es futuras. Nenhuma dessas integra??es ou dispatches ? realizada por Habits V1.
