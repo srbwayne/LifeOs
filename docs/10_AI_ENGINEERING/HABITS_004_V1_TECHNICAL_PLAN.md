@@ -12,9 +12,9 @@ This plan freezes the technical shape for HAB-001 and HAB-002. It authorizes no 
 
 Use independent aggregate roots (Option B): `Habit` and `HabitCompletion`. Completion history is unbounded, daily writes must not load a Habit history, completion correction has an independent lifecycle, and future streak/frequency/statistics queries can read completion facts directly. A command validates owner and Habit membership in one transaction; the Habit aggregate does not contain a collection of completions.
 
-`Habit` contains `HabitId`, `UserId owner_id`, normalized `name`, optional normalized `description`, and `active`. It is created active and supports deactivate/reactivate only. Rename, hard delete, and soft delete are outside V1.
+`Habit` contains `HabitId`, `UserId owner_id`, normalized `name`, optional normalized `description`, and `active`. `created_at` and `updated_at` are persistence timestamps, not aggregate business state. It is created active and supports deactivate/reactivate only. Rename, hard delete, and soft delete are outside V1.
 
-`HabitCompletion` contains `HabitCompletionId`, `UserId owner_id`, `HabitId habit_id`, explicit civil `record_date`, and technical `created_at`. It is binary by row existence. There are no persisted completed, quantity, duration, target, timezone, streak, frequency, or statistics fields.
+`HabitCompletion` contains `HabitCompletionId`, `UserId owner_id`, `HabitId habit_id`, and explicit civil `record_date`. `created_at` is a persistence technical timestamp, not aggregate business state. It is binary by row existence. There are no persisted completed, quantity, duration, target, timezone, streak, frequency, or statistics fields.
 
 ## 2. Normalization and identity
 
@@ -32,13 +32,13 @@ Descriptions accept `str | None`, are trimmed, and normalize blank text to `None
 |---|---|
 | `id` | `VARCHAR(26) NOT NULL`, primary key |
 | `user_id` | `VARCHAR(26) NOT NULL`, FK `users.id`, `ON DELETE RESTRICT` |
-| `name` | bounded string, `NOT NULL` |
+| `name` | `TEXT NOT NULL`; no business length limit or length validation |
 | `description` | `TEXT NULL` |
 | `active` | Boolean, `NOT NULL` |
 | `created_at` | technical `DATETIME NOT NULL` |
 | `updated_at` | technical `DATETIME NOT NULL` |
 
-Constraints are primary key `(id)`, unique `(user_id, id)` for owner-safe child references, and unique `(user_id, name)` for exact owner/name uniqueness. Add `(user_id, active, name, id)` only for the owner list query; it is justified by the defined list ordering/filter and must not become a general speculative index.
+Constraints are primary key `(id)`, unique `(user_id, id)` for owner-safe child references, and unique `(user_id, name)` for exact owner/name uniqueness. No active-filter index is created. `GET /habits` returns active and inactive definitions ordered by `name ASC, id ASC`; the unique owner/name key supplies the principal owner/name index.
 
 ### `habit_completions`
 
@@ -56,7 +56,7 @@ There is no backfill. Downgrade drops completion indexes, drops `habit_completio
 
 ## 4. Mark completion algorithm and concurrency
 
-The correctness boundary is the database unique key `(user_id, habit_id, record_date)`, not the timing of an application pre-check. The command executes in this order:
+The correctness boundary is the database unique key `(user_id, habit_id, record_date)`, not the timing of an application pre-check. Canonical infrastructure contains concrete `SqlAlchemyUnitOfWork.acquire_write_intent()` behavior that issues `BEGIN IMMEDIATE` for SQLite, while `IUnitOfWork` does not expose that method. Habits handlers must not downcast or couple to the concrete UoW merely to call it. Slice 4 must establish whether ordinary uniqueness plus conflict recovery is sufficient; exposing write intent through an application abstraction would require a separate reviewed decision. No new locking primitive is introduced. The command executes in this order:
 
 1. Resolve the Habit by exact owner and `habit_id`.
 2. Treat missing and foreign resources as the same not-found result.
@@ -66,24 +66,28 @@ The correctness boundary is the database unique key `(user_id, habit_id, record_
 6. If inactive, raise `InactiveHabitError` mapped to `409`.
 7. If active, attempt the insert.
 8. Return the new completion with HTTP `201`.
-9. If a uniqueness race occurs, reload the persisted completion and return it with HTTP `200`.
+9. If a uniqueness race occurs, detect the SQLAlchemy uniqueness failure, rollback the failed transaction or use an explicitly reviewed savepoint, then reload the winner through a valid transaction/session and return it with HTTP `200`. A failed flush/commit leaves the transaction unusable until recovery; querying immediately without rollback is invalid.
 
-The first and repeated responses use the same completion representation. SQLite locking behavior must not be described as an existing LifeOS pattern; no `BEGIN IMMEDIATE` precedent is assumed here. If implementation later needs explicit dialect-specific write acquisition, it must be proven by infrastructure tests and separately reviewed. Unique-constraint enforcement plus conflict recovery is mandatory.
+The first and repeated responses use the same completion representation. The existing SQLite write-intent capability is concrete infrastructure only and is not part of the application protocol. If Habits later needs to reuse it, that must be proven by infrastructure tests and exposed through an explicitly reviewed application abstraction. Unique-constraint enforcement plus conflict recovery is mandatory.
 
 ## 5. Unmark and transactions
 
-Use `DELETE /habits/{habit_id}/completions/{record_date}`. An existing owner-scoped completion is removed and returns `204`; an absent or foreign completion returns `404`. Repeating the delete after success returns `404`. This is correction semantics, without an audit row or soft delete.
+Use `POST /habits/{habit_id}/completions` with body `{ "record_date": "YYYY-MM-DD" }`. The response is `HabitCompletionResponse` with `id`, `habit_id`, and `record_date`; it does not expose `owner_id` or require `created_at`. First persistence returns `201`; an existing completion, concurrent winner resolution, or inactive Habit with an existing completion returns `200`; inactive without an existing completion returns `409`; malformed Habit ID or date returns `422`; missing/foreign Habit returns `404`.
 
-Each write command—Habit creation, deactivate, reactivate, mark, and unmark—uses one local application transaction through the existing SQLAlchemy session/UoW pattern. No external calls, domain events, progression writes, Logos calls, or Noema calls occur.
+Use `DELETE /habits/{habit_id}/completions/{record_date}` for correction. An existing owner-scoped completion is removed and returns `204`; an absent or foreign completion returns `404`. Repeating the delete after success returns `404`. This is correction semantics, without an audit row or soft delete.
+
+Each write command—Habit creation, deactivate, reactivate, mark, and unmark—uses one local transaction through the existing `SqlAlchemyUnitOfWork`/SQLAlchemy session pattern. `IUnitOfWork` remains the application protocol and does not expose `acquire_write_intent`; no handler may downcast to the concrete UoW. No external calls, domain events, progression writes, Logos calls, or Noema calls occur.
 
 ## 6. Habit API
 
 ```text
 POST   /habits                         -> 201
-GET    /habits                         -> 200
+GET    /habits                         -> 200 (active and inactive, name ASC, id ASC)
 GET    /habits/{habit_id}              -> 200
 POST   /habits/{habit_id}/deactivate   -> 200
 POST   /habits/{habit_id}/reactivate   -> 200
+POST   /habits/{habit_id}/completions  -> 201 first / 200 repeat or race
+DELETE /habits/{habit_id}/completions/{record_date} -> 204 / 404 repeat
 ```
 
 Ownership is derived exclusively from authentication. No PATCH rename and no Habit DELETE exist. Malformed TSIDs map to `422`; missing and foreign resources are indistinguishable `404`; duplicate owner/name maps to `409`; unauthenticated requests map to `401`.
@@ -104,7 +108,7 @@ V1 does not retain active-period history. A checklist for an old date therefore 
 GET /habits/{habit_id}/completions?page=1&size=20 -> 200
 ```
 
-The endpoint is owner-scoped, uses `page >= 1`, `1 <= size <= 100`, defaults page `1` and size `20`, and returns current stored completion facts only. Ordering is `record_date DESC, id DESC`. There is no date-range filter, aggregate statistic, audit history, or analytics output in V1.
+The endpoint is owner-scoped. A missing or foreign Habit returns `404`; an existing owner Habit with zero completions returns `200` with an empty page. It uses `page >= 1`, `1 <= size <= 100`, defaults page `1` and size `20`, and returns current stored completion facts only. Ordering is `record_date DESC, id DESC`. There is no date-range filter, aggregate statistic, audit history, or analytics output in V1.
 
 Any structurally valid civil `DATE` is accepted. No UTC-derived owner date, server-timezone future-date rejection, or timezone rule is introduced.
 
@@ -113,18 +117,22 @@ Any structurally valid civil `DATE` is accepted. No UTC-derived owner date, serv
 The application ports remain focused and HTTP-neutral:
 
 ```text
-HabitRepository:
-  add/save
-  get_by_id_and_owner
-  get_by_owner_and_name (optional friendly pre-check)
-  list_by_owner
-  save lifecycle change
+IHabitRepository:
+  save(habit)
+  get_by_id_and_owner(habit_id, owner_id)
+  get_by_owner_and_name(owner_id, name)
 
-HabitCompletionRepository:
-  get_by_owner_habit_date
-  add
-  delete_by_owner_habit_date
-  list_by_owner_and_habit
+IHabitCompletionRepository:
+  save(completion)
+  get_by_owner_habit_date(owner_id, habit_id, record_date)
+  delete(completion)
+
+IHabitReadRepository:
+  list_by_owner(owner_id)
+  get_checklist_by_owner_and_record_date(owner_id, record_date)
+
+IHabitCompletionReadRepository:
+  list_by_owner_and_habit(owner_id, habit_id, page, size)
 ```
 
 Checklist and history use projection-oriented read repositories where useful. No generic repository base is introduced.
@@ -133,7 +141,7 @@ Checklist and history use projection-oriented read repositories where useful. No
 
 Use `InvalidHabitNameError` → `422`, `HabitNotFoundError` → `404`, `HabitAlreadyExistsError` (or the existing conflict equivalent) → `409`, `InactiveHabitError` → `409`, and `HabitCompletionNotFoundError` → `404` where required by the unmark/history application contract. Foreign-owner and absent resources share the same observable not-found path.
 
-Future integration points are the new `app/habits/` module, `app/app_factory.py` for router and exception registration, and `app/composition_root.py` only if the existing dependency composition requires it. These files are not modified by this plan.
+Future integration points are the new `app/habits/` module and `app/app_factory.py` for router and exception registration. `app/composition_root.py` remains UNCHANGED; Habits follows the Therapy module-local `dependencies.py` composition pattern and consumes the existing `get_current_user_id`. These files are not modified by this plan.
 
 ## 11. Migration and test strategy
 
@@ -177,6 +185,8 @@ app/habits/application/queries/get_checklist.py             NEW
 app/habits/application/queries/list_completions.py          NEW
 app/habits/application/dtos/habit_dto.py                    NEW
 app/habits/application/dtos/habit_completion_dto.py         NEW
+app/habits/application/ports/habit_read_repository.py       NEW
+app/habits/application/ports/habit_completion_read_repository.py NEW
 app/habits/infrastructure/persistence/models/habit_model.py NEW
 app/habits/infrastructure/persistence/models/habit_completion_model.py NEW
 app/habits/infrastructure/persistence/mappers/habit_mapper.py NEW
@@ -191,7 +201,7 @@ tests/habits/integration/...                                NEW
 tests/habits/api/...                                        NEW
 migrations/versions/0011_create_habits_v1_schema.py         NEW
 app/app_factory.py                                          MODIFIED
-app/composition_root.py                                     MODIFIED only if dependency composition requires it
+app/composition_root.py                                     UNCHANGED
 ```
 
 No file in this plan is created now.
