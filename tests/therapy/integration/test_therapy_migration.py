@@ -43,7 +43,7 @@ def run_migration(tmp_path: Path, monkeypatch, target: str) -> Path:
 def test_therapy_migration_up_down_up_uses_only_disposable_database(
     disposable_directory, monkeypatch
 ) -> None:
-    database_path = run_migration(disposable_directory, monkeypatch, "head")
+    database_path = run_migration(disposable_directory, monkeypatch, "0010")
 
     with closing(sqlite3.connect(database_path)) as connection:
         revision = connection.execute("SELECT version_num FROM alembic_version").fetchone()[0]
@@ -87,7 +87,7 @@ def test_therapy_migration_up_down_up_uses_only_disposable_database(
         assert "therapists" not in tables
         assert "therapy_sessions" not in tables
 
-    command.upgrade(guarded_config(database_path), "head")
+    command.upgrade(guarded_config(database_path), "0010")
     with closing(sqlite3.connect(database_path)) as connection:
         assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "0010"
 
