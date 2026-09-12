@@ -4,28 +4,31 @@
 
 ---
 
-# Estado Atual — Habits V1 Business Contract
+# Estado Atual — Habits V1 Technical Plan
 
 | Campo | Valor |
 |---|---|
-| Canonical main baseline | `2d9dd73364bc92725ed4870c3b59616e44c2812f` |
+| Canonical main baseline | `c49667388d2c0328e4017f8c9739cabaafa0dad0` |
 | Repository Alembic | `0010` |
 | Operational DB | `0010`, established by THERAPY-OPS-001 |
 | Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
 | THERAPY-OPS-001 | CLOSED |
 | Current selected initiative | HABITS V1 |
 | Discovery | HABITS-001 COMPLETE |
-| Business decision | HABITS V1 BUSINESS CONTRACT APPROVED |
-| Current documentation gate | HABITS-002 — BUSINESS CONTRACT / GOVERNANCE RECONCILIATION |
+| HABITS-002R | CLOSED / MERGED / POST-MERGE VERIFIED |
+| HABITS-003 | TECHNICAL ARCHITECTURE DISCOVERY COMPLETE |
+| HABITS-004 | V1 TECHNICAL PLAN / ARCHITECTURE REVIEW |
+| Technical plan | APPROVED |
+| Implementation | NOT AUTHORIZED |
 | Habits source | NONE |
 | Habits migration | NONE |
 | Conceptual migration 0011 | NOT CREATED / NOT AUTHORIZED |
 | Current progression | UNCHANGED |
 | Logos | NOT ACTIVATED |
 | Noema/AI | NOT ACTIVATED FOR HABITS |
-| Next decision gate | HABITS V1 TECHNICAL PLAN / ARCHITECTURE REVIEW |
+| Next human gate | HABITS V1 IMPLEMENTATION SLICING / SLICE 1 AUTHORIZATION |
 
-**NO HABITS IMPLEMENTATION IS AUTHORIZED BY THIS GOVERNANCE UPDATE.**
+**NO HABITS IMPLEMENTATION IS AUTHORIZED BY THIS GOVERNANCE UPDATE.** Migration `0011` remains NOT CREATED / NOT AUTHORIZED.
 
 The historical READ closure and planning records below are preserved as historical context.
 
