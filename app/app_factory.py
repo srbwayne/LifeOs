@@ -17,6 +17,12 @@ from app.auth.domain.errors.user_errors import (
 from app.auth.presentation.api.fastapi.routers import router as auth_router
 from app.character.domain.errors.character_errors import CharacterNotFoundError
 from app.character.presentation.api.fastapi.routers import router as character_router
+from app.habits.application.errors.habit_errors import (
+    HabitAlreadyExistsError,
+    HabitNotFoundError,
+)
+from app.habits.domain.errors.habit_errors import InvalidHabitNameError
+from app.habits.presentation.api.fastapi.routers import router as habits_router
 from app.read.application.errors.book_errors import BookNotFoundError
 from app.read.domain.errors.book_errors import (
     InvalidBookAuthorError,
@@ -71,6 +77,7 @@ def create_app() -> FastAPI:
     app.include_router(completion_router)
     app.include_router(therapy_router)
     app.include_router(session_router)
+    app.include_router(habits_router)
 
     error_statuses = {
         UserAlreadyExistsError: status.HTTP_409_CONFLICT,
@@ -94,6 +101,9 @@ def create_app() -> FastAPI:
         InactiveTherapistError: status.HTTP_409_CONFLICT,
         InvalidTherapySessionTimeError: status.HTTP_422_UNPROCESSABLE_ENTITY,
         InvalidPrivateNoteError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        InvalidHabitNameError: status.HTTP_422_UNPROCESSABLE_ENTITY,
+        HabitNotFoundError: status.HTTP_404_NOT_FOUND,
+        HabitAlreadyExistsError: status.HTTP_409_CONFLICT,
     }
     for error_type, status_code in error_statuses.items():
         app.add_exception_handler(
