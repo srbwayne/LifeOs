@@ -5,11 +5,17 @@ from sqlalchemy.orm import Session
 
 from app.habits.application.commands.create_habit import CreateHabitCommandHandler
 from app.habits.application.commands.deactivate_habit import DeactivateHabitCommandHandler
+from app.habits.application.commands.mark_completion import MarkCompletionCommandHandler
 from app.habits.application.commands.reactivate_habit import ReactivateHabitCommandHandler
+from app.habits.application.commands.unmark_completion import UnmarkCompletionCommandHandler
 from app.habits.application.ports.habit_read_repository import IHabitReadRepository
 from app.habits.application.queries.get_habit import GetHabitQueryHandler
 from app.habits.application.queries.list_habits import ListHabitsQueryHandler
+from app.habits.domain.ports.habit_completion_repository import IHabitCompletionRepository
 from app.habits.domain.ports.habit_repository import IHabitRepository
+from app.habits.infrastructure.persistence.repositories.habit_completion_repository import (
+    SqlAlchemyHabitCompletionRepository,
+)
 from app.habits.infrastructure.persistence.repositories.habit_read_repository import (
     SqlAlchemyHabitReadRepository,
 )
@@ -28,6 +34,12 @@ def get_habit_repository(db: Session = Depends(get_db)) -> IHabitRepository:
 
 def get_habit_read_repository(db: Session = Depends(get_db)) -> IHabitReadRepository:
     return SqlAlchemyHabitReadRepository(db)
+
+
+def get_habit_completion_repository(
+    db: Session = Depends(get_db),
+) -> IHabitCompletionRepository:
+    return SqlAlchemyHabitCompletionRepository(db)
 
 
 def get_habit_event_bus() -> IEventBus:
@@ -72,3 +84,19 @@ def get_reactivate_habit_handler(
     unit_of_work: IUnitOfWork = Depends(get_habit_uow),
 ) -> ReactivateHabitCommandHandler:
     return ReactivateHabitCommandHandler(repository, unit_of_work)
+
+
+def get_mark_completion_handler(
+    habit_repository: IHabitRepository = Depends(get_habit_repository),
+    completion_repository: IHabitCompletionRepository = Depends(get_habit_completion_repository),
+    unit_of_work: IUnitOfWork = Depends(get_habit_uow),
+) -> MarkCompletionCommandHandler:
+    return MarkCompletionCommandHandler(habit_repository, completion_repository, unit_of_work)
+
+
+def get_unmark_completion_handler(
+    habit_repository: IHabitRepository = Depends(get_habit_repository),
+    completion_repository: IHabitCompletionRepository = Depends(get_habit_completion_repository),
+    unit_of_work: IUnitOfWork = Depends(get_habit_uow),
+) -> UnmarkCompletionCommandHandler:
+    return UnmarkCompletionCommandHandler(habit_repository, completion_repository, unit_of_work)
