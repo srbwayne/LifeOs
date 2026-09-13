@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -13,3 +15,15 @@ class HabitResponse(BaseModel):
     name: str
     description: str | None
     active: bool
+
+
+class MarkHabitCompletionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    record_date: date
+
+
+class HabitCompletionResponse(BaseModel):
+    id: str
+    habit_id: str
+    record_date: date

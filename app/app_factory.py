@@ -19,7 +19,9 @@ from app.character.domain.errors.character_errors import CharacterNotFoundError
 from app.character.presentation.api.fastapi.routers import router as character_router
 from app.habits.application.errors.habit_errors import (
     HabitAlreadyExistsError,
+    HabitCompletionNotFoundError,
     HabitNotFoundError,
+    InactiveHabitError,
 )
 from app.habits.domain.errors.habit_errors import InvalidHabitNameError
 from app.habits.presentation.api.fastapi.routers import router as habits_router
@@ -104,6 +106,8 @@ def create_app() -> FastAPI:
         InvalidHabitNameError: status.HTTP_422_UNPROCESSABLE_ENTITY,
         HabitNotFoundError: status.HTTP_404_NOT_FOUND,
         HabitAlreadyExistsError: status.HTTP_409_CONFLICT,
+        InactiveHabitError: status.HTTP_409_CONFLICT,
+        HabitCompletionNotFoundError: status.HTTP_404_NOT_FOUND,
     }
     for error_type, status_code in error_statuses.items():
         app.add_exception_handler(

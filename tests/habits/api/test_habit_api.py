@@ -11,6 +11,9 @@ from app.app_factory import create_app
 from app.auth.infrastructure.persistence.models.user_model import UserModel
 from app.composition_root import get_current_user_id
 from app.habits.domain.value_objects.habit_id import HabitId
+from app.habits.infrastructure.persistence.models.habit_completion_model import (
+    HabitCompletionModel,
+)
 from app.habits.infrastructure.persistence.models.habit_model import HabitModel
 from app.shared.domain.identifiers.user_id import UserId
 from app.shared.infrastructure.database import Base, get_db
@@ -162,6 +165,118 @@ def test_habit_api_detail_id_and_owner_errors(api) -> None:
     assert client.get(f"/habits/{habit_id}").status_code == 404
     assert client.post(f"/habits/{habit_id}/deactivate").status_code == 404
     assert client.post(f"/habits/{habit_id}/reactivate").status_code == 404
+    current_owner[0] = owner
+
+
+def test_habit_completion_authentication_is_required(api) -> None:
+    client, _, _, _, _, app = api
+    app.dependency_overrides.pop(get_current_user_id)
+    habit_id = HabitId.new().value
+
+    assert (
+        client.post(
+            f"/habits/{habit_id}/completions", json={"record_date": "2026-01-01"}
+        ).status_code
+        == 401
+    )
+    assert client.delete(f"/habits/{habit_id}/completions/2026-01-01").status_code == 401
+
+
+def test_habit_completion_mark_is_idempotent_and_respects_inactive_order(api) -> None:
+    client, _, _, _, _, _ = api
+    created_habit = client.post("/habits", json={"name": "Completion"}).json()
+    habit_id = created_habit["id"]
+    body = {"record_date": "2030-01-01"}
+
+    first = client.post(f"/habits/{habit_id}/completions", json=body)
+    second = client.post(f"/habits/{habit_id}/completions", json=body)
+    assert first.status_code == 201
+    assert second.status_code == 200
+    assert first.json() == second.json()
+    assert set(first.json()) == {"id", "habit_id", "record_date"}
+    assert first.json()["habit_id"] == habit_id
+
+    client.post(f"/habits/{habit_id}/deactivate")
+    existing_inactive = client.post(f"/habits/{habit_id}/completions", json=body)
+    assert existing_inactive.status_code == 200
+    assert existing_inactive.json()["id"] == first.json()["id"]
+
+    rejected = client.post(f"/habits/{habit_id}/completions", json={"record_date": "2030-01-02"})
+    assert rejected.status_code == 409
+    assert rejected.json()["detail"] == "Cannot create a completion for an inactive Habit."
+    with api[4]() as session:
+        assert session.query(HabitCompletionModel).count() == 1
+    assert "owner_id" not in first.json()
+
+
+def test_habit_completion_mark_validation_and_owner_boundaries(api) -> None:
+    client, current_owner, owner, other_owner, _, _ = api
+    habit_id = client.post("/habits", json={"name": "Validation"}).json()["id"]
+
+    assert (
+        client.post(f"/habits/{habit_id}/completions", json={"record_date": "bad"}).status_code
+        == 422
+    )
+    assert (
+        client.post(
+            f"/habits/{habit_id}/completions", json={"record_date": "2026-01-01", "extra": True}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.post(
+            "/habits/not-a-tsid/completions", json={"record_date": "2026-01-01"}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.post(
+            f"/habits/{HabitId.new().value}/completions", json={"record_date": "2026-01-01"}
+        ).status_code
+        == 404
+    )
+
+    current_owner[0] = other_owner
+    assert (
+        client.post(
+            f"/habits/{habit_id}/completions", json={"record_date": "2026-01-01"}
+        ).status_code
+        == 404
+    )
+    current_owner[0] = owner
+
+
+def test_habit_completion_unmark_is_204_repeat_404_and_allows_recreation(api) -> None:
+    client, _, _, _, _, _ = api
+    habit_id = client.post("/habits", json={"name": "Unmark"}).json()["id"]
+    record_date = "2020-01-01"
+    marked = client.post(f"/habits/{habit_id}/completions", json={"record_date": record_date})
+    assert marked.status_code == 201
+
+    deleted = client.delete(f"/habits/{habit_id}/completions/{record_date}")
+    assert deleted.status_code == 204
+    assert deleted.content == b""
+    assert client.delete(f"/habits/{habit_id}/completions/{record_date}").status_code == 404
+    recreated = client.post(f"/habits/{habit_id}/completions", json={"record_date": record_date})
+    assert recreated.status_code == 201
+    assert recreated.json()["id"] != marked.json()["id"]
+
+
+def test_habit_completion_unmark_validation_and_inactive_correction(api) -> None:
+    client, current_owner, owner, other_owner, _, _ = api
+    habit_id = client.post("/habits", json={"name": "Correction"}).json()["id"]
+    assert (
+        client.post(
+            f"/habits/{habit_id}/completions", json={"record_date": "2026-02-02"}
+        ).status_code
+        == 201
+    )
+    client.post(f"/habits/{habit_id}/deactivate")
+    assert client.delete(f"/habits/{habit_id}/completions/2026-02-02").status_code == 204
+    assert client.delete(f"/habits/{habit_id}/completions/not-a-date").status_code == 422
+    assert client.delete(f"/habits/{HabitId.new().value}/completions/2026-02-02").status_code == 404
+    current_owner[0] = other_owner
+    assert client.delete(f"/habits/{habit_id}/completions/2026-02-02").status_code == 404
     current_owner[0] = owner
 
 
