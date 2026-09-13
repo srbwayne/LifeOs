@@ -179,6 +179,7 @@ def test_habit_completion_authentication_is_required(api) -> None:
         ).status_code
         == 401
     )
+    assert client.get(f"/habits/{habit_id}/completions").status_code == 401
     assert client.delete(f"/habits/{habit_id}/completions/2026-01-01").status_code == 401
 
 
