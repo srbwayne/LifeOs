@@ -281,6 +281,103 @@ def test_habit_completion_unmark_validation_and_inactive_correction(api) -> None
     current_owner[0] = owner
 
 
+def test_habit_checklist_auth_validation_and_current_active_projection(api) -> None:
+    client, current_owner, owner, other_owner, _, app = api
+    app.dependency_overrides.pop(get_current_user_id)
+    assert client.get("/habits/checklist?record_date=2026-01-01").status_code == 401
+    app.dependency_overrides[get_current_user_id] = lambda: current_owner[0]
+    assert client.get("/habits/checklist").status_code == 422
+    assert client.get("/habits/checklist?record_date=not-a-date").status_code == 422
+
+    completed = client.post("/habits", json={"name": "Completed", "description": " Notes "}).json()
+    client.post("/habits", json={"name": "Empty"})
+    assert (
+        client.post(
+            f"/habits/{completed['id']}/completions", json={"record_date": "2026-01-01"}
+        ).status_code
+        == 201
+    )
+    current_owner[0] = other_owner
+    foreign = client.post("/habits", json={"name": "Foreign"}).json()
+    assert (
+        client.post(
+            f"/habits/{foreign['id']}/completions", json={"record_date": "2026-01-01"}
+        ).status_code
+        == 201
+    )
+    current_owner[0] = owner
+
+    checklist = client.get("/habits/checklist?record_date=2026-01-01")
+    assert checklist.status_code == 200
+    assert [item["name"] for item in checklist.json()] == ["Completed", "Empty"]
+    assert checklist.json()[0] == {
+        "id": completed["id"],
+        "name": "Completed",
+        "description": "Notes",
+        "completed": True,
+    }
+    assert checklist.json()[1]["completed"] is False
+    assert all(set(item) == {"id", "name", "description", "completed"} for item in checklist.json())
+    assert client.get("/habits/checklist?record_date=2030-01-01").status_code == 200
+
+    client.post(f"/habits/{completed['id']}/deactivate")
+    assert all(
+        item["id"] != completed["id"]
+        for item in client.get("/habits/checklist?record_date=2026-01-01").json()
+    )
+    client.post(f"/habits/{completed['id']}/reactivate")
+    restored = client.get("/habits/checklist?record_date=2026-01-01").json()
+    assert next(item for item in restored if item["id"] == completed["id"])["completed"] is True
+
+
+def test_habit_completion_history_is_paginated_and_survives_deactivation(api) -> None:
+    client, _, _, _, _, _ = api
+    habit_id = client.post("/habits", json={"name": "History"}).json()["id"]
+    for day in range(21):
+        assert (
+            client.post(
+                f"/habits/{habit_id}/completions",
+                json={"record_date": f"2026-01-{day + 1:02d}"},
+            ).status_code
+            == 201
+        )
+
+    default = client.get(f"/habits/{habit_id}/completions")
+    assert default.status_code == 200
+    assert default.json()["page"] == 1 and default.json()["size"] == 20
+    assert default.json()["total_items"] == 21 and default.json()["total_pages"] == 2
+    assert set(default.json()["items"][0]) == {"id", "habit_id", "record_date"}
+    assert default.json()["items"][0]["record_date"] == "2026-01-21"
+    assert client.get(f"/habits/{habit_id}/completions?page=2&size=20").json()["items"]
+    assert client.get(f"/habits/{habit_id}/completions?page=3&size=20").json()["items"] == []
+    assert client.get(f"/habits/{habit_id}/completions?page=0").status_code == 422
+    assert client.get(f"/habits/{habit_id}/completions?size=0").status_code == 422
+    assert client.get(f"/habits/{habit_id}/completions?size=101").status_code == 422
+    client.post(f"/habits/{habit_id}/deactivate")
+    inactive_history = client.get(f"/habits/{habit_id}/completions?size=2")
+    assert inactive_history.status_code == 200
+    assert inactive_history.json()["total_items"] == 21
+
+
+def test_habit_completion_history_owner_and_id_validation(api) -> None:
+    client, current_owner, owner, other_owner, _, _ = api
+    habit_id = client.post("/habits", json={"name": "Private history"}).json()["id"]
+    assert client.get(f"/habits/{HabitId.new().value}/completions").status_code == 404
+    assert client.get("/habits/not-a-tsid/completions").status_code == 422
+    current_owner[0] = other_owner
+    assert client.get(f"/habits/{habit_id}/completions").status_code == 404
+    current_owner[0] = owner
+    empty = client.get(f"/habits/{habit_id}/completions")
+    assert empty.status_code == 200
+    assert empty.json() == {
+        "items": [],
+        "page": 1,
+        "size": 20,
+        "total_items": 0,
+        "total_pages": 0,
+    }
+
+
 def test_habit_api_missing_habit_lifecycle_returns_not_found(api) -> None:
     client, _, _, _, _, _ = api
     missing_habit_id = HabitId.new().value

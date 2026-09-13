@@ -8,11 +8,19 @@ from app.habits.application.commands.deactivate_habit import DeactivateHabitComm
 from app.habits.application.commands.mark_completion import MarkCompletionCommandHandler
 from app.habits.application.commands.reactivate_habit import ReactivateHabitCommandHandler
 from app.habits.application.commands.unmark_completion import UnmarkCompletionCommandHandler
+from app.habits.application.ports.habit_completion_read_repository import (
+    IHabitCompletionReadRepository,
+)
 from app.habits.application.ports.habit_read_repository import IHabitReadRepository
+from app.habits.application.queries.get_checklist import GetChecklistQueryHandler
 from app.habits.application.queries.get_habit import GetHabitQueryHandler
+from app.habits.application.queries.list_completions import ListCompletionsQueryHandler
 from app.habits.application.queries.list_habits import ListHabitsQueryHandler
 from app.habits.domain.ports.habit_completion_repository import IHabitCompletionRepository
 from app.habits.domain.ports.habit_repository import IHabitRepository
+from app.habits.infrastructure.persistence.repositories.habit_completion_read_repository import (
+    SqlAlchemyHabitCompletionReadRepository,
+)
 from app.habits.infrastructure.persistence.repositories.habit_completion_repository import (
     SqlAlchemyHabitCompletionRepository,
 )
@@ -40,6 +48,12 @@ def get_habit_completion_repository(
     db: Session = Depends(get_db),
 ) -> IHabitCompletionRepository:
     return SqlAlchemyHabitCompletionRepository(db)
+
+
+def get_habit_completion_read_repository(
+    db: Session = Depends(get_db),
+) -> IHabitCompletionReadRepository:
+    return SqlAlchemyHabitCompletionReadRepository(db)
 
 
 def get_habit_event_bus() -> IEventBus:
@@ -100,3 +114,18 @@ def get_unmark_completion_handler(
     unit_of_work: IUnitOfWork = Depends(get_habit_uow),
 ) -> UnmarkCompletionCommandHandler:
     return UnmarkCompletionCommandHandler(habit_repository, completion_repository, unit_of_work)
+
+
+def get_get_checklist_handler(
+    repository: IHabitReadRepository = Depends(get_habit_read_repository),
+) -> GetChecklistQueryHandler:
+    return GetChecklistQueryHandler(repository)
+
+
+def get_list_completions_handler(
+    habit_repository: IHabitRepository = Depends(get_habit_repository),
+    completion_read_repository: IHabitCompletionReadRepository = Depends(
+        get_habit_completion_read_repository
+    ),
+) -> ListCompletionsQueryHandler:
+    return ListCompletionsQueryHandler(habit_repository, completion_read_repository)
