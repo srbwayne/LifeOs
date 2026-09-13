@@ -223,6 +223,9 @@ def test_get_returns_own_active_or_inactive_habit_and_rejects_other_owner() -> N
     with pytest.raises(HabitNotFoundError):
         handler(GetHabitQuery(UserId.new(), habit.id))
 
+    with pytest.raises(HabitNotFoundError):
+        handler(GetHabitQuery(owner_id, HabitId.new()))
+
 
 def test_list_delegates_owner_and_returns_active_and_inactive_dtos() -> None:
     owner_id = UserId.new()
