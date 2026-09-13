@@ -110,6 +110,15 @@ def test_habit_api_lifecycle_response_shape_and_fresh_persistence(api) -> None:
     assert current_owner[0] == owner
 
 
+def test_habit_api_list_empty_for_fresh_owner(api) -> None:
+    client, _, _, _, _, _ = api
+
+    response = client.get("/habits")
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
 def test_habit_api_validation_duplicate_and_owner_boundaries(api) -> None:
     client, current_owner, owner, other_owner, _, _ = api
     first = client.post("/habits", json={"name": "Read", "description": "   "})
@@ -154,3 +163,11 @@ def test_habit_api_detail_id_and_owner_errors(api) -> None:
     assert client.post(f"/habits/{habit_id}/deactivate").status_code == 404
     assert client.post(f"/habits/{habit_id}/reactivate").status_code == 404
     current_owner[0] = owner
+
+
+def test_habit_api_missing_habit_lifecycle_returns_not_found(api) -> None:
+    client, _, _, _, _, _ = api
+    missing_habit_id = HabitId.new().value
+
+    assert client.post(f"/habits/{missing_habit_id}/deactivate").status_code == 404
+    assert client.post(f"/habits/{missing_habit_id}/reactivate").status_code == 404
