@@ -86,6 +86,9 @@ class FakeReadRepository:
         self.owner = owner_id
         return self.items
 
+    def get_checklist_by_owner_and_record_date(self, owner_id, record_date):
+        return ()
+
 
 def test_create_normalizes_before_duplicate_lookup_and_commits() -> None:
     repository = FakeHabitRepository()

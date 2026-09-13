@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
 from app.composition_root import get_current_user_id
 from app.habits.application.commands.create_habit import (
@@ -25,14 +25,28 @@ from app.habits.application.commands.unmark_completion import (
     UnmarkCompletionCommand,
     UnmarkCompletionCommandHandler,
 )
-from app.habits.application.dtos.habit_completion_dto import HabitCompletionDTO
+from app.habits.application.dtos.habit_checklist_dto import HabitChecklistItemDTO
+from app.habits.application.dtos.habit_completion_dto import (
+    HabitCompletionDTO,
+    HabitCompletionPageDTO,
+)
 from app.habits.application.dtos.habit_dto import HabitDTO
+from app.habits.application.queries.get_checklist import (
+    GetChecklistQuery,
+    GetChecklistQueryHandler,
+)
 from app.habits.application.queries.get_habit import GetHabitQuery, GetHabitQueryHandler
+from app.habits.application.queries.list_completions import (
+    ListCompletionsQuery,
+    ListCompletionsQueryHandler,
+)
 from app.habits.application.queries.list_habits import ListHabitsQuery, ListHabitsQueryHandler
 from app.habits.dependencies import (
     get_create_habit_handler,
     get_deactivate_habit_handler,
+    get_get_checklist_handler,
     get_get_habit_handler,
+    get_list_completions_handler,
     get_list_habits_handler,
     get_mark_completion_handler,
     get_reactivate_habit_handler,
@@ -41,6 +55,8 @@ from app.habits.dependencies import (
 from app.habits.domain.value_objects.habit_id import HabitId
 from app.habits.presentation.api.fastapi.schemas import (
     CreateHabitRequest,
+    HabitChecklistItemResponse,
+    HabitCompletionPageResponse,
     HabitCompletionResponse,
     HabitResponse,
     MarkHabitCompletionRequest,
@@ -64,6 +80,25 @@ def _completion_response(dto: HabitCompletionDTO) -> HabitCompletionResponse:
         id=dto.id,
         habit_id=dto.habit_id,
         record_date=dto.record_date,
+    )
+
+
+def _checklist_response(dto: HabitChecklistItemDTO) -> HabitChecklistItemResponse:
+    return HabitChecklistItemResponse(
+        id=dto.id,
+        name=dto.name,
+        description=dto.description,
+        completed=dto.completed,
+    )
+
+
+def _completion_page_response(page: HabitCompletionPageDTO) -> HabitCompletionPageResponse:
+    return HabitCompletionPageResponse(
+        items=[_completion_response(item) for item in page.items],
+        page=page.page,
+        size=page.size,
+        total_items=page.total_items,
+        total_pages=page.total_pages,
     )
 
 
@@ -100,6 +135,18 @@ def list_habits(
     handler: ListHabitsQueryHandler = Depends(get_list_habits_handler),
 ) -> list[HabitResponse]:
     return [_response(item) for item in handler(ListHabitsQuery(owner_id=user_id))]
+
+
+@router.get("/checklist", response_model=list[HabitChecklistItemResponse])
+def get_checklist(
+    record_date: date,
+    user_id: UserId = Depends(get_current_user_id),
+    handler: GetChecklistQueryHandler = Depends(get_get_checklist_handler),
+) -> list[HabitChecklistItemResponse]:
+    return [
+        _checklist_response(item)
+        for item in handler(GetChecklistQuery(owner_id=user_id, record_date=record_date))
+    ]
 
 
 @router.get("/{habit_id}", response_model=HabitResponse)
@@ -148,6 +195,28 @@ def reactivate_habit(
             )
         )
     )
+
+
+@router.get(
+    "/{habit_id}/completions",
+    response_model=HabitCompletionPageResponse,
+)
+def list_completions(
+    habit_id: str,
+    page: int = Query(default=1, ge=1),
+    size: int = Query(default=20, ge=1, le=100),
+    user_id: UserId = Depends(get_current_user_id),
+    handler: ListCompletionsQueryHandler = Depends(get_list_completions_handler),
+) -> HabitCompletionPageResponse:
+    result = handler(
+        ListCompletionsQuery(
+            owner_id=user_id,
+            habit_id=_parse_habit_id(habit_id),
+            page=page,
+            size=size,
+        )
+    )
+    return _completion_page_response(result)
 
 
 @router.post("/{habit_id}/completions", response_model=HabitCompletionResponse)

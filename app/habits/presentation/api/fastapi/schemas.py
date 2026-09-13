@@ -27,3 +27,18 @@ class HabitCompletionResponse(BaseModel):
     id: str
     habit_id: str
     record_date: date
+
+
+class HabitChecklistItemResponse(BaseModel):
+    id: str
+    name: str
+    description: str | None
+    completed: bool
+
+
+class HabitCompletionPageResponse(BaseModel):
+    items: list[HabitCompletionResponse]
+    page: int
+    size: int
+    total_items: int
+    total_pages: int
