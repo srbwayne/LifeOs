@@ -28,6 +28,26 @@ from app.shared.infrastructure.database import Base
 from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 
 
+class RecordingUnitOfWork(SqlAlchemyUnitOfWork):
+    def __init__(self, session: Session) -> None:
+        super().__init__(session, InMemoryEventBus())
+        self.flush_calls = 0
+        self.rollback_calls = 0
+        self.commit_calls = 0
+
+    def flush(self) -> None:
+        self.flush_calls += 1
+        super().flush()
+
+    def rollback(self) -> None:
+        self.rollback_calls += 1
+        super().rollback()
+
+    def commit(self) -> None:
+        self.commit_calls += 1
+        super().commit()
+
+
 @pytest.fixture
 def completion_database(tmp_path) -> Iterator[sessionmaker[Session]]:
     engine = create_engine(
@@ -63,7 +83,11 @@ def seed(factory: sessionmaker[Session]) -> tuple[UserId, Habit]:
 
 
 def install_initial_lookup_barrier(
-    repository: SqlAlchemyHabitCompletionRepository, barrier: Barrier
+    repository: SqlAlchemyHabitCompletionRepository,
+    barrier: Barrier,
+    unit_of_work: RecordingUnitOfWork,
+    recovery_observations: list[bool],
+    observation_lock: Lock,
 ) -> None:
     original = repository.get_by_owner_habit_date
     calls = 0
@@ -74,9 +98,14 @@ def install_initial_lookup_barrier(
         with lock:
             calls += 1
             initial_lookup = calls == 1
+        result = original(owner_id, habit_id, record_date)
         if initial_lookup:
+            assert result is None
             barrier.wait(timeout=30)
-        return original(owner_id, habit_id, record_date)
+        else:
+            with observation_lock:
+                recovery_observations.append(unit_of_work.rollback_calls > 0)
+        return result
 
     repository.get_by_owner_habit_date = synchronized_lookup  # type: ignore[method-assign]
 
@@ -90,16 +119,28 @@ def test_mark_completion_two_sessions_recover_unique_race(
     results = []
     errors: list[BaseException] = []
     result_lock = Lock()
+    recovery_observations: list[bool] = []
+    observation_lock = Lock()
+    unit_of_works: list[RecordingUnitOfWork] = []
 
     def worker() -> None:
         with completion_database() as session:
             habits = SqlAlchemyHabitRepository(session)
             completions = SqlAlchemyHabitCompletionRepository(session)
-            install_initial_lookup_barrier(completions, barrier)
+            unit_of_work = RecordingUnitOfWork(session)
+            with result_lock:
+                unit_of_works.append(unit_of_work)
+            install_initial_lookup_barrier(
+                completions,
+                barrier,
+                unit_of_work,
+                recovery_observations,
+                observation_lock,
+            )
             handler = MarkCompletionCommandHandler(
                 habits,
                 completions,
-                SqlAlchemyUnitOfWork(session, InMemoryEventBus()),
+                unit_of_work,
             )
             try:
                 result = handler(MarkCompletionCommand(owner_id, habit.id, record_date))
@@ -115,8 +156,13 @@ def test_mark_completion_two_sessions_recover_unique_race(
     for thread in threads:
         thread.join(timeout=45)
 
+    assert all(not thread.is_alive() for thread in threads)
     assert not errors
     assert len(results) == 2
+    assert len(unit_of_works) == 2
+    assert sum(uow.flush_calls for uow in unit_of_works) == 2
+    assert sum(uow.rollback_calls for uow in unit_of_works) == 1
+    assert recovery_observations == [True]
     assert sorted(result.created for result in results) == [False, True]
     assert len({result.completion.id for result in results}) == 1
     with completion_database() as session:

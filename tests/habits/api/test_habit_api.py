@@ -229,6 +229,7 @@ def test_habit_completion_mark_validation_and_owner_boundaries(api) -> None:
         ).status_code
         == 422
     )
+    assert client.delete("/habits/not-a-tsid/completions/2026-02-02").status_code == 422
     assert (
         client.post(
             f"/habits/{HabitId.new().value}/completions", json={"record_date": "2026-01-01"}
