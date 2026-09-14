@@ -80,8 +80,8 @@ The following section is retained for historical context only.
 | Logos for Habits | NOT INTEGRATED |
 | Noema/AI for Habits | NOT INTEGRATED |
 | Habit event dispatch | NO |
-| Current selected initiative | HAB-003 — Sequência (Streak) |
-| Next authorized gate | HAB-003 PRODUCT CONTRACT REVIEW |
+| Current selected initiative | NONE |
+| Next authorized gate | LIFEOS NEXT INITIATIVE SELECTION — PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW |
 
 ## Next Authorized Gate
 
