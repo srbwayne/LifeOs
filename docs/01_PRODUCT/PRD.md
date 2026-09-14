@@ -6118,7 +6118,7 @@ THER-008
 
 A Capability **Habits** é responsável pelo gerenciamento de definições de hábitos e fatos binários de conclusão do Player.
 
-No V1, Habits é owner-scoped e owner-private: inclui HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 (Sequência/Streak), HAB-004 (Frequência) e HAB-005 (Estatísticas) permanecem DEFERRED. Não há integração atual com Game/Logos, Analytics ou Inteligência Artificial.
+No V1, Habits é owner-scoped e owner-private: inclui HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 (Sequência/Streak) possui contrato de produto aprovado, mas permanece sem arquitetura aprovada e sem implementação autorizada; HAB-004 (Frequência) e HAB-005 (Estatísticas) permanecem DEFERRED. Não há integração atual com Game/Logos, Analytics ou Inteligência Artificial.
 
 Os requisitos deste capítulo descrevem o comportamento esperado para o gerenciamento dos hábitos do Player durante toda sua jornada no LifeOS.
 
@@ -6347,47 +6347,91 @@ DEFERRED / NON-V1.
 
 ---
 
-# RF-HAB-005 — Controle de Streaks (DEFERRED / NON-V1)
+# RF-HAB-005 — Controle de Streaks
 
 ## Objetivo
 
-Permitir acompanhar a sequência contínua de execução dos hábitos.
+Permitir que o Player obtenha a sequência contínua de conclusão de um hábito.
 
 ---
 
 ## Descrição
 
-O sistema deverá apresentar o Streak atual do hábito.
+O sistema deverá apresentar o `current_streak` de um Habit a partir dos fatos
+`HabitCompletion` existentes, sem criar estado durável de Streak.
 
-O cálculo do Streak deverá seguir as regras oficiais definidas pela Game Engine.
+O HAB-003 é uma sequência calendar-consecutive avaliada para uma data civil
+explícita `D`. Se houver conclusão em `D`, a sequência corrente é o número de
+datas civis consecutivas terminando em `D` que possuem conclusão. Se não houver
+conclusão em `D`, mas houver em `D-1`, a sequência corrente é calculada
+terminando em `D-1`. Se não houver conclusão em `D` nem em `D-1`, o resultado é
+zero. Conclusões posteriores a `D` não participam da avaliação.
 
 ---
 
 ## Pré-condições
 
-- Existência de execuções registradas.
+- Hábito cadastrado e pertencente ao Player autenticado.
+- Data civil de avaliação `D` explicitamente fornecida pelo consumidor.
 
 ---
 
 ## Fluxo Principal
 
-1. Registrar execução.
-2. Atualizar histórico.
-3. A Game Engine calcula o Streak.
+1. O Player solicita o Streak de um Habit próprio para a data civil `D`.
+2. O sistema considera apenas fatos `HabitCompletion` do mesmo proprietário e Habit.
+3. O sistema calcula a sequência consecutiva corrente conforme as datas existentes.
 4. O sistema apresenta o resultado.
 
 ---
 
 ## Pós-condições
 
-- Streak atualizado.
+- Resultado corrente derivado dos fatos atuais de conclusão.
 
 ---
 
 ## Critérios de Aceite
 
 - O Player não poderá alterar manualmente o Streak.
-- O cálculo deverá ser realizado exclusivamente pela Game Engine.
+- O resultado deverá ser derivado dos fatos atuais `HabitCompletion`.
+- Adicionar `D-1` pode conectar cadeias anteriormente separadas.
+- Remover uma conclusão relevante deve recalcular ou dividir a sequência.
+- Desativação e reativação não criam conclusão, pausa ou quebra artificial.
+- Habit inativo possui Streak não aplicável; sua representação de transporte é decisão posterior de arquitetura/API.
+- Fatos de outro proprietário não participam do cálculo.
+- Regras de frequência ou agenda não participam do HAB-003.
+
+## Semântica aprovada
+
+O Streak corrente usa a regra last-eligible-day: uma conclusão em `D-1` pode
+manter a sequência corrente durante `D` quando `D` ainda não foi concluído.
+HAB-003 não define `longest_streak`; estatísticas históricas permanecem no
+HAB-005. Não há pausa, agendamento, frequência, timezone implícito, XP,
+Progression, GAME, Logos, Noema/AI, Analytics ou despacho de eventos.
+
+## Cenários de aceitação
+
+1. `D`, `D-1` e `D-2` concluídos: `current_streak = 3`.
+2. `D` não concluído, `D-1` e `D-2` concluídos: `current_streak = 2`.
+3. `D` e `D-1` não concluídos, com cadeia antiga: `current_streak = 0`.
+4. Somente `D` concluído: `current_streak = 1`.
+5. Sem fatos de conclusão: `current_streak = 0`.
+6. Fatos posteriores a `D` não alteram a avaliação em `D`.
+7. Habit inativo: `current_streak` não é aplicável; fatos históricos permanecem preservados.
+8. Remover `D-1` quebra ou reduz a sequência conforme os fatos restantes.
+9. Inserir `D-1` pode conectar uma cadeia separada.
+10. Fatos pertencentes a outro proprietário não participam.
+11. Desativar ou reativar, sem conclusão, não cria sucesso nem falha.
+12. Segunda, quarta e sexta, três vezes por semana e a cada N dias não são interpretados pelo HAB-003.
+
+## Fora de escopo
+
+HAB-003 não inclui frequência (HAB-004), estatísticas ou `longest_streak`
+(HAB-005), hábitos quantitativos, metas, duração, unidades, lembretes,
+notificações, agendas, timezone infrastructure, XP, Progression, GAME,
+Character mutation, Logos, Noema/AI, Analytics, frontend, persistência de
+Streak ou eventos.
 
 ---
 
@@ -6401,7 +6445,7 @@ HAB
 
 HAB-003 — Sequência (Streak)
 
-DEFERRED / NON-V1.
+PRODUCT CONTRACT APPROVED / FROZEN — HAB-003-PC-DEC-001.
 
 ---
 
