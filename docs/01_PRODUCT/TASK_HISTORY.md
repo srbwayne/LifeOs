@@ -1,3 +1,13 @@
+## LIFEOS-PRIORITY-001 — Next Initiative Selection — 2026-09-13
+
+1. The canonical baseline was reviewed through a capability inventory and product/architecture evidence audit.
+2. Five credible candidates were ranked: HAB-003 first, HEALTH-001 runner-up, and WORK-001 third.
+3. The human decision approved HAB-003 — Sequência (Streak) as the next initiative.
+4. HAB-003 product semantics remain unresolved, including the legacy `RF-HAB-003` identity conflict.
+5. Implementation remains unauthorized; the next gate is `HAB-003 PRODUCT CONTRACT REVIEW`.
+
+---
+
 ## Habits V1 Implementation / Operational Activation Finalization — 2026-09-13
 
 1. The approved V1 scope was HAB-001 and HAB-002; HAB-003, HAB-004, and HAB-005 remain deferred.

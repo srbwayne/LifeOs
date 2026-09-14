@@ -1,3 +1,16 @@
+## HAB-003 Selected as Next Initiative — 2026-09-13
+
+- `LIFEOS-PRIORITY-001` completed; HAB-003 ranked first and was human-approved.
+- Canonical `main`: `38d6dca453b603a0b6543d9c8bacd29103be071a`; repository and operational revisions are `0011`.
+- HAB-003 — Sequência (Streak) is selected, not implemented; its product semantics remain unfrozen.
+- A known legacy `RF-HAB-003` identity conflict requires the Product Contract Review.
+- HAB-004 and HAB-005 remain deferred.
+- Progression, Logos and Noema/AI remain excluded for Habits.
+- The next gate is `HAB-003 PRODUCT CONTRACT REVIEW`.
+- No implementation is authorized by this governance update.
+
+---
+
 ## Habits V1 Implementation + Operational Activation Closure — 2026-09-13
 
 - Canonical `main`: `7743df8cb5c9df6019e8266d545181d88caa1fa7`.
