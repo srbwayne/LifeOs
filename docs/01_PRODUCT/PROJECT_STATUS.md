@@ -1,4 +1,20 @@
+## Habits V1 Implementation + Operational Activation Closure — 2026-09-13
+
+- Canonical `main`: `7743df8cb5c9df6019e8266d545181d88caa1fa7`.
+- Habits V1 implementation is COMPLETE; HAB-001 and HAB-002 are implemented.
+- HAB-003, HAB-004, and HAB-005 remain deferred.
+- Migration `0011` is integrated and the operational DB revision is `0011`.
+- Habits operational activation is ACTIVE / CLOSED.
+- HABITS-OPS-001R3 reconciliation PASS; the activation record was merged through PR #79.
+- Habits have no Progression eligibility, Logos integration, Noema/AI integration, or event dispatch.
+- The next gate is `LIFEOS NEXT INITIATIVE SELECTION — PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW`.
+- No new implementation is authorized by this governance update.
+
+---
+
 ## Habits V1 Technical Plan / Architecture Review — 2026-09-12
+
+> Historical record — superseded by the Habits V1 implementation and operational activation closure above.
 
 - HABITS-002R is CLOSED and MERGED; the approved Habits business contract remains canonical.
 - HABITS-003 technical architecture discovery is complete and HABITS-004 technical plan is approved.

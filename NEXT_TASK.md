@@ -4,31 +4,60 @@
 
 ---
 
-# Estado Atual — Habits V1 Technical Plan
+# Estado Atual — Pós-Ativação Habits V1
 
 | Campo | Valor |
 |---|---|
-| Canonical main baseline | `c49667388d2c0328e4017f8c9739cabaafa0dad0` |
-| Repository Alembic | `0010` |
-| Operational DB | `0010`, established by THERAPY-OPS-001 |
+| Canonical main baseline | `7743df8cb5c9df601e8266d545181d88caa1fa7` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
 | Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
 | THERAPY-OPS-001 | CLOSED |
-| Current selected initiative | HABITS V1 |
-| Discovery | HABITS-001 COMPLETE |
-| HABITS-002R | CLOSED / MERGED / POST-MERGE VERIFIED |
-| HABITS-003 | TECHNICAL ARCHITECTURE DISCOVERY COMPLETE |
-| HABITS-004 | V1 TECHNICAL PLAN / ARCHITECTURE REVIEW |
-| Technical plan | APPROVED |
-| Implementation | NOT AUTHORIZED |
-| Habits source | NONE |
-| Habits migration | NONE |
-| Conceptual migration 0011 | NOT CREATED / NOT AUTHORIZED |
-| Current progression | UNCHANGED |
-| Logos | NOT ACTIVATED |
-| Noema/AI | NOT ACTIVATED FOR HABITS |
-| Next human gate | HABITS V1 IMPLEMENTATION SLICING / SLICE 1 AUTHORIZATION |
+| Habits V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| HAB-001 | IMPLEMENTED / ACTIVE |
+| HAB-002 | IMPLEMENTED / ACTIVE |
+| HAB-003 | DEFERRED |
+| HAB-004 | DEFERRED |
+| HAB-005 | DEFERRED |
+| HABITS-OPS-001 | CLOSED |
+| HABITS-OPS-001R3 | PASS / EVIDENCE RECONCILED |
+| HABITS-OPS-001M | COMPLETE |
+| Progression for Habits | NOT ELIGIBLE / UNCHANGED |
+| Logos for Habits | NOT INTEGRATED |
+| Noema/AI for Habits | NOT INTEGRATED |
+| Habit event dispatch | NO |
+| Current selected initiative | NONE |
+| Next authorized gate | LIFEOS NEXT INITIATIVE SELECTION — PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW |
 
-**NO HABITS IMPLEMENTATION IS AUTHORIZED BY THIS GOVERNANCE UPDATE.** Migration `0011` remains NOT CREATED / NOT AUTHORIZED.
+## Next Authorized Gate
+
+`LIFEOS NEXT INITIATIVE SELECTION — PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW`
+
+Type: READ-ONLY GOVERNANCE / PRIORITIZATION REVIEW
+
+Purpose: evaluate the canonical product backlog and implemented capabilities to
+recommend the next bounded LifeOS initiative. This gate may analyze candidates
+but must not implement them.
+
+Authorized:
+
+- repository and document inspection;
+- backlog/status reconciliation;
+- comparison of candidate initiatives;
+- architectural dependency analysis;
+- recommendation of the next bounded initiative.
+
+Not authorized:
+
+- production code changes;
+- migration creation or execution;
+- operational DB access;
+- runtime mutation;
+- HAB-003, HAB-004, or HAB-005 implementation;
+- Progression, Logos, or Noema/AI integration;
+- new API or frontend implementation.
+
+A later explicit human decision remains required before implementation.
 
 The historical READ closure and planning records below are preserved as historical context.
 
