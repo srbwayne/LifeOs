@@ -1,3 +1,19 @@
+## Habits V1 Implementation / Operational Activation Finalization — 2026-09-13
+
+1. The approved V1 scope was HAB-001 and HAB-002; HAB-003, HAB-004, and HAB-005 remain deferred.
+2. Implementation slices were integrated and HABITS-010 closed the implementation cycle; PR #78 closed that cycle.
+3. Migration `0011` became the repository head.
+4. Operational activation had safe blocked/rollback attempts before R2 completed `0010 -> 0011` and authenticated read-only smoke.
+5. R2 had a missing required R2-specific backup artifact; R3 reconciled the evidence using preserved `0010` backups and deterministic disposable reconstruction.
+6. The operational DB ended healthy at `0011`; authenticated Habits, Books, and Therapy read-only smoke passed.
+7. No unexpected operational writes or Progression dispatch occurred. A post-activation `0011` safety backup was verified.
+8. PR #79 recorded the activation and was squash-merged; canonical `main` became `7743df8cb5c9df6019e8266d545181d88caa1fa7`.
+9. Habits V1 is IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED.
+
+Detailed operational evidence is recorded in `docs/10_AI_ENGINEERING/HABITS_OPS_001_OPERATIONAL_ACTIVATION.md`.
+
+---
+
 ## TASK-015 / INT-001 Integration Finalization — 2026-09-06
 
 1. PR #57, `feat(read): add progression integration seam`, integrated the
