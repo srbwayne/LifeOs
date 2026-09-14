@@ -4,6 +4,60 @@
 
 ---
 
+# Current Authoritative State — Post-Priority Selection
+
+| Field | Value |
+|---|---|
+| Canonical main baseline | `38d6dca453b603a0b6543d9c8bacd29103be071a` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| Habits V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| HAB-001 | IMPLEMENTED / ACTIVE |
+| HAB-002 | IMPLEMENTED / ACTIVE |
+| HAB-003 | SELECTED / PRODUCT CONTRACT NOT YET FROZEN / IMPLEMENTATION NOT AUTHORIZED |
+| HAB-004 | DEFERRED |
+| HAB-005 | DEFERRED |
+| Progression for Habits | NOT ELIGIBLE / UNCHANGED |
+| Logos for Habits | NOT INTEGRATED |
+| Noema/AI for Habits | NOT INTEGRATED |
+| Habit event dispatch | NO |
+| Current selected initiative | HAB-003 — Sequência (Streak) |
+| Next authorized gate | HAB-003 PRODUCT CONTRACT REVIEW |
+
+## Next Authorized Gate
+
+`HAB-003 PRODUCT CONTRACT REVIEW`
+
+Type: READ-ONLY PRODUCT CONTRACT / SEMANTIC REVIEW
+
+Purpose: freeze the product semantics of Streak before architecture or
+implementation.
+
+Authorized:
+
+- canonical product/document inspection;
+- reconciliation of HAB-003 identity and legacy RF-HAB numbering;
+- definition of streak semantics and acceptance scenarios;
+- owner isolation, lifecycle, civil-date and gap-rule analysis;
+- product-level API/read-model and migration impact assessment.
+
+Not authorized:
+
+- production code, tests, migrations, runtime or operational DB access;
+- architecture, API or frontend implementation;
+- HAB-004, HAB-005, Progression, XP, Logos, Noema/AI, Analytics or event dispatch.
+
+The review must answer the streak contract questions without implementing the
+feature, and must reconcile canonical `HAB-003 — Sequência (Streak)` with the
+legacy PRD label `RF-HAB-003 — Registro de Execução do Hábito`. Existing
+HAB-002 completion semantics must not be duplicated or redefined. A later
+explicit human decision remains required before architecture or implementation.
+
+## Historical Governance State — Superseded
+
+The following section is retained for historical context only.
+
 # Estado Atual — Pós-Ativação Habits V1
 
 | Campo | Valor |
