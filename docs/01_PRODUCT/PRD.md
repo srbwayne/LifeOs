@@ -6372,16 +6372,18 @@ zero. Conclusões posteriores a `D` não participam da avaliação.
 ## Pré-condições
 
 - Hábito cadastrado e pertencente ao Player autenticado.
-- Data civil de avaliação `D` explicitamente fornecida pelo consumidor.
+- A avaliação utiliza uma data civil explícita `D`.
+- A origem de `D` e sua forma de fornecimento não são definidas neste requisito e pertencem à revisão de Arquitetura/API.
 
 ---
 
 ## Fluxo Principal
 
-1. O Player solicita o Streak de um Habit próprio para a data civil `D`.
-2. O sistema considera apenas fatos `HabitCompletion` do mesmo proprietário e Habit.
-3. O sistema calcula a sequência consecutiva corrente conforme as datas existentes.
-4. O sistema apresenta o resultado.
+1. O Player solicita o Streak de um Habit próprio.
+2. A avaliação ocorre para uma data civil explícita `D`.
+3. O sistema considera apenas fatos `HabitCompletion` do mesmo proprietário e Habit.
+4. O sistema calcula a sequência consecutiva corrente conforme as datas existentes.
+5. O sistema apresenta o resultado.
 
 ---
 
