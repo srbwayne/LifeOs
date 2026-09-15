@@ -1,3 +1,14 @@
+## HAB-003-ARCH-001 / HAB-003-ARCH-DEC-001 — Architecture Finalization — 2026-09-14
+
+1. The HAB-003 architecture review completed and the human decision approved it with amendment.
+2. The proposed `CivilDateProvider` was rejected; `evaluation_date` is an explicit application-query input.
+3. A pure HAB streak calculator, owner-scoped Habit lookup, and specialized completion-date projection were approved.
+4. HabitCompletion remains the sole source of truth; inactive streak is not applicable.
+5. No durable streak state, migration, new V1 index, or ADR is required.
+6. Implementation remains unauthorized. The next gate is `HAB-003-TP-001 — TECHNICAL PLAN / IMPLEMENTATION SLICING REVIEW`.
+
+---
+
 ## HAB-003-PC-001 / HAB-003-PC-DEC-001 — Product Contract Finalization — 2026-09-14
 
 1. The HAB-003 Product Contract Review completed and the human decision approved the ten product decisions.
@@ -772,15 +783,5 @@ read-only planning and review only.
 12. Migration 0008 real, cutover e ativação de runtime não foram executados.
 
 **Next Gate:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW
-
----
-## HAB-003-ARCH-001 / HAB-003-ARCH-DEC-001 — Architecture Finalization — 2026-09-14
-
-1. The HAB-003 architecture review completed and the human decision approved it with amendment.
-2. The proposed `CivilDateProvider` was rejected; `evaluation_date` is an explicit application-query input.
-3. A pure HAB streak calculator, owner-scoped Habit lookup, and specialized completion-date projection were approved.
-4. HabitCompletion remains the sole source of truth; inactive streak is not applicable.
-5. No durable streak state, migration, new V1 index, or ADR is required.
-6. Implementation remains unauthorized. The next gate is `HAB-003-TP-001 — TECHNICAL PLAN / IMPLEMENTATION SLICING REVIEW`.
 
 ---

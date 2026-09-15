@@ -42,7 +42,7 @@ Habits V1 = HAB-001 + HAB-002 — CLOSED. HAB-003 é iniciativa pós-V1 selecion
 - AUTH;
 - persistência owner-scoped do LifeOS.
 
-CHAR, GAME, Analytics e AI/Noema não são dependências de HAB-003. HAB-004 e HAB-005 permanecem dependências futuras não ativadas.
+CHAR, GAME, Analytics e AI/Noema não são dependências de HAB-003. HAB-004 (Frequência) e HAB-005 (Estatísticas) permanecem features DEFERRED e não participam da arquitetura do HAB-003.
 
 Authentication garante a identidade do Player. O V1 registra fatos no LifeOS; não calcula evolução nem envia dados à Game Engine.
 
