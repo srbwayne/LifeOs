@@ -4,18 +4,18 @@
 
 ---
 
-# Current Authoritative State — Post-Priority Selection
+# Current Authoritative State — HAB-003 Architecture Approved
 
 | Field | Value |
 |---|---|
-| Canonical main baseline | `542f087633cdb53c185da86cda42c2a89c9c26bd` |
+| Decision baseline reviewed | `68e18225043344217fd1bcd1c27561a3f210bbae` |
 | Repository Alembic | `0011` |
 | Operational DB | `0011` |
 | Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
 | Habits V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
 | HAB-001 | IMPLEMENTED / ACTIVE |
 | HAB-002 | IMPLEMENTED / ACTIVE |
-| HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE NOT YET APPROVED / IMPLEMENTATION NOT AUTHORIZED |
+| HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE APPROVED / FROZEN / TECHNICAL PLAN NOT YET APPROVED / IMPLEMENTATION NOT AUTHORIZED |
 | HAB-004 | DEFERRED |
 | HAB-005 | DEFERRED |
 | Progression for Habits | NOT ELIGIBLE / UNCHANGED |
@@ -23,34 +23,37 @@
 | Noema/AI for Habits | NOT INTEGRATED |
 | Habit event dispatch | NO |
 | Current selected initiative | HAB-003 — Sequência (Streak) |
-| Next authorized gate | HAB-003-ARCH-001 — ARCHITECTURE REVIEW |
+| Next authorized gate | HAB-003-TP-001 — TECHNICAL PLAN / IMPLEMENTATION SLICING REVIEW |
 
 ## Next Authorized Gate
 
-`HAB-003-ARCH-001 — ARCHITECTURE REVIEW`
+`HAB-003-TP-001 — TECHNICAL PLAN / IMPLEMENTATION SLICING REVIEW`
 
-Type: READ-ONLY ARCHITECTURE / TECHNICAL DESIGN REVIEW
+Type: READ-ONLY TECHNICAL PLAN / IMPLEMENTATION PLANNING
 
-Purpose: determine the minimal architecture for computing and exposing current
-streak from canonical HabitCompletion facts without creating a second authority.
+Purpose: produce the exact implementation plan for the already-frozen HAB-003
+product contract and architecture.
 
 Authorized:
 
-- domain/application ownership of streak derivation;
-- explicit evaluation-date input boundary and repository query requirements;
-- owner isolation and inactive-Habit representation;
-- current-streak read model and single-Habit versus projection boundary;
-- persistence impact, migration necessity, performance, API placement and testing strategy.
+- exact source/test file inventory and symbols to add or modify;
+- exact repository projection signature/query and pure calculator contract;
+- application query/DTO design and dependency-injection wiring plan;
+- exact HTTP route, method, schema, explicit `evaluation_date` transport and inactive-Habit representation;
+- error mapping, test matrix, SQL/query-plan validation strategy, implementation slicing and allowlist proposal.
 
 Not authorized:
 
-- architecture or API implementation;
+- source modification or architecture/API implementation;
 - production code, tests, migrations, runtime or operational DB access;
 - HAB-003 implementation or HAB-004/HAB-005 work;
 - Progression, XP, GAME, Logos, Noema/AI, Analytics or event dispatch integration.
 
-The architecture review must preserve the approved HAB-003 contract and must
-not duplicate or redefine HAB-002 completion semantics. A later explicit human
+The approved architecture requires `evaluation_date` as an explicit application
+query input and forbids a CivilDateProvider, clock abstraction, `date.today()`,
+UTC-derived date, server-local date, or implicit timezone inference. If the
+Technical Plan cannot define an explicit transport without inventing product
+semantics, it must stop with a product-gap report. A later explicit human
 decision remains required before implementation.
 
 ## Historical Governance State — Superseded
