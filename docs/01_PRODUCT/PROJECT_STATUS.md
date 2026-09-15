@@ -1,3 +1,13 @@
+## HAB-003 Product Contract Integration — 2026-09-14
+
+- HAB-003 Product Contract Review completed under `HAB-003-PC-DEC-001` and was approved by human decision.
+- `RF-HAB-005` is reconciled as the requirement for HAB-003; `RF-HAB-003` remains mapped to HAB-002.
+- The product contract is frozen: current calendar-consecutive streak, explicit evaluation civil date, facts-only lifecycle, retroactive derivation, current streak only, and no durable Streak authority.
+- No GAME/XP/Logos/Noema dependency is introduced; HAB-004 remains Frequency and HAB-005 remains Statistics.
+- No implementation was performed. The next gate is `HAB-003-ARCH-001 — ARCHITECTURE REVIEW`.
+
+---
+
 ## HAB-003 Selected as Next Initiative — 2026-09-13
 
 - `LIFEOS-PRIORITY-001` completed; HAB-003 ranked first and was human-approved.

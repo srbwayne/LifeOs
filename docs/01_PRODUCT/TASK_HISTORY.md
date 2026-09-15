@@ -1,3 +1,14 @@
+## HAB-003-PC-001 / HAB-003-PC-DEC-001 — Product Contract Finalization — 2026-09-14
+
+1. The HAB-003 Product Contract Review completed and the human decision approved the ten product decisions.
+2. HAB-003 is frozen as a current calendar-consecutive Streak using an explicit evaluation civil date, facts-only lifecycle semantics, and derived current results.
+3. Only current streak is in scope; longest streak remains HAB-005/statistics, and HAB-004 remains deferred.
+4. RF identity was reconciled: RF-HAB-003 remains mapped to HAB-002, while RF-HAB-005 is the requirement for HAB-003.
+5. No GAME, XP, Progression, Logos, Noema/AI, Analytics, event, architecture, or implementation work was authorized.
+6. The next gate is `HAB-003-ARCH-001 — ARCHITECTURE REVIEW`.
+
+---
+
 ## LIFEOS-PRIORITY-001 — Next Initiative Selection — 2026-09-13
 
 1. The canonical baseline was reviewed through a capability inventory and product/architecture evidence audit.
