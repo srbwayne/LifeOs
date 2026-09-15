@@ -921,3 +921,13 @@ A Sprint 01 foi concluída com sucesso, entregando a fundação arquitetural e a
 **Next Gate:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW
 
 ---
+## HAB-003 Architecture Approval / Integration — 2026-09-14
+
+- `HAB-003-ARCH-DEC-001` approved the HAB-003 architecture with amendment; the product contract remains frozen and the architecture is now APPROVED / FROZEN.
+- The evaluation date is an explicit application-query input; no CivilDateProvider, clock abstraction, implicit current date, or timezone rule is introduced.
+- The approved design uses a pure HAB calculator, an owner-scoped single-Habit query, and a specialized completion-date projection.
+- Inactive Habit streak is not applicable; HabitCompletion remains the sole functional authority.
+- No durable streak state, migration, or new V1 index is approved; no ADR is required.
+- HAB-003 implementation remains unauthorized. The next gate is `HAB-003-TP-001 — TECHNICAL PLAN / IMPLEMENTATION SLICING REVIEW`.
+
+---

@@ -8,7 +8,7 @@ HAB
 
 Gerenciar os hábitos do Player dentro do LifeOS.
 
-A Capability Habits é responsável por registrar definições de hábitos e fatos binários de conclusão do Player. No V1, é owner-private e limitada a HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003..005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
+A Capability Habits é responsável por registrar definições de hábitos, fatos binários de conclusão e a leitura derivada de Streak do Player. Habits V1 permanece CLOSED como HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 é uma iniciativa pós-V1 selecionada, com contrato de produto e arquitetura aprovados/frozen, mas implementação não autorizada. HAB-004 e HAB-005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
 
 ---
 
@@ -18,8 +18,8 @@ A Capability Habits é responsável por:
 
 - Cadastro de Hábitos;
 - Checklist diário e histórico de HabitCompletion (HAB-002);
+- Sequência/Streak derivada de fatos HabitCompletion (HAB-003) — PRODUCT CONTRACT / ARCHITECTURE APPROVED, IMPLEMENTATION NOT AUTHORIZED;
 - Frequência (HAB-004) — DEFERRED;
-- Sequência/Streak (HAB-003) — DEFERRED;
 - Estatísticas (HAB-005) — DEFERRED;
 - Rotinas e evolução — conceitos futuros DEFERRED.
 
@@ -33,7 +33,7 @@ A Capability Habits é responsável por:
 - HAB-004 — Frequência
 - HAB-005 — Estatísticas
 
-V1 = HAB-001 + HAB-002. HAB-003..005 = DEFERRED.
+Habits V1 = HAB-001 + HAB-002 — CLOSED. HAB-003 é iniciativa pós-V1 selecionada; HAB-004 e HAB-005 = DEFERRED.
 
 ---
 
@@ -42,7 +42,7 @@ V1 = HAB-001 + HAB-002. HAB-003..005 = DEFERRED.
 - AUTH;
 - persistência owner-scoped do LifeOS.
 
-CHAR, GAME, Analytics e AI/Noema são dependências futuras, não ativadas no V1.
+CHAR, GAME, Analytics e AI/Noema não são dependências de HAB-003. HAB-004 e HAB-005 permanecem dependências futuras não ativadas.
 
 Authentication garante a identidade do Player. O V1 registra fatos no LifeOS; não calcula evolução nem envia dados à Game Engine.
 
@@ -50,7 +50,7 @@ Authentication garante a identidade do Player. O V1 registra fatos no LifeOS; n�
 
 ## Consumidores
 
-A Capability Habits disponibiliza dados ao próprio proprietário e às telas internas autorizadas do LifeOS. Exposição externa, Logos, Noema/AI e Analytics permanecem DEFERRED.
+A Capability Habits disponibiliza dados ao próprio proprietário e às telas internas autorizadas do LifeOS. O Streak permanece owner-private e derivado de HabitCompletion; exposição externa, Logos, Noema/AI e Analytics permanecem não integrados.
 
 ---
 
@@ -63,6 +63,8 @@ Habits deverá garantir que:
 - a repetição da marcação seja idempotente e a remoção permita correção histórica;
 - desativação preserve fatos históricos e impeça novas conclusões;
 - não haja despacho de eventos, progressão, Logos ou Noema/AI no V1.
+- HAB-003 use somente uma data civil de avaliação explicitamente fornecida à aplicação;
+- HAB-003 permaneça calendar-consecutive, sem frequência, longest streak ou estado durável de Streak.
 
 ---
 
@@ -92,7 +94,7 @@ Persistência do fato binário / consulta do histórico
 
 ## Integração com a Plataforma
 
-No V1, a Capability Habits não integra Game/Logos, Progression, Analytics ou AI/Noema e não despacha eventos externos. Integrações futuras permanecem uma possibilidade arquitetural DEFERRED.
+Habits não integra Game/XP/Logos, Progression, Analytics ou AI/Noema e não despacha eventos. HAB-003 permanece dentro da Capability HAB, sem dependência dessas integrações.
 
 ---
 
@@ -104,5 +106,6 @@ A Capability Habits será considerada completa quando:
 - hábitos puderem ser cadastrados, desativados e reativados;
 - fatos binários puderem ser marcados, consultados e corrigidos por data civil;
 - o histórico permanecer owner-scoped;
-- HAB-003..005 forem tratados como escopo separado e DEFERRED;
+- HAB-003 seja tratado como iniciativa pós-V1 separada, com implementação ainda não autorizada;
+- HAB-004 e HAB-005 permaneçam DEFERRED;
 - todas as regras permanecerem compatíveis com a arquitetura oficial do LifeOS.
