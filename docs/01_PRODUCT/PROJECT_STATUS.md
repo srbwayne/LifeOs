@@ -1,3 +1,18 @@
+
+## HAB-003 Technical Plan Allowlist Amendment — 2026-09-16
+
+- `HAB-003-IA-001` found one hidden Protocol-fake impact; `HAB-003-TP-AMEND-001` independently confirmed the single missing path.
+- `HAB-003-TP-AMEND-DEC-001` was approved by human decision.
+- `tests/habits/application/test_read_queries.py` is added to the future implementation allowlist.
+- Production paths remain 9; test paths become 5; total paths become 14.
+- One bounded implementation slice remains.
+- Product Contract and Architecture are unchanged and remain APPROVED / FROZEN.
+- No migration or new index is planned. HAB-003 implementation remains NOT AUTHORIZED.
+- CPython 3.11.x readiness evidence remains required; disposable query-plan validation remains pending.
+- Next gate: `HAB-003-IA-001R — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW RERUN`.
+
+---
+
 ## HAB-003 Technical Plan Approval / Integration — 2026-09-15
 
 - `HAB-003-TP-DEC-001` approved the HAB-003 Technical Plan by human decision.

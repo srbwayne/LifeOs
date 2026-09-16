@@ -14,6 +14,10 @@
 | HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE APPROVED / FROZEN / TECHNICAL PLAN APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED |
 | Technical Plan Decision | `HAB-003-TP-DEC-001 — APPROVED` |
 | Technical Plan Document | `docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md` |
+| Technical Plan Amendment | `HAB-003-TP-AMEND-DEC-001 — APPROVED` |
+| Production implementation paths | 9 |
+| Test implementation paths | 5 |
+| Total implementation paths | 14 |
 | HAB-004 | DEFERRED |
 | HAB-005 | DEFERRED |
 | Progression for Habits | NOT ELIGIBLE / UNCHANGED |
@@ -21,20 +25,20 @@
 | Noema/AI for Habits | NOT INTEGRATED |
 | Habit event dispatch | NO |
 | Current selected initiative | HAB-003 — Sequência (Streak) |
-| Next authorized gate | `HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW` |
+| Next authorized gate | `HAB-003-IA-001R — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW RERUN` |
 
 Implementation remains NOT AUTHORIZED. HAB-004 and HAB-005 remain DEFERRED;
 Progression, Logos, Noema/AI, and event dispatch remain unchanged and excluded.
 
 ### Next Authorized Gate
 
-`HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`
+`HAB-003-IA-001R — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW RERUN`
 
 Type: READ-ONLY IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW.
 
-Purpose: verify the frozen Product Contract, Architecture, and Technical Plan,
-the exact future allowlist, disposable validation safety, and repository/CI
-readiness before a separate human implementation decision.
+Purpose: re-run implementation readiness against the amended 14-path allowlist,
+using CPython 3.11.x and completing the disposable query-plan validation before
+a separate human implementation decision.
 
 The IA gate does not authorize implementation by itself.
 

@@ -13,6 +13,8 @@
 | Implementation at Technical Plan approval | NOT AUTHORIZED |
 | Canonical decision baseline | `78bec6221ceabe4d345d2758e18cf08037b08b4c` |
 | Alembic revision | `0011` |
+| Technical Plan Amendment | HAB-003-TP-AMEND-DEC-001 — APPROVED |
+| Amendment Date | 2026-09-16 |
 
 This is the canonical durable form of `HAB-003-TP-001R2 — Final Technical
 Plan`. It records the frozen engineering plan and does not authorize
@@ -289,17 +291,29 @@ app/habits/presentation/api/fastapi/routers.py
 app/habits/dependencies.py
 ```
 
-Tests — exactly four paths:
+Tests — exactly five paths:
 
 ```text
 tests/habits/domain/test_habit_streak.py
 tests/habits/application/test_habit_streak_query.py
 tests/habits/integration/test_habit_streak_read_repository.py
 tests/habits/api/test_habit_api.py
+tests/habits/application/test_read_queries.py
 ```
 
-Migration, governance, and frontend paths: none. Unrelated paths require a new
-review decision.
+The legacy `tests/habits/application/test_read_queries.py` path is included
+for compatibility because its `CompletionReadRepositoryFake` is passed to
+`ListCompletionsQueryHandler` and structurally satisfies
+`IHabitCompletionReadRepository`. When the Protocol gains
+`list_record_dates_by_owner_and_habit_until(...)`, that fake must gain the
+same method. The permitted change is compatibility-only: existing
+ListCompletions tests and behavior are not rewritten, and dedicated HAB-003
+application behavior remains in
+`tests/habits/application/test_habit_streak_query.py`.
+
+Production paths: 9. Test paths: 5. Total implementation paths: 14.
+Migration, governance, and frontend paths: none. No fifteenth path is
+authorized. Unrelated paths require a new review decision.
 
 ## 10. Test plan
 
@@ -325,6 +339,14 @@ import, full pytest, the DeprecationWarning gate, coverage, guarded disposable
 Alembic `upgrade head`/`current`, deterministic query-plan validation, and
 `git diff --check`.
 
+The blocked `HAB-003-IA-001` local readiness evidence used CPython 3.13.5;
+the rerun must use actual CPython 3.11.x. This is a pre-flight evidence gap,
+not a Product Contract, Architecture, or implementation semantic change.
+Its disposable Alembic validation, 10,000-row seed, and `EXPLAIN QUERY PLAN`
+were not executed because the IA gate correctly stopped at the allowlist
+blocker. `HAB-003-IA-001R` must complete that already-frozen validation and
+cleanup before implementation authorization can be recommended.
+
 The disposable Alembic sequence must create a non-existing dedicated database,
 explicitly set `LIFEOS_DATABASE_URL` before both commands, refuse reuse or
 overwrite, refuse `lifeos.db`, clean up the database, and unset the temporary
@@ -332,4 +354,4 @@ variable. No unqualified Alembic command is permitted.
 
 This is one bounded implementation slice. Implementation remains
 `NOT AUTHORIZED`. The next gate is
-`HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`.
+`HAB-003-IA-001R — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW RERUN`.

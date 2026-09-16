@@ -1,3 +1,17 @@
+## HAB-003-IA-001 / HAB-003-TP-AMEND-001 / HAB-003-TP-AMEND-DEC-001 — Allowlist Amendment — 2026-09-16
+
+1. `HAB-003-IA-001` was BLOCKED with BLOCKER 1, MAJOR 1, and MINOR 0.
+2. The blocker was the existing `CompletionReadRepositoryFake`, which requires compatibility with the expanded `IHabitCompletionReadRepository` Protocol.
+3. The IA local readiness evidence used CPython 3.13.5 instead of the required 3.11.x; this was classified as a pre-flight evidence gap.
+4. Query-plan validation was not executed because IA correctly hard-stopped first.
+5. `HAB-003-TP-AMEND-001` passed with BLOCKER 0, MAJOR 0, and MINOR 0, confirming one missing test path.
+6. Human decision `HAB-003-TP-AMEND-DEC-001 — APPROVED` added `tests/habits/application/test_read_queries.py` to the future allowlist.
+7. Production paths remain 9; test paths change from 4 to 5; total implementation paths change from 13 to 14.
+8. Product Contract and Architecture are unchanged; one bounded implementation slice remains; implementation remains NOT AUTHORIZED.
+9. The next gate is `HAB-003-IA-001R — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW RERUN`.
+
+---
+
 ## HAB-003-TP-001 / HAB-003-TP-DEC-001 — Technical Plan Finalization — 2026-09-15
 
 1. `HAB-003-TP-001` initial Technical Plan review completed; independent review found BLOCKER 0, MAJOR 2, MINOR 2.
