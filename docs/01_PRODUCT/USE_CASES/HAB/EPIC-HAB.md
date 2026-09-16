@@ -1,5 +1,20 @@
 # EPIC-HAB — Habits
 
+## Current HAB-003 Governance
+
+HAB-003 — Sequência (Streak) is a post-V1 initiative with Product Contract,
+Architecture, and Technical Plan APPROVED / FROZEN under
+`HAB-003-TP-DEC-001` dated 2026-09-15. The canonical Technical Plan is
+`docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md`.
+
+Implementation remains NOT AUTHORIZED. The next gate is
+`HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`.
+
+HABITS V1 remains HAB-001 + HAB-002 — CLOSED. HAB-004 and HAB-005 remain
+DEFERRED, with no Game, Logos, Analytics, or AI/Noema integration.
+
+---
+
 ## Código
 
 HAB
