@@ -1,3 +1,15 @@
+## HAB-003 Technical Plan Approval / Integration — 2026-09-15
+
+- `HAB-003-TP-DEC-001` approved the HAB-003 Technical Plan by human decision.
+- Product Contract: APPROVED / FROZEN.
+- Architecture: APPROVED / FROZEN.
+- Technical Plan: APPROVED / FROZEN.
+- Canonical Technical Plan: `docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md`.
+- The plan defines one bounded implementation slice for explicit civil `evaluation_date`; inactive Habit remains not applicable (`current_streak=null`).
+- No migration, Migration 0012, or new V1 index is planned.
+- HAB-003 implementation remains NOT AUTHORIZED. The next gate is `HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`.
+---
+
 ## HAB-003 Architecture Approval / Integration — 2026-09-14
 
 - `HAB-003-ARCH-DEC-001` approved the HAB-003 architecture with amendment; the product contract remains frozen and the architecture is now APPROVED / FROZEN.

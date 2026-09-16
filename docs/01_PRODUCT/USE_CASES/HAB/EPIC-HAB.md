@@ -1,5 +1,20 @@
 # EPIC-HAB — Habits
 
+## Current HAB-003 Governance
+
+HAB-003 — Sequência (Streak) is a post-V1 initiative with Product Contract,
+Architecture, and Technical Plan APPROVED / FROZEN under
+`HAB-003-TP-DEC-001` dated 2026-09-15. The canonical Technical Plan is
+`docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md`.
+
+Implementation remains NOT AUTHORIZED. The next gate is
+`HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`.
+
+HABITS V1 remains HAB-001 + HAB-002 — CLOSED. HAB-004 and HAB-005 remain
+DEFERRED, with no Game, Logos, Analytics, or AI/Noema integration.
+
+---
+
 ## Código
 
 HAB
@@ -8,7 +23,7 @@ HAB
 
 Gerenciar os hábitos do Player dentro do LifeOS.
 
-A Capability Habits é responsável por registrar definições de hábitos, fatos binários de conclusão e a leitura derivada de Streak do Player. Habits V1 permanece CLOSED como HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 é uma iniciativa pós-V1 selecionada, com contrato de produto e arquitetura aprovados/frozen, mas implementação não autorizada. HAB-004 e HAB-005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
+A Capability Habits é responsável por registrar definições de hábitos, fatos binários de conclusão e a leitura derivada de Streak do Player. Habits V1 permanece CLOSED como HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 é uma iniciativa pós-V1 selecionada, com Product Contract, Architecture, and Technical Plan APPROVED / FROZEN, mas implementação não autorizada. HAB-004 e HAB-005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
 
 ---
 
@@ -18,7 +33,7 @@ A Capability Habits é responsável por:
 
 - Cadastro de Hábitos;
 - Checklist diário e histórico de HabitCompletion (HAB-002);
-- Sequência/Streak derivada de fatos HabitCompletion (HAB-003) — PRODUCT CONTRACT / ARCHITECTURE APPROVED, IMPLEMENTATION NOT AUTHORIZED;
+- Sequência/Streak derivada de fatos HabitCompletion (HAB-003) — PRODUCT CONTRACT / ARCHITECTURE / TECHNICAL PLAN APPROVED / FROZEN, IMPLEMENTATION NOT AUTHORIZED;
 - Frequência (HAB-004) — DEFERRED;
 - Estatísticas (HAB-005) — DEFERRED;
 - Rotinas e evolução — conceitos futuros DEFERRED.

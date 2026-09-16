@@ -1,5 +1,47 @@
 # NEXT_TASK.md
 
+## Current Authoritative State — HAB-003 Technical Plan Approved
+
+| Field | Value |
+|---|---|
+| Decision baseline reviewed | `78bec6221ceabe4d345d2758e18cf08037b08b4c` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| Habits V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| HAB-001 | IMPLEMENTED / ACTIVE |
+| HAB-002 | IMPLEMENTED / ACTIVE |
+| HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE APPROVED / FROZEN / TECHNICAL PLAN APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED |
+| Technical Plan Decision | `HAB-003-TP-DEC-001 — APPROVED` |
+| Technical Plan Document | `docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md` |
+| HAB-004 | DEFERRED |
+| HAB-005 | DEFERRED |
+| Progression for Habits | NOT ELIGIBLE / UNCHANGED |
+| Logos for Habits | NOT INTEGRATED |
+| Noema/AI for Habits | NOT INTEGRATED |
+| Habit event dispatch | NO |
+| Current selected initiative | HAB-003 — Sequência (Streak) |
+| Next authorized gate | `HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW` |
+
+Implementation remains NOT AUTHORIZED. HAB-004 and HAB-005 remain DEFERRED;
+Progression, Logos, Noema/AI, and event dispatch remain unchanged and excluded.
+
+### Next Authorized Gate
+
+`HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`
+
+Type: READ-ONLY IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW.
+
+Purpose: verify the frozen Product Contract, Architecture, and Technical Plan,
+the exact future allowlist, disposable validation safety, and repository/CI
+readiness before a separate human implementation decision.
+
+The IA gate does not authorize implementation by itself.
+
+---
+
+## Historical Governance State — Superseded
+
 > Documento oficial que define a única tarefa autorizada para execução.
 
 ---

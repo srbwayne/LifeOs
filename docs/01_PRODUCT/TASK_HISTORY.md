@@ -1,3 +1,15 @@
+## HAB-003-TP-001 / HAB-003-TP-DEC-001 — Technical Plan Finalization — 2026-09-15
+
+1. `HAB-003-TP-001` initial Technical Plan review completed; independent review found BLOCKER 0, MAJOR 2, MINOR 2.
+2. `HAB-003-TP-001R` remediated disposable Alembic safety, the domain/services allowlist, deterministic query-plan validation, and pip-check parity; independent re-review found BLOCKER 0, MAJOR 1, MINOR 1.
+3. `HAB-003-TP-001R2` restored the exact calculator, DTO, query, and authentication contracts and reconciled disposable-migration wording; independent final review found BLOCKER 0, MAJOR 0, MINOR 0.
+4. Human decision `HAB-003-TP-DEC-001 — APPROVED` froze the Technical Plan.
+5. The canonical plan is `docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md`.
+6. One bounded implementation slice is planned with no migration or new V1 index.
+7. Product Contract and Architecture remain APPROVED / FROZEN; implementation remains NOT AUTHORIZED.
+8. The next gate is `HAB-003-IA-001 — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW`.
+---
+
 ## HAB-003-ARCH-001 / HAB-003-ARCH-DEC-001 — Architecture Finalization — 2026-09-14
 
 1. The HAB-003 architecture review completed and the human decision approved it with amendment.
