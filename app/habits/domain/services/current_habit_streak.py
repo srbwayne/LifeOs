@@ -15,6 +15,8 @@ class CurrentHabitStreakCalculator:
         }
         cursor = evaluation_date
         if cursor not in eligible_dates:
+            if cursor == date.min:
+                return 0
             cursor -= timedelta(days=1)
             if cursor not in eligible_dates:
                 return 0
@@ -22,5 +24,7 @@ class CurrentHabitStreakCalculator:
         streak = 0
         while cursor in eligible_dates:
             streak += 1
+            if cursor == date.min:
+                break
             cursor -= timedelta(days=1)
         return streak

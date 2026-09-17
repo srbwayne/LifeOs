@@ -66,3 +66,23 @@ def test_only_evaluation_date_is_one_and_past_dates_are_supported() -> None:
 
     assert CurrentHabitStreakCalculator().calculate(evaluation_date, (evaluation_date,)) == 1
     assert CurrentHabitStreakCalculator().calculate(date(2026, 9, 10), (date(2026, 9, 10),)) == 1
+
+
+def test_date_minimum_without_facts_returns_zero() -> None:
+    assert CurrentHabitStreakCalculator().calculate(date.min, ()) == 0
+
+
+def test_date_minimum_completion_returns_one() -> None:
+    assert CurrentHabitStreakCalculator().calculate(date.min, (date.min,)) == 1
+
+
+def test_future_evaluation_date_calculates_current_chain() -> None:
+    evaluation_date = date(2030, 1, 10)
+
+    assert (
+        CurrentHabitStreakCalculator().calculate(
+            evaluation_date,
+            (date(2030, 1, 10), date(2030, 1, 9)),
+        )
+        == 2
+    )

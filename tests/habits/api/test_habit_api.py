@@ -97,6 +97,16 @@ def test_habit_streak_api_covers_current_date_owner_and_inactive_semantics(api) 
         "current_streak": 1,
         "evaluation_date": "2026-09-14",
     }
+    fallback = client.get(f"/habits/{habit_id}/streak?evaluation_date=2026-09-13")
+    assert fallback.status_code == 200
+    assert fallback.json()["current_streak"] == 1
+    minimum = client.get(f"/habits/{habit_id}/streak?evaluation_date=0001-01-01")
+    assert minimum.status_code == 200
+    assert minimum.json() == {
+        "habit_id": habit_id,
+        "current_streak": 0,
+        "evaluation_date": "0001-01-01",
+    }
     assert (
         client.get(f"/habits/{habit_id}/streak?evaluation_date=2020-01-01").json()["current_streak"]
         == 0
