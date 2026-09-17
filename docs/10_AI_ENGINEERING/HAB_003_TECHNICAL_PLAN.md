@@ -381,3 +381,30 @@ BLOCKER 0, MAJOR 0, MINOR 0.
 Source implementation is complete and canonical. Operational activation and
 runtime verification are outside this Technical Plan implementation closure and
 remain unverified.
+
+The preceding sentence records the state at implementation closure and is
+superseded as a current-state statement by Section 13 below.
+
+## 13. Operational outcome
+
+`HAB-003-OPS-001` and `HAB-003-OPS-001R` verified the canonical source in the
+operational runtime using CPython 3.11.9 and read-only operational database
+access. The operational state is ACTIVE.
+
+The operational database remained at Alembic `0011` and unchanged. No schema
+migration, operational write, new index, or durable streak state was introduced.
+The operational database contained zero Habits, so a real operational `200`
+streak result was unavailable and no operational fixture was created. A
+deterministic disposable clone proved `200 / current_streak=3` at
+`D=2026-09-14` and `200 / current_streak=3` at `D=2026-09-15` via D-1 fallback.
+The real read-only runtime proved the authenticated HAB-003 path with a valid
+nonexistent HabitId returning `404`, plus root, Habits, checklist, and validation
+error compatibility.
+
+The original OPS review was BLOCKER 0, MAJOR 1, MINOR 0 because the authenticated
+valid-ID `404` evidence was absent from the report. `HAB-003-OPS-001R` supplied
+that evidence; its final review was BLOCKER 0, MAJOR 0, MINOR 0.
+
+Source implementation is complete, canonical, and operationally verified.
+Operational activation is outside the frozen design decisions and is now
+verified; no Product Contract or Architecture amendment is made here.

@@ -1,3 +1,17 @@
+## HAB-003 Operational Activation Closure - 2026-09-16
+
+- HAB-003 source implementation is canonical; `HAB-003-OPS-001` executed read-only.
+- The operational DB was already at Alembic `0011`; no schema migration or cutover was required.
+- A deterministic disposable clone proved `200 / current_streak=3` at `D=2026-09-14` and `200 / current_streak=3` via D-1 fallback.
+- The operational DB had zero Habits, so no real operational success-data fixture was created; root, authentication, Habits, checklist, and valid nonexistent-Habit route compatibility were verified read-only.
+- The initial OPS review found BLOCKER 0, MAJOR 1, MINOR 0 because authenticated valid-ID `404` evidence was absent from the report.
+- `HAB-003-OPS-001R` supplied the authenticated valid nonexistent HabitId `-> 404` evidence.
+- Operational DB pre/post SHA was identical; logical state and counts were unchanged. Operational runtime was verified read-only.
+- HAB-003 is OPERATIONALLY ACTIVE / CLOSED. No migration, index, durable streak state, or operational write was introduced.
+
+**Next Gate:** `LIFEOS NEXT INITIATIVE SELECTION - PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW`
+
+---
 
 ## HAB-003 Source Implementation Canonical — 2026-09-16
 

@@ -7,9 +7,7 @@ Architecture, and Technical Plan APPROVED / FROZEN under
 `HAB-003-TP-DEC-001` dated 2026-09-15. The canonical Technical Plan is
 `docs/10_AI_ENGINEERING/HAB_003_TECHNICAL_PLAN.md`.
 
-Source implementation is CANONICAL. Operational activation has not yet been
-verified. The next gate is
-`HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW`.
+Source implementation is CANONICAL / OPERATIONALLY ACTIVE / CLOSED. Operational activation was verified read-only under `HAB-003-OPS-001` and remediated by `HAB-003-OPS-001R`.
 
 HABITS V1 remains HAB-001 + HAB-002 — CLOSED. HAB-004 and HAB-005 remain
 DEFERRED, with no Game, Logos, Analytics, or AI/Noema integration.
@@ -24,7 +22,7 @@ HAB
 
 Gerenciar os hábitos do Player dentro do LifeOS.
 
-A Capability Habits é responsável por registrar definições de hábitos, fatos binários de conclusão e a leitura derivada de Streak do Player. Habits V1 permanece CLOSED como HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 é uma iniciativa pós-V1 selecionada, com Product Contract, Architecture, and Technical Plan APPROVED / FROZEN; a implementação de fonte é CANONICAL e a ativação operacional ainda não foi verificada. HAB-004 e HAB-005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
+A Capability Habits é responsável por registrar definições de hábitos, fatos binários de conclusão e a leitura derivada de Streak do Player. Habits V1 permanece CLOSED como HAB-001 (Cadastro de hábitos) e HAB-002 (Checklist diário). HAB-003 é uma iniciativa pós-V1 selecionada, com Product Contract, Architecture, and Technical Plan APPROVED / FROZEN; a implementação de fonte é CANONICAL e a ativação operacional está verificada. HAB-004 e HAB-005 permanecem DEFERRED; não há integração atual com Game/Logos, Analytics ou AI/Noema.
 
 ---
 
@@ -34,7 +32,7 @@ A Capability Habits é responsável por:
 
 - Cadastro de Hábitos;
 - Checklist diário e histórico de HabitCompletion (HAB-002);
-- Sequência/Streak derivada de fatos HabitCompletion (HAB-003) — IMPLEMENTED IN SOURCE / CANONICAL; OPERATIONAL ACTIVATION NOT YET VERIFIED;
+- Sequência/Streak derivada de fatos HabitCompletion (HAB-003) — IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED;
 - Frequência (HAB-004) — DEFERRED;
 - Estatísticas (HAB-005) — DEFERRED;
 - Rotinas e evolução — conceitos futuros DEFERRED.
@@ -122,6 +120,6 @@ A Capability Habits será considerada completa quando:
 - hábitos puderem ser cadastrados, desativados e reativados;
 - fatos binários puderem ser marcados, consultados e corrigidos por data civil;
 - o histórico permanecer owner-scoped;
-- HAB-003 seja tratado como iniciativa pós-V1 separada, com implementação de fonte canônica e ativação operacional sujeita a gate próprio;
+- HAB-003 seja tratado como iniciativa pós-V1 separada, com implementação de fonte canônica e ativação operacional verificada;
 - HAB-004 e HAB-005 permaneçam DEFERRED;
 - todas as regras permanecerem compatíveis com a arquitetura oficial do LifeOS.
