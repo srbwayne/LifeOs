@@ -1,5 +1,39 @@
 # NEXT_TASK.md
 
+## Current Authoritative State — WORK-001 Selected
+
+| Field | Value |
+|---|---|
+| Decision baseline reviewed | `e7a37fc186cc3ec2dd35e5076b2f78c7b3787b2b` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| HAB-001 | IMPLEMENTED / ACTIVE |
+| HAB-002 | IMPLEMENTED / ACTIVE |
+| HAB-003 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| WORK-001 | SELECTED / PRODUCT CONTRACT NOT YET FROZEN / IMPLEMENTATION NOT AUTHORIZED |
+| WORK-001 identity | UNRESOLVED / CONFLICTING |
+| Selection decision | `LIFEOS-PRIORITY-002-DEC-001 — APPROVED: WORK-001` |
+| Current selected initiative | `WORK-001` |
+| Next authorized gate | `WORK-001 PRODUCT CONTRACT REVIEW` |
+
+No WORK implementation is authorized. This selection authorizes only a
+read-only Product Contract / semantic review. It does not authorize
+Architecture, Technical Plan, source, tests, migration, runtime, operational
+DB, Game, Health, or frontend work.
+
+### Next Authorized Gate
+
+`WORK-001 PRODUCT CONTRACT REVIEW`
+
+Type: READ-ONLY PRODUCT CONTRACT / SEMANTIC REVIEW.
+
+Purpose: reconcile WORK-001 identity and freeze the smallest coherent Workout
+product contract before Architecture. The identity question remains open:
+the Feature Catalog says `Cadastro de modalidades`, while the PRD and Workout
+Epic say `Registro de Treino`.
+
+---
+
 ## Current Authoritative State — HAB-003 Source Implementation Canonical
 
 | Field | Value |

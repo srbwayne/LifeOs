@@ -1,3 +1,20 @@
+## WORK-001 Selected as Next Initiative — 2026-09-17
+
+- `LIFEOS-PRIORITY-002R1` passed with reconciled current-canonical ordering:
+  WORK-001 `3.49`, GAME-001 `3.35`, HEALTH-001 `3.33`, DASH-001 `3.30`.
+- Human decision `LIFEOS-PRIORITY-002-DEC-001` approved WORK-001 as the next
+  bounded LifeOS initiative.
+- WORK-001 remains `SELECTED`; its Product Contract is not frozen and
+  implementation is not authorized.
+- Identity remains unresolved: the Feature Catalog defines WORK-001 as
+  `Cadastro de modalidades`, while the PRD and Workout Epic define it as
+  `Registro de Treino`.
+- The next gate is `WORK-001 PRODUCT CONTRACT REVIEW`, a read-only semantic
+  review. No source, test, migration, runtime, operational DB, Game, Health,
+  or frontend work is authorized.
+
+---
+
 ## HAB-003 Operational Activation Closure - 2026-09-16
 
 - HAB-003 source implementation is canonical; `HAB-003-OPS-001` executed read-only.
