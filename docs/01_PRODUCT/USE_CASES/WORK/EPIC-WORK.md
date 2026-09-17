@@ -41,12 +41,27 @@ A Capability Workout é responsável por:
 
 ---
 
+## Contrato de Produto WORK-001
+
+WORK-001 registra um Workout concluído, owner-private, do Player autenticado.
+O registro exige modalidade reconhecida e instante de início/ocorrência com
+offset UTC explícito. Entradas históricas são permitidas e ocorrências futuras
+são rejeitadas. Planejamento, estado em andamento, cancelamento, correção,
+exclusão e gerenciamento de modalidades não pertencem ao primeiro escopo.
+
+Workout não calcula XP nem altera Character. O fato persistido deve ficar
+disponível para a Game Engine, mas o consumo da Game não é requisito síncrono
+para registrar o Workout. Health é relacionamento contextual/futuro e não
+dependência síncrona. Histórico completo é WORK-006.
+
+---
+
 ## Dependências
 
 - AUTH;
 - CHAR;
-- GAME;
-- HEALTH.
+- GAME (consumidor de progressão; não pré-requisito síncrono);
+- HEALTH (relacionamento contextual/futuro; não pré-requisito síncrono).
 
 Authentication garante a identidade do Player.
 
@@ -151,3 +166,7 @@ A Capability Workout será considerada completa quando:
 - Analytics utilizar os dados dos treinamentos;
 - a Inteligência Artificial utilizar essas informações em recomendações contextualizadas;
 - todas as regras permanecerem compatíveis com a arquitetura oficial do LifeOS.
+
+Esses critérios descrevem a visão de completude da Capability Workout. Não
+transformam Analytics, AI, Game consumption ou o histórico completo em
+requisitos do primeiro slice de WORK-001.

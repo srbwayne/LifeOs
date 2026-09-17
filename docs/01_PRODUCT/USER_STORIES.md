@@ -1,3 +1,45 @@
+## US-WORK-001-001 — Registrar Workout concluído
+
+### Identificação
+
+| Campo | Valor |
+|---|---|
+| User Story | US-WORK-001-001 |
+| Capability | WORK |
+| Feature | WORK-001 — Registro de Treino |
+| Requisito Funcional | RF-WORK-001 |
+| Status | Product Contract APPROVED / FROZEN; implementation NOT AUTHORIZED |
+
+### Persona
+
+Player autenticado.
+
+### Necessidade
+
+Registrar uma atividade física concluída para preservar o Workout oficial do
+Player e disponibilizar o fato para a futura progressão do LifeOS.
+
+### Critérios de aceite
+
+- O Workout pertence exclusivamente ao Player autenticado.
+- A modalidade é reconhecida pelo sistema.
+- O instante de início/ocorrência possui offset UTC explícito.
+- Entradas históricas são permitidas e ocorrências futuras são rejeitadas.
+- Duração é opcional; quando informada, é maior que zero.
+- Um readback owner-scoped do Workout registrado é possível.
+- Correção, atualização, exclusão e planejamento não fazem parte desta Feature.
+- Workout não calcula XP nem altera diretamente o Character.
+- O consumo pela Game Engine não é pré-requisito síncrono para o registro.
+- Health não é consultada como dependência síncrona.
+
+### Fora do escopo
+
+Corrida, musculação, Pilates e métricas específicas; planos; histórico
+completo; estatísticas; Analytics; AI; Dashboard; Reports; wearables; Noema;
+Logos; frontend e integração técnica da Game Engine.
+
+---
+
 ## US-READ-007-001 — Consultar Estatísticas de Leitura
 
 ### Identificação

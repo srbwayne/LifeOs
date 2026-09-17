@@ -1,3 +1,27 @@
+## WORK-001-PC-001 / R / WORK-001-PC-DEC-001 — Product Contract Finalization — 2026-09-17
+
+1. Initial `WORK-001-PC-001` was blocked because the local checkout remained
+   on the merged governance branch.
+2. `WORK-001-PC-001R` safely recovered `main` with a switch and fast-forward-only
+   pull.
+3. Product audit confirmed no WORK source, persistence, API, tests, migrations,
+   event integration, Game integration, or Health integration.
+4. The identity conflict was confirmed: Feature Catalog `WORK-001 — Cadastro
+   de modalidades`; PRD/Epic `WORK-001 — Registro de Treino`.
+5. Three identity options were evaluated.
+6. Human decision `WORK-001-PC-DEC-001` approved Option B: `WORK-001 — Registro
+   de Treino`.
+7. Product Contract was frozen for completed owner-private Workout facts,
+   recognized modality, explicit offset-aware occurrence, historical entry,
+   future rejection, no correction/delete, duplicate-fact allowance, Game
+   event availability without synchronous consumption, Health independence,
+   and single-record readback.
+8. Feature Catalog, PRD, Epic and User Story traceability were reconciled.
+9. No implementation was performed.
+10. Next gate: `WORK-001-ARCH-001 — ARCHITECTURE REVIEW`.
+
+---
+
 ## LIFEOS-PRIORITY-002 / R / R1 — Next Initiative Selection — 2026-09-17
 
 1. The initial `LIFEOS-PRIORITY-002` review was blocked because local HEAD

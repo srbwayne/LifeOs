@@ -1,5 +1,38 @@
 # NEXT_TASK.md
 
+## Current Authoritative State — WORK-001 Product Contract Approved
+
+| Field | Value |
+|---|---|
+| Decision baseline reviewed | `6b44108ee58bd2d9bf990875c1f2b12b22146a55` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| Selected initiative | `WORK-001` |
+| Selection decision | `LIFEOS-PRIORITY-002-DEC-001 — APPROVED` |
+| Product Contract decision | `WORK-001-PC-DEC-001 — APPROVED` |
+| WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE NOT YET APPROVED / TECHNICAL PLAN NOT YET APPROVED / IMPLEMENTATION NOT AUTHORIZED |
+| WORK-001 identity | RESOLVED — Registro de Treino |
+| Next authorized gate | `WORK-001-ARCH-001 — ARCHITECTURE REVIEW` |
+
+No WORK implementation is authorized. The approved Product Contract freezes
+completed Workout facts, authenticated ownership, recognized modality,
+offset-aware occurrence semantics, historical registration, no update/delete,
+Game event availability without synchronous Game consumption, Health
+independence, and single-Workout readback. Architecture and Technical Plan
+remain pending.
+
+### Next Authorized Gate
+
+`WORK-001-ARCH-001 — ARCHITECTURE REVIEW`
+
+Type: READ-ONLY ARCHITECTURE REVIEW.
+
+Purpose: translate the approved WORK-001 Product Contract into an architecture
+without reopening product semantics. No source, tests, migration, runtime, or
+operational DB work is authorized.
+
+---
+
 ## Current Authoritative State — WORK-001 Selected
 
 | Field | Value |

@@ -4336,6 +4336,15 @@ O sistema deverá permitir o registro de treinamentos realizados pelo Player, ar
 - O treino deverá ser persistido.
 - O histórico deverá ser atualizado.
 - O evento deverá estar disponível para processamento pela Game Engine.
+- O registro representa uma atividade concluída pertencente ao Player autenticado.
+- A modalidade deve ser reconhecida pelo sistema.
+- O instante de início/ocorrência deve ser informado com offset UTC explícito.
+- Registros históricos são permitidos; ocorrências futuras não são permitidas.
+- Duração, título/nome e notas são opcionais; duração informada deve ser positiva.
+- WORK-001 não oferece correção, atualização, exclusão ou remoção.
+- Valores de negócio idênticos podem representar sessões distintas.
+- A consulta mínima é o readback owner-scoped do Workout registrado; o histórico completo permanece WORK-006.
+- O registro não calcula XP nem altera diretamente o Character.
 
 ---
 
@@ -4348,6 +4357,28 @@ WORK
 ## Feature
 
 WORK-001
+
+---
+
+## Contrato de Produto WORK-001 — Aprovado
+
+WORK-001 significa **Registro de Treino**: registro de um fato concluído de
+atividade física pertencente ao Player autenticado. O fato é privado e
+owner-scoped, usa uma modalidade reconhecida pelo sistema e exige um instante
+de início/ocorrência com offset UTC explícito. Entradas históricas são aceitas;
+ocorrências futuras não são.
+
+O primeiro escopo não inclui planejamento, estado em andamento, cancelamento,
+correção, exclusão, gerenciamento de modalidades ou métricas específicas de
+corrida, musculação ou Pilates. Game é o proprietário da progressão: o Workout
+não calcula XP nem altera Character. Após persistência bem-sucedida, o fato
+deve ficar disponível para processamento pela Game Engine, sem exigir consumo
+bem-sucedido pelo Game para concluir o registro.
+
+Health, Analytics, AI, Dashboard, Reports, wearables, Samsung Health, Noema e
+Logos são relações futuras ou consumidores, não dependências síncronas do
+primeiro escopo. O readback de um Workout é permitido para observar o fato;
+listagem/histórico completo permanece em WORK-006.
 
 ---
 
@@ -4760,6 +4791,7 @@ Após o registro de um treino, o sistema deverá disponibilizar o evento corresp
 
 - O registro do treino não deverá calcular experiência diretamente.
 - A evolução do Character ocorrerá exclusivamente pela Game Engine.
+- O consumo bem-sucedido pela Game Engine não é pré-requisito síncrono para o registro do Workout.
 
 ---
 
