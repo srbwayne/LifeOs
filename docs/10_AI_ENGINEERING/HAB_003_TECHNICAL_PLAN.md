@@ -352,6 +352,32 @@ explicitly set `LIFEOS_DATABASE_URL` before both commands, refuse reuse or
 overwrite, refuse `lifeos.db`, clean up the database, and unset the temporary
 variable. No unqualified Alembic command is permitted.
 
-This is one bounded implementation slice. Implementation remains
-`NOT AUTHORIZED`. The next gate is
+At Technical Plan approval, this was one bounded implementation slice and
+implementation was `NOT AUTHORIZED`; the next gate at that historical point was
 `HAB-003-IA-001R — IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW RERUN`.
+
+## 12. Implementation outcome
+
+Human Implementation Authorization: `HAB-003-IA-DEC-001 — APPROVED`.
+
+Implementation: CANONICAL.
+
+Canonical SHA: `ca75af380e12515d1cdd1ebf74d29ca207cd9647`.
+
+PR: `#86` (squash merge; parent
+`83979a835d5fc7f8fa08cd9e3afef7119361c391`).
+
+Canonical paths: 9 production + 5 tests = 14.
+
+Migration: NONE. New index: NONE. Persisted streak: NO. Alembic: `0011`.
+
+Main CI: `35171823950 — 3/3 SUCCESS`.
+
+Implementation review identified and remediated representable civil-date lower
+bound handling for `evaluation_date == date.min`, without changing the frozen
+Product Contract or Architecture. Final implementation review classification:
+BLOCKER 0, MAJOR 0, MINOR 0.
+
+Source implementation is complete and canonical. Operational activation and
+runtime verification are outside this Technical Plan implementation closure and
+remain unverified.

@@ -1,3 +1,18 @@
+## HAB-003-IA-001R / HAB-003-IMP-001 / HAB-003-IMP-001R / HAB-003-IMP-001M — Source Implementation Finalization — 2026-09-16
+
+1. `HAB-003-IA-001R` passed on CPython 3.11.9; disposable Alembic reached `0011`, the 10,000-row representative dataset was valid, and the query plan used indexed `SEARCH` access.
+2. Human implementation authorization `HAB-003-IA-DEC-001` was approved.
+3. HAB-003-IMP-001 implemented the authorized 14-path slice and was published as PR #86.
+4. Initial independent review found BLOCKER 0, MAJOR 1, MINOR 1; `HAB-003-IMP-001R` added `date.min` boundary protection and explicit future-date and D-1 fallback coverage.
+5. Final independent review found BLOCKER 0, MAJOR 0, MINOR 0.
+6. PR #86 was squash-merged as canonical SHA `ca75af380e12515d1cdd1ebf74d29ca207cd9647`, with parent `83979a835d5fc7f8fa08cd9e3afef7119361c391`.
+7. Main CI `35171823950` passed Static quality, Tests and coverage, and Alembic migration under Python 3.11.
+8. The exact slice contains 9 production and 5 test paths; no migration, index, operational DB access, or runtime activation occurred.
+
+**Next Gate:** `HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW`
+
+---
+
 ## HAB-003-IA-001 / HAB-003-TP-AMEND-001 / HAB-003-TP-AMEND-DEC-001 — Allowlist Amendment — 2026-09-16
 
 1. `HAB-003-IA-001` was BLOCKED with BLOCKER 1, MAJOR 1, and MINOR 0.

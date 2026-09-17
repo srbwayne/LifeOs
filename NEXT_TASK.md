@@ -1,6 +1,47 @@
 # NEXT_TASK.md
 
-## Current Authoritative State — HAB-003 Technical Plan Approved
+## Current Authoritative State — HAB-003 Source Implementation Canonical
+
+| Field | Value |
+|---|---|
+| Decision baseline reviewed | `ca75af380e12515d1cdd1ebf74d29ca207cd9647` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| Habits V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
+| HAB-001 | IMPLEMENTED / ACTIVE |
+| HAB-002 | IMPLEMENTED / ACTIVE |
+| HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE APPROVED / FROZEN / TECHNICAL PLAN APPROVED / FROZEN / IMPLEMENTATION AUTHORIZED / SOURCE IMPLEMENTED / CANONICAL / OPERATIONAL ACTIVATION NOT YET VERIFIED |
+| Technical Plan Decision | `HAB-003-TP-DEC-001 — APPROVED` |
+| Technical Plan Amendment | `HAB-003-TP-AMEND-DEC-001 — APPROVED` |
+| Canonical implementation | `ca75af380e12515d1cdd1ebf74d29ca207cd9647` |
+| Implementation PR | `#86` |
+| Main CI | `35171823950 — 3/3 SUCCESS` |
+| HAB-004 | DEFERRED |
+| HAB-005 | DEFERRED |
+| Progression for Habits | NOT ELIGIBLE / UNCHANGED |
+| Logos for Habits | NOT INTEGRATED |
+| Noema/AI for Habits | NOT INTEGRATED |
+| Habit event dispatch | NO |
+| Current selected initiative | HAB-003 — Sequência (Streak) |
+| Next authorized gate | `HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW` |
+
+Implementation is SOURCE IMPLEMENTED / CANONICAL. Operational activation has
+not yet been verified.
+
+### Next Authorized Gate
+
+`HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW`
+
+Type: OPERATIONAL ACTIVATION / VERIFICATION.
+
+Purpose: verify the canonical HAB-003 endpoint in the intended operational
+runtime without schema mutation. This gate is separately authorized and is not
+executed by this governance closure.
+
+---
+
+## Historical Governance State — Superseded (Technical Plan Approval)
 
 | Field | Value |
 |---|---|
