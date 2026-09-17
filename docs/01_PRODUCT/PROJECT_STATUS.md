@@ -1,4 +1,18 @@
 
+## HAB-003 Source Implementation Canonical — 2026-09-16
+
+- `HAB-003-IA-001R` PASS; `HAB-003-IA-DEC-001` approved human implementation authorization.
+- HAB-003-IMP-001 implemented the frozen 14-path slice; the initial review found 1 MAJOR and 1 MINOR.
+- `HAB-003-IMP-001R` remediated `date.min` handling and explicit boundary/fallback coverage.
+- PR #86 merged via squash; canonical SHA: `ca75af380e12515d1cdd1ebf74d29ca207cd9647`.
+- Main CI `35171823950` passed 3/3; repository Alembic remains `0011`.
+- No migration, new index, or durable streak state was introduced; operational DB was untouched.
+- HAB-003 source implementation is canonical. Operational activation has not yet been verified.
+
+**Next Gate:** `HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW`
+
+---
+
 ## HAB-003 Technical Plan Allowlist Amendment — 2026-09-16
 
 - `HAB-003-IA-001` found one hidden Protocol-fake impact; `HAB-003-TP-AMEND-001` independently confirmed the single missing path.
