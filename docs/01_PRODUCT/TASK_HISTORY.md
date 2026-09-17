@@ -1,3 +1,24 @@
+## LIFEOS-PRIORITY-002 / R / R1 — Next Initiative Selection — 2026-09-17
+
+1. The initial `LIFEOS-PRIORITY-002` review was blocked because local HEAD
+   remained on the merged `docs/hab-003-operational-closure` branch.
+2. `LIFEOS-PRIORITY-002R` safely synchronized local `main` using a branch
+   switch and fast-forward-only pull.
+3. Initial current-canonical scoring proposed HEALTH-001 `4.00`, WORK-001
+   `3.49`, GAME-001 `3.35`, and DASH-001 `3.30`.
+4. Independent review found that the Health score relied on an unapproved
+   GAME/event deferral assumption.
+5. `LIFEOS-PRIORITY-002R1` reconciled Health dependencies and recomputed the
+   current-canonical scores: WORK-001 `3.49`, GAME-001 `3.35`, HEALTH-001
+   `3.33`, and DASH-001 `3.30`.
+6. Human decision `LIFEOS-PRIORITY-002-DEC-001` approved WORK-001.
+7. WORK-001 identity remains unresolved: the Feature Catalog says `Cadastro de
+   modalidades`, while the PRD and Workout Epic say `Registro de Treino`.
+8. The next gate is `WORK-001 PRODUCT CONTRACT REVIEW`.
+9. Implementation remains unauthorized.
+
+---
+
 ## HAB-003-OPS-001 / HAB-003-OPS-001R - Operational Activation Finalization - 2026-09-16
 
 1. The canonical governance baseline was `e47af64907488a07697ef248041612d9ad4ac13c`.
