@@ -77,6 +77,49 @@ def test_habits_authentication_is_required(api) -> None:
     assert client.get("/habits/not-a-tsid").status_code == 401
     assert client.post("/habits/not-a-tsid/deactivate").status_code == 401
     assert client.post("/habits/not-a-tsid/reactivate").status_code == 401
+    assert (
+        client.get(f"/habits/{HabitId.new().value}/streak?evaluation_date=2026-09-14").status_code
+        == 401
+    )
+
+
+def test_habit_streak_api_covers_current_date_owner_and_inactive_semantics(api) -> None:
+    client, current_owner, owner, other_owner, _, app = api
+    created = client.post("/habits", json={"name": "Streak"}).json()
+    habit_id = created["id"]
+    client.post(f"/habits/{habit_id}/completions", json={"record_date": "2026-09-12"})
+    client.post(f"/habits/{habit_id}/completions", json={"record_date": "2026-09-14"})
+
+    active = client.get(f"/habits/{habit_id}/streak?evaluation_date=2026-09-14")
+    assert active.status_code == 200
+    assert active.json() == {
+        "habit_id": habit_id,
+        "current_streak": 1,
+        "evaluation_date": "2026-09-14",
+    }
+    assert (
+        client.get(f"/habits/{habit_id}/streak?evaluation_date=2020-01-01").json()["current_streak"]
+        == 0
+    )
+    assert (
+        client.get(f"/habits/{habit_id}/streak?evaluation_date=2030-01-01").json()["current_streak"]
+        == 0
+    )
+    assert client.get(f"/habits/{habit_id}/streak").status_code == 422
+    assert client.get(f"/habits/{habit_id}/streak?evaluation_date=bad").status_code == 422
+    assert client.get("/habits/not-a-tsid/streak?evaluation_date=2026-09-14").status_code == 422
+    assert (
+        client.get(f"/habits/{HabitId.new().value}/streak?evaluation_date=2026-09-14").status_code
+        == 404
+    )
+
+    current_owner[0] = other_owner
+    assert client.get(f"/habits/{habit_id}/streak?evaluation_date=2026-09-14").status_code == 404
+    current_owner[0] = owner
+    client.post(f"/habits/{habit_id}/deactivate")
+    inactive = client.get(f"/habits/{habit_id}/streak?evaluation_date=2026-09-14")
+    assert inactive.status_code == 200
+    assert inactive.json()["current_streak"] is None
 
 
 def test_habit_api_lifecycle_response_shape_and_fresh_persistence(api) -> None:

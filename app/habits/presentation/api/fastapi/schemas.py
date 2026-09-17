@@ -42,3 +42,9 @@ class HabitCompletionPageResponse(BaseModel):
     size: int
     total_items: int
     total_pages: int
+
+
+class HabitStreakResponse(BaseModel):
+    habit_id: str
+    current_streak: int | None
+    evaluation_date: date

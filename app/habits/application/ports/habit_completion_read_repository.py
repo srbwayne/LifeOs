@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Protocol
 
 from app.habits.application.dtos.habit_completion_dto import HabitCompletionPageDTO
@@ -13,3 +14,10 @@ class IHabitCompletionReadRepository(Protocol):
         page: int,
         size: int,
     ) -> HabitCompletionPageDTO: ...
+
+    def list_record_dates_by_owner_and_habit_until(
+        self,
+        owner_id: UserId,
+        habit_id: HabitId,
+        evaluation_date: date,
+    ) -> tuple[date, ...]: ...
