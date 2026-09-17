@@ -31,11 +31,16 @@ from app.habits.application.dtos.habit_completion_dto import (
     HabitCompletionPageDTO,
 )
 from app.habits.application.dtos.habit_dto import HabitDTO
+from app.habits.application.dtos.habit_streak_dto import HabitStreakDTO
 from app.habits.application.queries.get_checklist import (
     GetChecklistQuery,
     GetChecklistQueryHandler,
 )
 from app.habits.application.queries.get_habit import GetHabitQuery, GetHabitQueryHandler
+from app.habits.application.queries.get_habit_streak import (
+    GetHabitStreakQuery,
+    GetHabitStreakQueryHandler,
+)
 from app.habits.application.queries.list_completions import (
     ListCompletionsQuery,
     ListCompletionsQueryHandler,
@@ -46,6 +51,7 @@ from app.habits.dependencies import (
     get_deactivate_habit_handler,
     get_get_checklist_handler,
     get_get_habit_handler,
+    get_get_habit_streak_handler,
     get_list_completions_handler,
     get_list_habits_handler,
     get_mark_completion_handler,
@@ -59,6 +65,7 @@ from app.habits.presentation.api.fastapi.schemas import (
     HabitCompletionPageResponse,
     HabitCompletionResponse,
     HabitResponse,
+    HabitStreakResponse,
     MarkHabitCompletionRequest,
 )
 from app.shared.domain.identifiers.user_id import UserId
@@ -99,6 +106,14 @@ def _completion_page_response(page: HabitCompletionPageDTO) -> HabitCompletionPa
         size=page.size,
         total_items=page.total_items,
         total_pages=page.total_pages,
+    )
+
+
+def _streak_response(dto: HabitStreakDTO) -> HabitStreakResponse:
+    return HabitStreakResponse(
+        habit_id=dto.habit_id,
+        current_streak=dto.current_streak,
+        evaluation_date=dto.evaluation_date,
     )
 
 
@@ -160,6 +175,27 @@ def get_habit(
             GetHabitQuery(
                 owner_id=user_id,
                 habit_id=_parse_habit_id(habit_id),
+            )
+        )
+    )
+
+
+@router.get(
+    "/{habit_id}/streak",
+    response_model=HabitStreakResponse,
+)
+def get_habit_streak(
+    habit_id: str,
+    evaluation_date: date,
+    user_id: UserId = Depends(get_current_user_id),
+    handler: GetHabitStreakQueryHandler = Depends(get_get_habit_streak_handler),
+) -> HabitStreakResponse:
+    return _streak_response(
+        handler(
+            GetHabitStreakQuery(
+                owner_id=user_id,
+                habit_id=_parse_habit_id(habit_id),
+                evaluation_date=evaluation_date,
             )
         )
     )

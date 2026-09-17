@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -66,3 +68,20 @@ class SqlAlchemyHabitCompletionReadRepository(IHabitCompletionReadRepository):
         )
         total_pages = (total_items + size - 1) // size if total_items else 0
         return HabitCompletionPageDTO(items, page, size, total_items, total_pages)
+
+    def list_record_dates_by_owner_and_habit_until(
+        self,
+        owner_id: UserId,
+        habit_id: HabitId,
+        evaluation_date: date,
+    ) -> tuple[date, ...]:
+        statement = (
+            select(HabitCompletionModel.record_date)
+            .where(
+                HabitCompletionModel.user_id == owner_id.to_persistence(),
+                HabitCompletionModel.habit_id == habit_id.to_persistence(),
+                HabitCompletionModel.record_date <= evaluation_date,
+            )
+            .order_by(HabitCompletionModel.record_date.desc())
+        )
+        return tuple(row[0] for row in self._session.execute(statement))

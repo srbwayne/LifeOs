@@ -14,10 +14,12 @@ from app.habits.application.ports.habit_completion_read_repository import (
 from app.habits.application.ports.habit_read_repository import IHabitReadRepository
 from app.habits.application.queries.get_checklist import GetChecklistQueryHandler
 from app.habits.application.queries.get_habit import GetHabitQueryHandler
+from app.habits.application.queries.get_habit_streak import GetHabitStreakQueryHandler
 from app.habits.application.queries.list_completions import ListCompletionsQueryHandler
 from app.habits.application.queries.list_habits import ListHabitsQueryHandler
 from app.habits.domain.ports.habit_completion_repository import IHabitCompletionRepository
 from app.habits.domain.ports.habit_repository import IHabitRepository
+from app.habits.domain.services.current_habit_streak import CurrentHabitStreakCalculator
 from app.habits.infrastructure.persistence.repositories.habit_completion_read_repository import (
     SqlAlchemyHabitCompletionReadRepository,
 )
@@ -129,3 +131,16 @@ def get_list_completions_handler(
     ),
 ) -> ListCompletionsQueryHandler:
     return ListCompletionsQueryHandler(habit_repository, completion_read_repository)
+
+
+def get_get_habit_streak_handler(
+    habit_repository: IHabitRepository = Depends(get_habit_repository),
+    completion_read_repository: IHabitCompletionReadRepository = Depends(
+        get_habit_completion_read_repository
+    ),
+) -> GetHabitStreakQueryHandler:
+    return GetHabitStreakQueryHandler(
+        habit_repository,
+        completion_read_repository,
+        CurrentHabitStreakCalculator(),
+    )

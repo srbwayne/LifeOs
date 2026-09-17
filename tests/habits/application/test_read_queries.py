@@ -45,6 +45,11 @@ class CompletionReadRepositoryFake:
         self.calls.append((owner_id, habit_id, page, size))
         return self.result
 
+    def list_record_dates_by_owner_and_habit_until(
+        self, owner_id: UserId, habit_id: HabitId, evaluation_date: date
+    ) -> tuple[date, ...]:
+        return ()
+
 
 class HabitRepositoryFake:
     def __init__(self, habit: Habit | None) -> None:
