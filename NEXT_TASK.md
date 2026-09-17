@@ -4,18 +4,20 @@
 
 | Field | Value |
 |---|---|
-| Decision baseline reviewed | `ca75af380e12515d1cdd1ebf74d29ca207cd9647` |
+| Decision baseline reviewed | `e47af64907488a07697ef248041612d9ad4ac13c` |
 | Repository Alembic | `0011` |
 | Operational DB | `0011` |
 | Therapy V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
 | Habits V1 | IMPLEMENTED / OPERATIONALLY ACTIVE / CLOSED |
 | HAB-001 | IMPLEMENTED / ACTIVE |
 | HAB-002 | IMPLEMENTED / ACTIVE |
-| HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE APPROVED / FROZEN / TECHNICAL PLAN APPROVED / FROZEN / IMPLEMENTATION AUTHORIZED / SOURCE IMPLEMENTED / CANONICAL / OPERATIONAL ACTIVATION NOT YET VERIFIED |
+| HAB-003 | PRODUCT CONTRACT APPROVED / FROZEN / ARCHITECTURE APPROVED / FROZEN / TECHNICAL PLAN APPROVED / FROZEN / SOURCE IMPLEMENTED / CANONICAL / OPERATIONALLY VERIFIED / ACTIVE / CLOSED |
 | Technical Plan Decision | `HAB-003-TP-DEC-001 — APPROVED` |
 | Technical Plan Amendment | `HAB-003-TP-AMEND-DEC-001 — APPROVED` |
 | Canonical implementation | `ca75af380e12515d1cdd1ebf74d29ca207cd9647` |
 | Implementation PR | `#86` |
+| Operational activation document | `docs/10_AI_ENGINEERING/HAB_003_OPERATIONAL_ACTIVATION.md` |
+| Operational mutation during HAB-003 activation | NONE |
 | Main CI | `35171823950 — 3/3 SUCCESS` |
 | HAB-004 | DEFERRED |
 | HAB-005 | DEFERRED |
@@ -23,21 +25,18 @@
 | Logos for Habits | NOT INTEGRATED |
 | Noema/AI for Habits | NOT INTEGRATED |
 | Habit event dispatch | NO |
-| Current selected initiative | HAB-003 — Sequência (Streak) |
-| Next authorized gate | `HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW` |
+| Current selected initiative | NONE |
+| Next authorized gate | `LIFEOS NEXT INITIATIVE SELECTION — PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW` |
 
-Implementation is SOURCE IMPLEMENTED / CANONICAL. Operational activation has
-not yet been verified.
+HAB-003 source implementation is canonical and operationally verified. HAB-003 is OPERATIONALLY ACTIVE / CLOSED. No next feature implementation is authorized. HAB-004 and HAB-005 remain DEFERRED.
 
 ### Next Authorized Gate
 
-`HAB-003-OPS-001 — RUNTIME ACTIVATION / AUTHENTICATED SMOKE REVIEW`
+`LIFEOS NEXT INITIATIVE SELECTION — PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW`
 
-Type: OPERATIONAL ACTIVATION / VERIFICATION.
+Type: READ-ONLY GOVERNANCE / PRIORITIZATION REVIEW.
 
-Purpose: verify the canonical HAB-003 endpoint in the intended operational
-runtime without schema mutation. This gate is separately authorized and is not
-executed by this governance closure.
+Purpose: re-evaluate the canonical backlog after HAB-003 closure and select the next bounded LifeOS initiative. No next feature implementation is authorized.
 
 ---
 

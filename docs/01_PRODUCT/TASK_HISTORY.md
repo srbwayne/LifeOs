@@ -1,3 +1,19 @@
+## HAB-003-OPS-001 / HAB-003-OPS-001R - Operational Activation Finalization - 2026-09-16
+
+1. The canonical governance baseline was `e47af64907488a07697ef248041612d9ad4ac13c`.
+2. The operational DB was confirmed at Alembic `0011` and healthy.
+3. Write-free authentication used a canonical `TokenService` access token; login was not called and no Session was persisted.
+4. A disposable clone success path returned streak `3` at `D=2026-09-14` and streak `3` at `D=2026-09-15` via D-1 fallback.
+5. The operational DB contained zero Habits; operational root, authenticated Habits/checklist compatibility, and read-only runtime behavior passed.
+6. The original OPS independent review was BLOCKER 0, MAJOR 1, MINOR 0 because authenticated valid nonexistent HabitId `-> 404` evidence was missing.
+7. `HAB-003-OPS-001R` supplied the exact authenticated request evidence and returned `404 - Habit not found`.
+8. Operational DB SHA, counts, logical digests, revision, integrity, and foreign-key state remained unchanged.
+9. Final review was BLOCKER 0, MAJOR 0, MINOR 0; HAB-003 is operationally verified / active.
+
+**Next Gate:** `LIFEOS NEXT INITIATIVE SELECTION - PRODUCT / ARCHITECTURE PRIORITIZATION REVIEW`
+
+---
+
 ## HAB-003-IA-001R / HAB-003-IMP-001 / HAB-003-IMP-001R / HAB-003-IMP-001M — Source Implementation Finalization — 2026-09-16
 
 1. `HAB-003-IA-001R` passed on CPython 3.11.9; disposable Alembic reached `0011`, the 10,000-row representative dataset was valid, and the query plan used indexed `SEARCH` access.
