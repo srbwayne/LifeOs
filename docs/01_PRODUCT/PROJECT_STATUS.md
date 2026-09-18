@@ -1,3 +1,22 @@
+## WORK-001 Product Contract Approved — 2026-09-17
+
+- `WORK-001-PC-001R` passed and `WORK-001-PC-DEC-001` was approved by human
+  decision.
+- WORK-001 identity is reconciled to `Registro de Treino`, aligned with the
+  PRD and Workout Epic; the Feature Catalog sequence was reconciled and legacy
+  labels were preserved for traceability.
+- A dedicated `US-WORK-001-001` was added to restore product traceability.
+- Product Contract is APPROVED / FROZEN. Architecture and Technical Plan are
+  not approved; implementation remains unauthorized.
+- The contract covers completed owner-private Workout facts, recognized
+  modality, explicit offset-aware start/occurrence instant, historical entry,
+  future rejection, no update/delete, no direct XP/Character mutation, Game
+  event availability without synchronous Game consumption, Health independence,
+  and single-Workout readback.
+- The next gate is `WORK-001-ARCH-001 — ARCHITECTURE REVIEW`.
+
+---
+
 ## WORK-001 Selected as Next Initiative — 2026-09-17
 
 - `LIFEOS-PRIORITY-002R1` passed with reconciled current-canonical ordering:

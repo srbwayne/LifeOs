@@ -107,14 +107,33 @@ Responsável pela representação do Player.
 
 | ID | Feature |
 |----|----------|
-| WORK-001 | Cadastro de modalidades |
-| WORK-002 | Registro de treino |
-| WORK-003 | Histórico |
-| WORK-004 | Frequência semanal |
-| WORK-005 | Evolução |
-| WORK-006 | Estatísticas |
-| WORK-007 | FC Média |
-| WORK-008 | Esforço percebido |
+| WORK-001 | Registro de Treino |
+| WORK-002 | Corrida |
+| WORK-003 | Musculação |
+| WORK-004 | Pilates |
+| WORK-005 | Exercícios Personalizados |
+| WORK-006 | Histórico de Treinos |
+| WORK-007 | Estatísticas de Treino |
+| WORK-008 | Evolução Física |
+
+## Reconciliação de rótulos legados
+
+O catálogo anteriormente utilizava rótulos divergentes para a sequência WORK.
+O alinhamento canônico com o PRD e o Epic Workout é:
+
+| Rótulo legado | Tratamento canônico |
+|---|---|
+| WORK-002 — Registro de treino | WORK-001 — Registro de Treino |
+| WORK-003 — Histórico | WORK-006 — Histórico de Treinos |
+| WORK-005 — Evolução | WORK-008 — Evolução Física |
+| WORK-006 — Estatísticas | WORK-007 — Estatísticas de Treino |
+| WORK-001 — Cadastro de modalidades | Sem Feature ID canônico atribuído nesta reconciliação |
+| WORK-004 — Frequência semanal | Sem Feature ID canônico atribuído nesta reconciliação |
+| WORK-007 — FC Média | Sem Feature ID canônico atribuído nesta reconciliação |
+| WORK-008 — Esforço percebido | Sem Feature ID canônico atribuído nesta reconciliação |
+
+Os rótulos sem Feature ID permanecem apenas para rastreabilidade legada ou
+possível trabalho futuro. Nenhum WORK-009 ou outro novo ID é criado aqui.
 
 ---
 
