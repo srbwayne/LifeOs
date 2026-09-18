@@ -1,3 +1,5 @@
+from typing import cast
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -30,12 +32,21 @@ from app.read.application.queries.list_my_books import ListMyBooksQueryHandler
 from app.read.application.queries.list_reading_history import (
     ListReadingHistoryQueryHandler,
 )
+from app.read.application.services.progression_delivery_dispatcher import (
+    DeliveryTransactionFactory,
+    ProgressionDeliveryDispatcher,
+)
 from app.read.domain.ports.book_completion_repository import IBookCompletionRepository
 from app.read.domain.ports.book_repository import IBookRepository
 from app.read.domain.ports.reading_session_repository import IReadingSessionRepository
 from app.read.domain.services.reading_coverage_calculator import ReadingCoverageCalculator
 from app.read.domain.services.reading_insights_calculator import ReadingInsightsCalculator
 from app.read.domain.services.reading_progress_calculator import ReadingProgressCalculator
+from app.read.infrastructure.integrations.durable_progression_gateway import (
+    DurableProgressionGateway,
+)
+from app.read.infrastructure.integrations.logos_progression_gateway import LogosProgressionGateway
+from app.read.infrastructure.integrations.logos_progression_settings import LogosProgressionSettings
 from app.read.infrastructure.integrations.noop_progression_gateway import NoOpProgressionGateway
 from app.read.infrastructure.persistence.repositories.book_completion_read_repository import (
     SqlAlchemyBookCompletionReadRepository,
@@ -48,6 +59,7 @@ from app.read.infrastructure.persistence.repositories.book_repository import (
 )
 from app.read.infrastructure.persistence.repositories.progression_delivery_repository import (
     SqlAlchemyProgressionDeliveryRepository,
+    SqlAlchemyProgressionDeliveryTransaction,
 )
 from app.read.infrastructure.persistence.repositories.reading_history_repository import (
     SqlAlchemyReadingHistoryReadRepository,
@@ -59,7 +71,7 @@ from app.read.infrastructure.persistence.repositories.reading_statistics_reposit
     SqlAlchemyReadingStatisticsReadRepository,
 )
 from app.shared.application.event_bus import IEventBus, InMemoryEventBus
-from app.shared.infrastructure.database import get_db
+from app.shared.infrastructure.database import SessionLocal, get_db
 from app.shared.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 
 
@@ -108,7 +120,19 @@ def get_read_event_bus() -> IEventBus:
 
 
 def get_progression_gateway() -> ProgressionGateway:
-    return NoOpProgressionGateway()
+    settings = LogosProgressionSettings.from_environment()
+    if not settings.enabled:
+        return NoOpProgressionGateway()
+    gateway = LogosProgressionGateway(settings)
+    transaction_factory = cast(
+        DeliveryTransactionFactory,
+        lambda: SqlAlchemyProgressionDeliveryTransaction(SessionLocal),
+    )
+    dispatcher = ProgressionDeliveryDispatcher(
+        transaction_factory,
+        gateway,
+    )
+    return DurableProgressionGateway(dispatcher)
 
 
 def get_progression_delivery_repository(
