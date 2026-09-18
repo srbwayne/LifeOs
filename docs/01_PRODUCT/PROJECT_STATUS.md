@@ -12,6 +12,13 @@
 - The future implementation allowlist contains 9 paths, including official
   configuration documentation and direct settings tests. Runtime validation,
   historical replay, and source implementation are not authorized.
+- `LIFEOS-LOGOS-001A-A1-DEC-001` is APPROVED; the Architecture / Technical
+  Plan remains frozen and is amended only for deterministic configuration
+  revision handling. A positive revision is required when enabled, and key
+  plus revision remain unchanged while recoverable deliveries are unresolved.
+- Source implementation remains not canonical and not started. No migration,
+  dependency, runtime, or operational database change is included. Next gate:
+  `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
 - WORK-001 remains Product Contract APPROVED / FROZEN and temporarily deferred
   at its Architecture gate. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
 
