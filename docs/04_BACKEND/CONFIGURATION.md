@@ -12,7 +12,7 @@ this publication does not activate the integration.
 | `LIFEOS_LOGOS_BASE_URL` | Logos HTTP base URL | Yes | Secret: no; no default | Nonblank valid HTTP/HTTPS URL |
 | `LIFEOS_LOGOS_BEARER_TOKEN` | POC Bearer authentication | Yes | Secret: yes; no default | Nonblank when enabled; never logged or committed |
 | `LIFEOS_LOGOS_READING_CONFIGURATION_KEY` | Logos Reading progression configuration key | Yes | Secret: no; no default | Nonblank when enabled |
-| `LIFEOS_LOGOS_READING_CONFIGURATION_REVISION` | Optional configuration revision | No | Secret: no; no default | Optional positive/contract-valid integer |
+| `LIFEOS_LOGOS_READING_CONFIGURATION_REVISION` | Pinned Logos Reading configuration revision | Yes | Secret: no; no default | Positive integer; required when enabled |
 | `LIFEOS_LOGOS_TIMEOUT_SECONDS` | Finite synchronous HTTP timeout | Yes | Secret: no; no default | Finite value greater than zero when enabled |
 
 Environment variables are read only through the typed configuration boundary.
