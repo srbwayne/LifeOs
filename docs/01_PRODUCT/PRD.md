@@ -4375,6 +4375,12 @@ não calcula XP nem altera Character. Após persistência bem-sucedida, o fato
 deve ficar disponível para processamento pela Game Engine, sem exigir consumo
 bem-sucedido pelo Game para concluir o registro.
 
+O Workout pode atravessar uma fronteira de dia civil. Sua data civil é a data
+civil local representada pelo instante explícito de início, inclusive quando a
+duração ultrapassa a meia-noite. WORK-001 não exige uma data de registro
+informada separadamente pelo Player nem um instante explícito de término;
+duração continua opcional e, quando informada, deve ser positiva.
+
 Health, Analytics, AI, Dashboard, Reports, wearables, Samsung Health, Noema e
 Logos são relações futuras ou consumidores, não dependências síncronas do
 primeiro escopo. O readback de um Workout é permitido para observar o fato;

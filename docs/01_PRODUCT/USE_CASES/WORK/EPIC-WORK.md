@@ -49,6 +49,10 @@ offset UTC explícito. Entradas históricas são permitidas e ocorrências futur
 são rejeitadas. Planejamento, estado em andamento, cancelamento, correção,
 exclusão e gerenciamento de modalidades não pertencem ao primeiro escopo.
 
+Um Workout pode atravessar uma fronteira de dia civil. Sua data civil segue a
+data civil local representada pelo instante explícito de início. WORK-001 não
+exige uma data de registro separada nem um instante explícito de término.
+
 Workout não calcula XP nem altera Character. O fato persistido deve ficar
 disponível para a Game Engine, mas o consumo da Game não é requisito síncrono
 para registrar o Workout. Health é relacionamento contextual/futuro e não

@@ -25,6 +25,10 @@ Player e disponibilizar o fato para a futura progressão do LifeOS.
 - A modalidade é reconhecida pelo sistema.
 - O instante de início/ocorrência possui offset UTC explícito.
 - Entradas históricas são permitidas e ocorrências futuras são rejeitadas.
+- O Workout pode atravessar a meia-noite.
+- Sua data civil segue a data civil local representada pelo instante de início.
+- Nenhuma data de registro independente é exigida do Player.
+- Um instante explícito de término não é exigido por WORK-001.
 - Duração é opcional; quando informada, é maior que zero.
 - Um readback owner-scoped do Workout registrado é possível.
 - Correção, atualização, exclusão e planejamento não fazem parte desta Feature.
