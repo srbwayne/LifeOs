@@ -30,7 +30,11 @@ class LogosProgressionGateway(ProgressionGateway):
     ) -> None:
         if not settings.enabled or settings.base_url is None or settings.bearer_token is None:
             raise ValueError("LogosProgressionGateway requires enabled settings.")
-        if settings.reading_configuration_key is None or settings.timeout_seconds is None:
+        if (
+            settings.reading_configuration_key is None
+            or settings.reading_configuration_revision is None
+            or settings.timeout_seconds is None
+        ):
             raise ValueError("LogosProgressionGateway requires complete settings.")
         self._settings = settings
         self._client = client

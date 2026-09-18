@@ -13,6 +13,7 @@ def _set_enabled_environment(monkeypatch) -> None:
     monkeypatch.setenv(f"{_PREFIX}BASE_URL", "https://logos.example")
     monkeypatch.setenv(f"{_PREFIX}BEARER_TOKEN", "fake-token")
     monkeypatch.setenv(f"{_PREFIX}READING_CONFIGURATION_KEY", "reading-v1")
+    monkeypatch.setenv(f"{_PREFIX}READING_CONFIGURATION_REVISION", "3")
     monkeypatch.setenv(f"{_PREFIX}TIMEOUT_SECONDS", "2.5")
 
 
@@ -30,7 +31,6 @@ def test_explicit_false_does_not_require_other_settings(monkeypatch) -> None:
 
 def test_valid_enabled_settings_are_parsed(monkeypatch) -> None:
     _set_enabled_environment(monkeypatch)
-    monkeypatch.setenv("LIFEOS_LOGOS_READING_CONFIGURATION_REVISION", "3")
     settings = LogosProgressionSettings.from_environment()
     assert settings.enabled is True
     assert settings.base_url == "https://logos.example"
@@ -72,6 +72,7 @@ def test_invalid_required_setting_fails(monkeypatch, name, value) -> None:
         "LIFEOS_LOGOS_BASE_URL",
         "LIFEOS_LOGOS_BEARER_TOKEN",
         "LIFEOS_LOGOS_READING_CONFIGURATION_KEY",
+        "LIFEOS_LOGOS_READING_CONFIGURATION_REVISION",
         "LIFEOS_LOGOS_TIMEOUT_SECONDS",
     ],
 )
@@ -84,6 +85,14 @@ def test_missing_required_setting_fails(monkeypatch, name) -> None:
 
 @pytest.mark.parametrize("value", ["0", "-1", "nope"])
 def test_invalid_revision_fails(monkeypatch, value) -> None:
+    _set_enabled_environment(monkeypatch)
+    monkeypatch.setenv("LIFEOS_LOGOS_READING_CONFIGURATION_REVISION", value)
+    with pytest.raises(LogosProgressionConfigurationError):
+        LogosProgressionSettings.from_environment()
+
+
+@pytest.mark.parametrize("value", ["", " "])
+def test_blank_revision_fails(monkeypatch, value) -> None:
     _set_enabled_environment(monkeypatch)
     monkeypatch.setenv("LIFEOS_LOGOS_READING_CONFIGURATION_REVISION", value)
     with pytest.raises(LogosProgressionConfigurationError):

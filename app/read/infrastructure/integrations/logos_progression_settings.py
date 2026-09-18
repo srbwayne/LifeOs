@@ -30,7 +30,7 @@ class LogosProgressionSettings:
         bearer_token = _required("LIFEOS_LOGOS_BEARER_TOKEN")
         configuration_key = _required("LIFEOS_LOGOS_READING_CONFIGURATION_KEY")
         timeout_seconds = _parse_timeout(_required("LIFEOS_LOGOS_TIMEOUT_SECONDS"))
-        revision = _parse_revision(os.getenv("LIFEOS_LOGOS_READING_CONFIGURATION_REVISION"))
+        revision = _parse_revision(_required("LIFEOS_LOGOS_READING_CONFIGURATION_REVISION"))
         return cls(
             enabled=True,
             base_url=base_url,
