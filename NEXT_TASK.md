@@ -1,6 +1,39 @@
 # NEXT_TASK.md
 
-## Current Authoritative State — WORK-001 Product Contract Approved
+## Current Authoritative State — LIFEOS-LOGOS-001 Integration Selection
+
+| Field | Value |
+|---|---|
+| Decision baseline reviewed | `3121e7667d289e91c4b707e41ab9dae1e5399cb4` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| Selected initiative | `LIFEOS-LOGOS-001 — Reading → Logos POC Integration` |
+| Product Owner decision | `APPROVED` |
+| Activity | `ReadingSession` |
+| Downstream | `Logos Progression HTTP V1` |
+| WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
+| Next authorized gate | `LIFEOS-LOGOS-001A — READING → LOGOS POC ARCHITECTURE / TECHNICAL PLAN` |
+
+The Product Owner selected the first bounded real LifeOS → Logos integration
+before continuing WORK-001 architecture work. WORK-001 remains approved at
+Product Contract level and is temporarily deferred at its architecture gate,
+not cancelled or rejected. After the bounded pilot closes, initiative priority
+must be re-evaluated explicitly.
+
+### Next Authorized Gate
+
+`LIFEOS-LOGOS-001A — READING → LOGOS POC ARCHITECTURE / TECHNICAL PLAN`
+
+Type: READ-ONLY ARCHITECTURE / TECHNICAL PLAN.
+
+Purpose: freeze the HTTP adapter, payload mapping, typed settings, dependency
+wiring, failure classification, test strategy, manual bootstrap, manual
+end-to-end validation, and file allowlist. No implementation is authorized by
+LIFEOS-LOGOS-001G.
+
+---
+
+## Historical Governance State — WORK-001 Product Contract Approved (preserved)
 
 | Field | Value |
 |---|---|
@@ -14,26 +47,13 @@
 | WORK-001 identity | RESOLVED — Registro de Treino |
 | Next authorized gate | `WORK-001-ARCH-001 — ARCHITECTURE REVIEW` |
 
-No WORK implementation is authorized. The approved Product Contract freezes
-completed Workout facts, authenticated ownership, recognized modality,
-offset-aware occurrence semantics, historical registration, no update/delete,
-Game event availability without synchronous Game consumption, Health
-independence, and single-Workout readback. Architecture and Technical Plan
-remain pending.
-
-### Next Authorized Gate
-
-`WORK-001-ARCH-001 — ARCHITECTURE REVIEW`
-
-Type: READ-ONLY ARCHITECTURE REVIEW.
-
-Purpose: translate the approved WORK-001 Product Contract into an architecture
-without reopening product semantics. No source, tests, migration, runtime, or
-operational DB work is authorized.
+This historical state records the prior WORK-001 gate. It is preserved for
+traceability; the current selection and next authorized gate are recorded
+above.
 
 ---
 
-## Current Authoritative State — WORK-001 Selected
+## Historical Governance State — WORK-001 Selected (preserved)
 
 | Field | Value |
 |---|---|
