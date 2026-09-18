@@ -12,7 +12,13 @@
    documentation to the future implementation allowlist.
 7. The Architecture / Technical Plan is frozen; no implementation or runtime
    work was performed.
-8. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
+8. `LIFEOS-LOGOS-001A-A1-DEC-001` was approved after independent review
+   identified null-revision retry semantic drift risk. A positive revision is
+   now required when enabled; key plus revision remain immutable while
+   recoverable deliveries are unresolved. No migration was added, approved
+   HTTP 409 semantics remain, and the exact nine-path future implementation
+   allowlist is unchanged.
+9. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
 
 ---
 

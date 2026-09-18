@@ -1,8 +1,9 @@
 # LIFEOS-LOGOS-001 — Reading → Logos POC Architecture / Technical Plan
 
-Status: APPROVED / FROZEN
+Status: APPROVED / FROZEN / AMENDED
+Amendment: `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED`
 Decision: `LIFEOS-LOGOS-001A-DEC-001 — APPROVED`
-Baseline: `5ddf709f52f18840e8a76a166e89354b0e748c37`
+Baseline: `41e93cd5381e9497461943994dbfd0daed6dd7ae`
 Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
 
 This is the canonical Architecture / Technical Plan for the bounded Reading →
@@ -88,7 +89,8 @@ Disabled (`false`, the safe default) selects `NoOpProgressionGateway`.
 Enabled (`true`) requires valid URL, nonblank bearer token, nonblank Reading
 configuration key, and finite timeout greater than zero. Invalid or incomplete
 enabled configuration fails fast; it never silently falls back to NoOp.
-Revision is optional and must be valid for the supported Logos contract.
+Revision is required when enabled, has no default, and must be an integer
+greater than or equal to 1. The enabled adapter must never send `revision=null`.
 Environment variables are read only by the configuration boundary.
 
 `httpx==0.28.1` is promoted to `[project].dependencies`; its duplicate test
@@ -240,3 +242,37 @@ LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION
 
 Source implementation, dependency changes, tests, runtime validation, and
 historical recovery remain unauthorized until that gate is separately opened.
+
+## 6. Amendment A1 — pinned configuration revision
+
+`LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED` amends only configuration-revision
+determinism. Logos includes `configuration.key` and `configuration.revision`
+in the execution fingerprint. A null revision resolves through Logos' current
+active version, so an unresolved delivery could change progression semantics
+after a Logos activation change. That behavior is not acceptable for this
+durable POC.
+
+When `LIFEOS_LOGOS_PROGRESSION_ENABLED=true`,
+`LIFEOS_LOGOS_READING_CONFIGURATION_REVISION` is required, has no default, and
+must be a positive integer. Every enabled request includes the explicit key and
+revision; `revision=null` is prohibited.
+
+The configured key and revision must remain unchanged while any recoverable
+delivery is unresolved: `PENDING` or `FAILED` with a nonterminal
+classification. This operational invariant preserves deterministic retry
+fingerprints without changing the delivery schema. A future unattended
+rotation design may persist configuration selection in the delivery record;
+that design is outside this POC.
+
+The no-migration decision remains valid: LifeOS Alembic `0011`, Logos Flyway
+`V43`, and no schema change. HTTP 200 is success without persisting the Logos
+response. HTTP 400 remains terminal; HTTP 409 with
+`PROGRESSION_CONFIGURATION_NOT_ACTIVE` is recoverable operator action, while
+an idempotency or unknown 409 remains terminal. Error bodies are inspected only
+as needed for that semantic distinction and are never persisted wholesale.
+
+For this bounded POC the gateway owns a context-managed synchronous
+`httpx.Client` per `record(...)` call. No application-lifespan client or
+`app_factory.py` change is required. The exact nine-path implementation
+allowlist remains unchanged, and source implementation is not authorized by
+this amendment.

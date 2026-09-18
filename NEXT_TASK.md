@@ -19,6 +19,11 @@
 | Next authorized gate | `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION` |
 
 Canonical plan: `docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_ARCHITECTURE_TECHNICAL_PLAN.md`.
+Architecture / Technical Plan: APPROVED / FROZEN / AMENDED
+Amendment: `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED`
+Source implementation: NOT YET STARTED / NOT CANONICAL
+Next authorized gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
+
 No source implementation, dependency change, migration, runtime POC, subject
 bootstrap, historical replay, or WORK-001 resumption is authorized.
 
