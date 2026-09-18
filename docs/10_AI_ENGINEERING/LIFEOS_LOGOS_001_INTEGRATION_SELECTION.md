@@ -2,6 +2,22 @@
 
 Status: CURRENT GOVERNANCE DECISION — DOCUMENTATION ONLY
 
+## Canonical follow-up — Architecture / Technical Plan approved
+
+`LIFEOS-LOGOS-001A-DEC-001 — APPROVED`
+
+The Architecture / Technical Plan is APPROVED / FROZEN at:
+
+`docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_ARCHITECTURE_TECHNICAL_PLAN.md`
+
+The next authorized gate after canonical publication is:
+
+`LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
+
+No runtime or end-to-end validation is authorized by this publication. Subject
+bootstrap, HTTP calls, historical replay, and source implementation require
+their separate authorized gates.
+
 ## Decision
 
 The Product Owner selected the first bounded real LifeOS → Logos integration

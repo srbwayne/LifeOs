@@ -1,3 +1,21 @@
+## LIFEOS-LOGOS-001A / R1 / DEC-001 — Architecture / Technical Plan — 2026-09-17
+
+1. Reading → Logos was selected as a bounded real integration POC.
+2. Initial review proposed a real Logos adapter; independent review found
+   recoverable HTTP failures at risk of becoming terminal and enabled incomplete
+   configuration at risk of silently falling back to NoOp.
+3. R1 corrected recovery eligibility and fail-fast configuration semantics.
+4. R1 removed proposed production changes to the dispatcher and delivery repository.
+5. Human decision `LIFEOS-LOGOS-001A-DEC-001` approved the twelve architecture
+   and technical-plan decisions.
+6. Human review added direct settings tests and official configuration
+   documentation to the future implementation allowlist.
+7. The Architecture / Technical Plan is frozen; no implementation or runtime
+   work was performed.
+8. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
+
+---
+
 ## WORK-001-PC-001 / R / WORK-001-PC-DEC-001 — Product Contract Finalization — 2026-09-17
 
 1. Initial `WORK-001-PC-001` was blocked because the local checkout remained
