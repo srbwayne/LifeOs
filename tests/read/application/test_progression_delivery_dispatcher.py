@@ -91,6 +91,12 @@ class _Gateway:
             raise self.unexpected_error
 
 
+class _ClassifiedGatewayError(ProgressionGatewayError):
+    def __init__(self, classification: str) -> None:
+        self.classification = classification
+        super().__init__(classification)
+
+
 def _intent() -> ProgressionDeliveryIntent:
     owner = UserId.new()
     return ProgressionDeliveryIntent(
@@ -130,6 +136,21 @@ def test_retryable_and_terminal_failures_are_persisted() -> None:
         assert repository.intent.status == "FAILED"
         assert repository.intent.last_error == classification
         assert repository.intent.attempt_count == 1
+        assert repository.commits == 1
+
+
+def test_adapter_style_recoverable_classifications_remain_nonterminal() -> None:
+    for classification in (
+        "logos_http_401_operator_action",
+        "logos_http_404_prerequisite",
+        "logos_configuration_inactive",
+    ):
+        repository = _Repository(_intent())
+        error = _ClassifiedGatewayError(classification)
+        with suppress(ProgressionGatewayError):
+            _dispatcher(repository, _Gateway(error)).dispatch(repository.intent.id)
+        assert repository.intent.status == "FAILED"
+        assert repository.intent.last_error == classification
         assert repository.commits == 1
 
 
