@@ -1,5 +1,25 @@
 # CONFIGURATION
 
+## Reading → Logos POC Integration
+
+The following typed infrastructure settings are reserved for the approved
+Reading → Logos POC. They are documented here for the future implementation;
+this publication does not activate the integration.
+
+| Variable | Purpose | Required when enabled? | Secret / default | Validation |
+|---|---|---|---|---|
+| `LIFEOS_LOGOS_PROGRESSION_ENABLED` | Selects the Logos downstream | No | Secret: no; default `false` | Explicit `false` selects NoOp; `true` enables validation |
+| `LIFEOS_LOGOS_BASE_URL` | Logos HTTP base URL | Yes | Secret: no; no default | Nonblank valid HTTP/HTTPS URL |
+| `LIFEOS_LOGOS_BEARER_TOKEN` | POC Bearer authentication | Yes | Secret: yes; no default | Nonblank when enabled; never logged or committed |
+| `LIFEOS_LOGOS_READING_CONFIGURATION_KEY` | Logos Reading progression configuration key | Yes | Secret: no; no default | Nonblank when enabled |
+| `LIFEOS_LOGOS_READING_CONFIGURATION_REVISION` | Optional configuration revision | No | Secret: no; no default | Optional positive/contract-valid integer |
+| `LIFEOS_LOGOS_TIMEOUT_SECONDS` | Finite synchronous HTTP timeout | Yes | Secret: no; no default | Finite value greater than zero when enabled |
+
+Environment variables are read only through the typed configuration boundary.
+When explicitly enabled, missing or invalid required settings fail fast; they
+do not silently select NoOp. No actual token, URL, configuration key, or
+environment-specific value belongs in this document.
+
 ## LifeOS
 
 **Versão:** 1.0  

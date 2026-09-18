@@ -1,3 +1,22 @@
+## LIFEOS-LOGOS-001 Architecture / Technical Plan Approved — 2026-09-17
+
+- `LIFEOS-LOGOS-001A` and `LIFEOS-LOGOS-001A-R1` passed; human decision
+  `LIFEOS-LOGOS-001A-DEC-001` approved the Architecture / Technical Plan.
+- Canonical plan: `docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_ARCHITECTURE_TECHNICAL_PLAN.md`.
+- The frozen POC uses synchronous `httpx.Client`, typed fail-fast settings,
+  explicit disabled `NoOpProgressionGateway`, pages_read-only mapping, manual
+  subject bootstrap, and at-least-once durable delivery.
+- HTTP failure semantics distinguish terminal, retryable, and recoverable
+  operator-action failures. Dispatcher and delivery repository production code
+  remain unchanged; no migration is planned.
+- The future implementation allowlist contains 9 paths, including official
+  configuration documentation and direct settings tests. Runtime validation,
+  historical replay, and source implementation are not authorized.
+- WORK-001 remains Product Contract APPROVED / FROZEN and temporarily deferred
+  at its Architecture gate. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
+
+---
+
 ## WORK-001 Product Contract Approved — 2026-09-17
 
 - `WORK-001-PC-001R` passed and `WORK-001-PC-DEC-001` was approved by human

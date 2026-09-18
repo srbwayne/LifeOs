@@ -1,5 +1,30 @@
 # NEXT_TASK.md
 
+## Current Authoritative State — LIFEOS-LOGOS-001 Architecture / Technical Plan Approved
+
+| Field | Value |
+|---|---|
+| Decision baseline reviewed | `5ddf709f52f18840e8a76a166e89354b0e748c37` |
+| Repository Alembic | `0011` |
+| Operational DB | `0011` |
+| Selected initiative | `LIFEOS-LOGOS-001 — Reading → Logos POC Integration` |
+| Selection | `APPROVED` |
+| Architecture / Technical Plan decision | `LIFEOS-LOGOS-001A-DEC-001 — APPROVED` |
+| Architecture | APPROVED / FROZEN |
+| Technical Plan | APPROVED / FROZEN |
+| Source implementation | NOT YET STARTED |
+| Runtime POC | NOT AUTHORIZED |
+| Historical replay | NOT AUTHORIZED |
+| WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
+| Next authorized gate | `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION` |
+
+Canonical plan: `docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_ARCHITECTURE_TECHNICAL_PLAN.md`.
+No source implementation, dependency change, migration, runtime POC, subject
+bootstrap, historical replay, or WORK-001 resumption is authorized.
+
+---
+
+
 ## Current Authoritative State — LIFEOS-LOGOS-001 Integration Selection
 
 | Field | Value |
