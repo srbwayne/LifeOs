@@ -18,7 +18,7 @@ from app.read.infrastructure.integrations.logos_progression_settings import (
 from app.shared.domain.identifiers.user_id import UserId
 
 
-def _settings(revision: int | None = None) -> LogosProgressionSettings:
+def _settings(revision: int | None = 3) -> LogosProgressionSettings:
     return LogosProgressionSettings(
         enabled=True,
         base_url="https://logos.example/",
@@ -61,6 +61,7 @@ def test_success_maps_supported_logos_request_exactly() -> None:
         "configuration": {"key": "reading-v1", "revision": 3},
         "details": [{"factorKey": "pages_read", "value": 30}],
     }
+    assert body["configuration"]["revision"] is not None
     assert "notes" not in body
     assert "book" not in str(body).lower()
 
@@ -88,6 +89,11 @@ def test_internally_created_client_is_closed_after_request(monkeypatch) -> None:
     LogosProgressionGateway(_settings()).record(_occurrence())
 
     assert lifecycle == {"created": True, "entered": True, "posted": True, "exited": True}
+
+
+def test_enabled_settings_without_revision_are_rejected_before_http() -> None:
+    with pytest.raises(ValueError, match="complete settings"):
+        LogosProgressionGateway(_settings(None))
 
 
 @pytest.mark.parametrize(
