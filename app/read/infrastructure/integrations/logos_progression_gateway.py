@@ -32,6 +32,11 @@ class LogosProgressionGateway(ProgressionGateway):
             raise ValueError("LogosProgressionGateway requires enabled settings.")
         if settings.reading_configuration_key is None or settings.timeout_seconds is None:
             raise ValueError("LogosProgressionGateway requires complete settings.")
+        if (
+            settings.reading_configuration_revision is None
+            or settings.reading_configuration_revision <= 0
+        ):
+            raise ValueError("LogosProgressionGateway requires a positive configuration revision.")
         self._settings = settings
         self._client = client
         self._url = f"{settings.base_url.rstrip('/')}{_EXECUTIONS_PATH}"
@@ -79,7 +84,7 @@ class LogosProgressionGateway(ProgressionGateway):
                 "logos_network_failure", "Logos request failed at the network boundary."
             ) from error
 
-        if 200 <= response.status_code < 300:
+        if response.status_code == 200:
             return
         raise _response_error(response)
 
