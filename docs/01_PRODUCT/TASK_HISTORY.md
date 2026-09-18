@@ -18,7 +18,7 @@
    recoverable deliveries are unresolved. No migration was added, approved
    HTTP 409 semantics remain, and the exact nine-path future implementation
    allowlist is unchanged.
-8. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
+9. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
 
 ---
 
