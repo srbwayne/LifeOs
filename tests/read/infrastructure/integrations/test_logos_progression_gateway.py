@@ -5,6 +5,7 @@ import json
 import httpx
 import pytest
 
+import app.read.infrastructure.integrations.logos_progression_gateway as logos_gateway_module
 from app.read.application.ports.progression_gateway import ReadingProgressionOccurrence
 from app.read.domain.value_objects.reading_session_id import ReadingSessionId
 from app.read.infrastructure.integrations.logos_progression_gateway import (
@@ -64,6 +65,31 @@ def test_success_maps_supported_logos_request_exactly() -> None:
     assert "book" not in str(body).lower()
 
 
+def test_internally_created_client_is_closed_after_request(monkeypatch) -> None:
+    lifecycle = {"created": False, "entered": False, "posted": False, "exited": False}
+
+    class ManagedClient:
+        def __init__(self, *, timeout: float) -> None:
+            lifecycle["created"] = timeout == 2.0
+
+        def __enter__(self):
+            lifecycle["entered"] = True
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback) -> None:
+            lifecycle["exited"] = True
+
+        def post(self, url, *, json, headers):
+            lifecycle["posted"] = True
+            return httpx.Response(204, request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(logos_gateway_module.httpx, "Client", ManagedClient)
+
+    LogosProgressionGateway(_settings()).record(_occurrence())
+
+    assert lifecycle == {"created": True, "entered": True, "posted": True, "exited": True}
+
+
 @pytest.mark.parametrize(
     ("status", "classification"),
     [
@@ -105,8 +131,8 @@ def test_configuration_inactive_409_is_recoverable() -> None:
     assert error.value.classification == "logos_configuration_inactive"
 
 
-@pytest.mark.parametrize("body", [{"code": "OTHER"}, {"unexpected": True}, "malformed"])
-def test_unknown_or_malformed_409_is_terminal(body) -> None:
+@pytest.mark.parametrize("body", [{"code": "OTHER"}, {"unexpected": True}, 17])
+def test_unknown_or_valid_non_object_409_is_terminal(body) -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(409, json=body, request=request)
 
@@ -116,6 +142,24 @@ def test_unknown_or_malformed_409_is_terminal(body) -> None:
     with pytest.raises(LogosProgressionGatewayError) as error:
         gateway.record(_occurrence())
     assert error.value.classification == "http_status_409"
+
+
+def test_genuinely_malformed_409_is_terminal() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            409,
+            content=b"{not-valid-json",
+            headers={"content-type": "application/json"},
+            request=request,
+        )
+
+    gateway = LogosProgressionGateway(
+        _settings(), httpx.Client(transport=httpx.MockTransport(handler))
+    )
+    with pytest.raises(LogosProgressionGatewayError) as error:
+        gateway.record(_occurrence())
+    assert error.value.classification == "http_status_409"
+    assert "not-valid-json" not in str(error.value)
 
 
 def test_network_failure_is_nonterminal() -> None:

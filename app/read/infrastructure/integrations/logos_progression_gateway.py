@@ -33,7 +33,7 @@ class LogosProgressionGateway(ProgressionGateway):
         if settings.reading_configuration_key is None or settings.timeout_seconds is None:
             raise ValueError("LogosProgressionGateway requires complete settings.")
         self._settings = settings
-        self._client = client or httpx.Client(timeout=settings.timeout_seconds)
+        self._client = client
         self._url = f"{settings.base_url.rstrip('/')}{_EXECUTIONS_PATH}"
 
     def record(self, occurrence: ReadingProgressionOccurrence) -> None:
@@ -56,8 +56,16 @@ class LogosProgressionGateway(ProgressionGateway):
                 {"factorKey": "pages_read", "value": occurrence.pages_read},
             ],
         }
+        if self._client is not None:
+            self._post(self._client, payload)
+            return
+
+        with httpx.Client(timeout=self._settings.timeout_seconds) as client:
+            self._post(client, payload)
+
+    def _post(self, client: httpx.Client, payload: dict[str, Any]) -> None:
         try:
-            response = self._client.post(
+            response = client.post(
                 self._url,
                 json=payload,
                 headers={"Authorization": f"Bearer {self._settings.bearer_token}"},
