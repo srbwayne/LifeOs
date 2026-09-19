@@ -82,7 +82,7 @@ def test_internally_created_client_is_closed_after_request(monkeypatch) -> None:
 
         def post(self, url, *, json, headers):
             lifecycle["posted"] = True
-            return httpx.Response(204, request=httpx.Request("POST", url))
+            return httpx.Response(200, request=httpx.Request("POST", url))
 
     monkeypatch.setattr(logos_gateway_module.httpx, "Client", ManagedClient)
 
@@ -94,6 +94,25 @@ def test_internally_created_client_is_closed_after_request(monkeypatch) -> None:
 def test_enabled_settings_without_revision_are_rejected_before_http() -> None:
     with pytest.raises(ValueError, match="complete settings"):
         LogosProgressionGateway(_settings(None))
+
+
+@pytest.mark.parametrize("revision", [0, -1])
+def test_enabled_settings_with_non_positive_revision_are_rejected_before_http(revision) -> None:
+    with pytest.raises(ValueError, match="positive configuration revision"):
+        LogosProgressionGateway(_settings(revision))
+
+
+@pytest.mark.parametrize("status", [201, 204])
+def test_unsupported_success_status_is_retryable(status) -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(status, request=request)
+
+    gateway = LogosProgressionGateway(
+        _settings(), httpx.Client(transport=httpx.MockTransport(handler))
+    )
+    with pytest.raises(LogosProgressionGatewayError) as error:
+        gateway.record(_occurrence())
+    assert error.value.classification == "logos_http_status_retryable"
 
 
 @pytest.mark.parametrize(
