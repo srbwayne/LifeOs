@@ -1,3 +1,29 @@
+
+## LIFEOS-LOGOS-001 Source Implementation Canonical — 2026-09-18
+
+- `LIFEOS-LOGOS-001A-DEC-001` and `LIFEOS-LOGOS-001A-A1-DEC-001` approved and
+  froze/amended the Architecture / Technical Plan.
+- PR #94 introduced the bounded Reading → Logos source implementation.
+- The concurrent canonical A1 amendment required a pinned positive
+  configuration revision for enabled delivery; PR #96 remediated source
+  conformance.
+- Canonical source sequence: PR #94 introduced the bounded implementation;
+  PR #96 applied A1 pinned-revision conformance; and
+  `a4e9758a553ffd924303bd8e871183314642320f` added exact Logos HTTP
+  success-contract hardening and gateway positive-revision defense.
+- Canonical source SHA: `a4e9758a553ffd924303bd8e871183314642320f`.
+- Source implementation is IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED.
+- Main CI `35409223058` passed all three Quality Gates with 811 tests and
+  98.54% coverage; repository Alembic remained `0011`.
+- The supported Logos execution POST succeeds with HTTP 200; unsupported 2xx
+  responses are not treated as delivered success.
+- No runtime POC, subject bootstrap, historical delivery replay, or real E2E
+  evidence exists. The next gate is `LIFEOS-LOGOS-001C — RUNTIME / E2E POC
+  AUTHORIZATION REVIEW`.
+- WORK-001 remains temporarily deferred at its Architecture gate.
+
+---
+
 ## LIFEOS-LOGOS-001 Architecture / Technical Plan Approved — 2026-09-17
 
 - `LIFEOS-LOGOS-001A` and `LIFEOS-LOGOS-001A-R1` passed; human decision

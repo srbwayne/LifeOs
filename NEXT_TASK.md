@@ -1,5 +1,38 @@
 # NEXT_TASK.md
 
+## Current Authoritative State — LIFEOS-LOGOS-001 Source Implementation Closed
+
+| Field | Value |
+|---|---|
+| Decision/current baseline | `a4e9758a553ffd924303bd8e871183314642320f` |
+| Repository Alembic | `0011` |
+| Operational DB documented revision | `0011` |
+| Selected initiative | `LIFEOS-LOGOS-001 — Reading → Logos POC Integration` |
+| Selection | `APPROVED` |
+| Architecture decision | `LIFEOS-LOGOS-001A-DEC-001 — APPROVED` |
+| Architecture amendment | `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED` |
+| Architecture | APPROVED / FROZEN / AMENDED |
+| Technical Plan | APPROVED / FROZEN / AMENDED |
+| Source implementation | IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED |
+| Runtime POC | NOT AUTHORIZED / NOT EXECUTED |
+| Subject bootstrap | NOT AUTHORIZED / NOT EXECUTED |
+| Historical replay | NOT AUTHORIZED |
+| Real E2E | NOT YET ESTABLISHED |
+| WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
+| Next authorized gate | `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW` |
+
+The source implementation is closed as canonical and A1-conformant. The next
+gate is a read-only operational pre-flight and human decision review; it does
+not authorize runtime execution. No source, dependency, migration, runtime,
+operational database, historical replay, subject bootstrap, or WORK-001 work
+is authorized by this state.
+
+Post-A1 HTTP contract hardening =
+`a4e9758a553ffd924303bd8e871183314642320f`.
+Supported successful Logos execution response = HTTP 200.
+
+---
+
 ## Current Authoritative State — LIFEOS-LOGOS-001 Architecture / Technical Plan Approved
 
 | Field | Value |

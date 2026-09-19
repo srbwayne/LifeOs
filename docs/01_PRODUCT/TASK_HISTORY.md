@@ -1,3 +1,49 @@
+
+## LIFEOS-LOGOS-001B / A1-REM — Source Implementation Closure — 2026-09-18
+
+1. LIFEOS-LOGOS-001B implemented the approved bounded Reading → Logos source
+   adapter.
+2. Independent review found and remediated deterministic HTTP client lifecycle
+   and malformed-409 coverage before source merge.
+3. PR #94 was reviewed against base `41e93cd5381e9497461943994dbfd0daed6dd7ae`.
+4. Immediately before PR #94 squash merge, canonical main advanced with
+   `f1d1a944ee353cb3d518b1187f93ba240afb4c5e`, publishing approved Amendment
+   A1.
+5. Amendment A1 requires an explicit positive Logos configuration revision and
+   prohibits `revision=null` for enabled durable delivery.
+6. PR #94 was squashed as `427fd2953bac1c286519bbc27ef15847bf69e63e` with
+   immediate parent `f1d1a944ee353cb3d518b1187f93ba240afb4c5e`.
+7. The implementation delta remained the reviewed 8-path scope, but source
+   was not yet A1-conformant.
+8. LIFEOS-LOGOS-001B-A1-REM-001 added the bounded source-conformance fix.
+9. PR #96 was squashed as
+   `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6` with parent
+   `427fd2953bac1c286519bbc27ef15847bf69e63e`.
+10. Main CI `35407381801` passed Static quality, Tests and coverage, and
+    Alembic migration.
+11. The source implementation is now canonical, A1-conformant, and closed.
+12. No runtime, HTTP, JWT, subject bootstrap, historical replay, operational
+    DB write, or real ReadingSession was executed.
+13. Next gate: `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`.
+14. After the A1 remediation became canonical, source hardening
+    `a4e9758a553ffd924303bd8e871183314642320f` aligned the adapter with the
+    exact Logos POST success contract: only HTTP 200 is treated as successful.
+15. The same hardening added gateway-level rejection of manually constructed
+    enabled settings with nonpositive revision.
+16. The hardening changed only the gateway and its tests; no Architecture,
+    dispatcher, delivery repository, handler, dependency, migration, runtime,
+    or operational-state boundary changed.
+17. Main CI `35409223058` passed all three Quality Gates with 811 tests,
+    98.54% coverage, and Alembic `0011`.
+18. Current canonical source is
+    `a4e9758a553ffd924303bd8e871183314642320f`.
+19. Source remains IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED.
+20. Runtime POC remains NOT AUTHORIZED / NOT EXECUTED.
+21. Next gate =
+    `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`.
+
+---
+
 ## LIFEOS-LOGOS-001A / R1 / DEC-001 — Architecture / Technical Plan — 2026-09-17
 
 1. Reading → Logos was selected as a bounded real integration POC.
