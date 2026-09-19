@@ -1,4 +1,23 @@
 
+## LIFEOS-LOGOS-001C Reading Configuration Decision — 2026-09-19
+
+- D1 analysis passed and produced an evidence-backed recommendation from the
+  canonical Logos engine and authoring APIs.
+- Human decision `LIFEOS-LOGOS-001C-D1-DEC-001` is APPROVED.
+- The first disposable POC freezes `reading`, the `pages_read` NUMERICO factor,
+  `FACT_VALUE`, `baseXp=1`, `baseStress=0`, multiplier `1.0`, distribution
+  weight `1.0`, no cutoffs, and no stress rules.
+- The provisional POC attribute is `Learning`; this does not establish the
+  permanent Logos production attribute taxonomy.
+- The expected reference result for `pages_read=30` is global XP `30`,
+  Learning attribute XP `30`, and stress `0`.
+- Source remediation: NONE. Runtime: NOT STARTED. Database mutation: NONE.
+- The next gate is `LIFEOS-LOGOS-001C-E1 — CONTROLLED RUNTIME / E2E
+  EXECUTION`, which is not authorized until this decision publication is
+  independently reviewed and merged.
+
+---
+
 ## LIFEOS-LOGOS-001 Source Implementation Canonical — 2026-09-18
 
 - `LIFEOS-LOGOS-001A-DEC-001` and `LIFEOS-LOGOS-001A-A1-DEC-001` approved and

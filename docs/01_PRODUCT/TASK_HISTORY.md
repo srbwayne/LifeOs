@@ -1,4 +1,20 @@
 
+## LIFEOS-LOGOS-001C-D1-DEC-001 — Reading POC Configuration Approved — 2026-09-19
+
+1. The 001C operational pre-flight passed source and runtime-topology checks
+   but stopped on the absence of an approved Reading progression configuration.
+2. D1 analyzed the canonical Logos engine and compared FIXED with FACT_VALUE.
+3. FACT_VALUE was selected because `pages_read` must materially affect XP.
+4. `Learning` was selected as a POC-provisional attribute, not as permanent
+   production taxonomy.
+5. `1 XP/page` and zero stress were approved for the disposable POC only.
+6. No runtime, HTTP request, database mutation, subject provisioning,
+   configuration bootstrap, or historical replay occurred.
+7. The next gate is `LIFEOS-LOGOS-001C-E1 — CONTROLLED RUNTIME / E2E
+   EXECUTION`, after this decision publication becomes canonical.
+
+---
+
 ## LIFEOS-LOGOS-001B / A1-REM / RAT-R1 — Source Implementation Closure — 2026-09-19
 
 1. PR #94 introduced the initial Reading → Logos source implementation and

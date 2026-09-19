@@ -1,6 +1,31 @@
 # NEXT_TASK.md
 
-## Current Authoritative State — LIFEOS-LOGOS-001 Source Implementation Closed
+## Current Authoritative State — LIFEOS-LOGOS-001C-D1-DEC-001 Reading Configuration Approved
+
+| Field | Value |
+|---|---|
+| Decision | `LIFEOS-LOGOS-001C-D1-DEC-001 — APPROVED` |
+| Scope | FIRST DISPOSABLE READING → LOGOS POC ONLY |
+| Reading POC configuration | APPROVED / FROZEN FOR DISPOSABLE POC |
+| logicalKey | `reading` |
+| Factor | `pages_read` / Pages Read / pages / `NUMERICO` |
+| Attribute | `Learning` — POC-PROVISIONAL / NOT PRODUCTION TAXONOMY |
+| XP | `1` per page via `FACT_VALUE` |
+| Stress | `0` with empty stress rules |
+| Production balance | NOT ESTABLISHED |
+| Runtime POC | NOT STARTED |
+| Next gate | `LIFEOS-LOGOS-001C-E1 — CONTROLLED RUNTIME / E2E EXECUTION` |
+| E1 authorization | NOT AUTHORIZED UNTIL DECISION PUBLICATION MERGE REVIEW COMPLETES |
+| WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED |
+
+The approved configuration is limited to the first disposable integration POC.
+It does not establish production XP balance or permanent Logos attribute
+taxonomy. Factor, attribute, configuration, revision, identity, JWT, and
+ReadingSession identifiers are technical outputs of the future bootstrap.
+
+---
+
+## Historical Governance State — LIFEOS-LOGOS-001 Source Implementation Closed
 
 | Field | Value |
 |---|---|
