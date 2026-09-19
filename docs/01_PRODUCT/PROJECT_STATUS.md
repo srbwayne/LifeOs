@@ -1,3 +1,23 @@
+
+## LIFEOS-LOGOS-001 Source Implementation Canonical — 2026-09-18
+
+- `LIFEOS-LOGOS-001A-DEC-001` and `LIFEOS-LOGOS-001A-A1-DEC-001` approved and
+  froze/amended the Architecture / Technical Plan.
+- PR #94 introduced the bounded Reading → Logos source implementation.
+- The concurrent canonical A1 amendment required a pinned positive
+  configuration revision for enabled delivery; PR #96 remediated source
+  conformance.
+- Canonical source SHA: `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6`.
+- Source implementation is IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED.
+- Main CI `35407381801` passed all three Quality Gates; coverage was 98.52%
+  and repository Alembic remained `0011`.
+- No runtime POC, subject bootstrap, historical delivery replay, or real E2E
+  evidence exists. The next gate is `LIFEOS-LOGOS-001C — RUNTIME / E2E POC
+  AUTHORIZATION REVIEW`.
+- WORK-001 remains temporarily deferred at its Architecture gate.
+
+---
+
 ## LIFEOS-LOGOS-001 Architecture / Technical Plan Approved — 2026-09-17
 
 - `LIFEOS-LOGOS-001A` and `LIFEOS-LOGOS-001A-R1` passed; human decision
@@ -1047,23 +1067,5 @@ A Sprint 01 foi concluída com sucesso, entregando a fundação arquitetural e a
 - Não houve alteração após o commit validado, migration real, cutover ou ativação de runtime.
 
 **Next Gate:** PR #46 READY + INTEGRATION AUTHORIZATION REVIEW
-
----
-## LIFEOS-LOGOS-001 Source Implementation Canonical — 2026-09-18
-
-- `LIFEOS-LOGOS-001A-DEC-001` and `LIFEOS-LOGOS-001A-A1-DEC-001` approved and
-  froze/amended the Architecture / Technical Plan.
-- PR #94 introduced the bounded Reading → Logos source implementation.
-- The concurrent canonical A1 amendment required a pinned positive
-  configuration revision for enabled delivery; PR #96 remediated source
-  conformance.
-- Canonical source SHA: `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6`.
-- Source implementation is IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED.
-- Main CI `35407381801` passed all three Quality Gates; coverage was 98.52%
-  and repository Alembic remained `0011`.
-- No runtime POC, subject bootstrap, historical delivery replay, or real E2E
-  evidence exists. The next gate is `LIFEOS-LOGOS-001C — RUNTIME / E2E POC
-  AUTHORIZATION REVIEW`.
-- WORK-001 remains temporarily deferred at its Architecture gate.
 
 ---
