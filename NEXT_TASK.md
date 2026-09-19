@@ -4,7 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Decision/current baseline | `a4e9758a553ffd924303bd8e871183314642320f` |
+| Repository/closure publication | `25322af61d81c3fc95253d4f2ce3c3e50b97e5f7` |
+| Canonical source implementation | `a4e9758a553ffd924303bd8e871183314642320f` |
 | Repository Alembic | `0011` |
 | Operational DB documented revision | `0011` |
 | Selected initiative | `LIFEOS-LOGOS-001 — Reading → Logos POC Integration` |
@@ -33,7 +34,7 @@ Supported successful Logos execution response = HTTP 200.
 
 ---
 
-## Current Authoritative State — LIFEOS-LOGOS-001 Architecture / Technical Plan Approved
+## Historical Governance State — LIFEOS-LOGOS-001 Architecture / Technical Plan Approved
 
 | Field | Value |
 |---|---|
@@ -45,25 +46,26 @@ Supported successful Logos execution response = HTTP 200.
 | Architecture / Technical Plan decision | `LIFEOS-LOGOS-001A-DEC-001 — APPROVED` |
 | Architecture | APPROVED / FROZEN |
 | Technical Plan | APPROVED / FROZEN |
-| Source implementation | NOT YET STARTED |
+| Source implementation at this checkpoint | NOT YET STARTED |
 | Runtime POC | NOT AUTHORIZED |
 | Historical replay | NOT AUTHORIZED |
 | WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION` |
+| Next gate at this checkpoint | `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION` |
 
 Canonical plan: `docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_ARCHITECTURE_TECHNICAL_PLAN.md`.
 Architecture / Technical Plan: APPROVED / FROZEN / AMENDED
 Amendment: `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED`
-Source implementation: NOT YET STARTED / NOT CANONICAL
-Next authorized gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
+Source implementation at this checkpoint: NOT YET STARTED / NOT CANONICAL
+Next gate at this checkpoint: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
 
-No source implementation, dependency change, migration, runtime POC, subject
-bootstrap, historical replay, or WORK-001 resumption is authorized.
+At this historical checkpoint, no source implementation, dependency change,
+migration, runtime POC, subject bootstrap, historical replay, or WORK-001
+resumption was authorized.
 
 ---
 
 
-## Current Authoritative State — LIFEOS-LOGOS-001 Integration Selection
+## Historical Governance State — LIFEOS-LOGOS-001 Integration Selection
 
 | Field | Value |
 |---|---|
@@ -83,7 +85,7 @@ Product Contract level and is temporarily deferred at its architecture gate,
 not cancelled or rejected. After the bounded pilot closes, initiative priority
 must be re-evaluated explicitly.
 
-### Next Authorized Gate
+### Historical Next Authorized Gate
 
 `LIFEOS-LOGOS-001A — READING → LOGOS POC ARCHITECTURE / TECHNICAL PLAN`
 

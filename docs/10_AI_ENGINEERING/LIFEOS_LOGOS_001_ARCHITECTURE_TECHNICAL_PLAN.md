@@ -4,11 +4,16 @@ Status: APPROVED / FROZEN / AMENDED
 Amendment: `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED`
 Decision: `LIFEOS-LOGOS-001A-DEC-001 — APPROVED`
 Baseline: `41e93cd5381e9497461943994dbfd0daed6dd7ae`
-Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
+Source implementation: COMPLETE / CANONICAL
+Canonical source: `a4e9758a553ffd924303bd8e871183314642320f`
+Closure publication: `25322af61d81c3fc95253d4f2ce3c3e50b97e5f7`
+Next gate: `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`
 
 This is the canonical Architecture / Technical Plan for the bounded Reading →
-Logos POC. It does not authorize source implementation, runtime activation,
-database access, subject bootstrap, or historical delivery replay.
+Logos POC. At the time this plan was approved, source implementation was not
+yet authorized. It is now canonical at the source SHA recorded above. This
+document does not authorize runtime activation, database access, subject
+bootstrap, or historical delivery replay.
 
 ## 1. Purpose and frozen boundaries
 
@@ -115,6 +120,7 @@ repository changes:
 | Unknown HTTP 409 | TERMINAL | excluded |
 | HTTP 429 | RETRYABLE | explicit recovery |
 | HTTP 5xx | RETRYABLE | explicit recovery |
+| Unsupported 2xx (201, 202, 204) | RETRYABLE unsupported status | explicit recovery |
 | Network/DNS/connect failure | RETRYABLE | explicit recovery |
 | Timeout | RETRYABLE | explicit recovery |
 
@@ -151,7 +157,7 @@ remain untouched.
 
 ## 3. Technical Plan
 
-### 3.1 Exact future allowlist
+### 3.1 Exact implementation allowlist (historically authorized)
 
 New production:
 
@@ -182,22 +188,23 @@ tests/read/application/test_read_dependencies.py
 tests/read/application/test_progression_delivery_dispatcher.py
 ```
 
-Exactly nine future paths are authorized. The production dispatcher,
+Exactly nine paths were authorized for implementation. They are now canonical;
+the production dispatcher,
 `progression_delivery_repository.py`, `requirements.txt`, and migrations are
 not in the allowlist.
 
-### 3.2 Implementation slices
+### 3.2 Implementation result
 
 1. Typed settings, disabled default, enabled fail-fast validation, production
-   `httpx` promotion, and configuration documentation.
-2. Synchronous gateway, supported request mapping, Bearer header, finite
-   timeout, safe logging, and semantic failure classifications.
-3. DI wiring: disabled → NoOp; valid enabled → Logos gateway; invalid enabled
-   → fail fast.
-4. Direct settings tests, gateway/payload/auth/timeout/network/HTTP matrix
-   tests, semantic 409 tests, DI tests, secret-handling tests, and recovery
-   eligibility tests. Dispatcher production code remains unchanged.
-5. Manual subject/bootstrap and one-session E2E POC under a separate runtime
+   `httpx` promotion, and configuration documentation were implemented.
+2. The synchronous gateway, supported request mapping, Bearer header, finite
+   timeout, safe logging, and semantic failure classifications were implemented.
+3. DI wiring preserves disabled → NoOp and valid enabled → Logos gateway;
+   invalid enabled configuration fails fast.
+4. Direct settings, gateway/payload/auth/timeout/network/HTTP matrix, semantic
+   409, DI, secret-handling, and recovery-eligibility tests were implemented.
+   Dispatcher production code remains unchanged.
+5. Manual subject/bootstrap and one-session E2E POC remain a separate runtime
    authorization gate.
 
 ### 3.3 Migration and database boundary
@@ -219,8 +226,8 @@ this POC.
 
 ## 4. Deferred runtime and hardening
 
-This publication does not start a runtime, make an HTTP call, provision a
-subject, replay history, or activate the real downstream. It does not
+This closure documentation does not start a runtime, make an HTTP call,
+provision a subject, replay history, or activate the real downstream. It does not
 authorize WORK-001 architecture or implementation. WORK-001 remains Product
 Contract APPROVED / FROZEN, temporarily deferred at its Architecture gate,
 with implementation unauthorized.
@@ -237,11 +244,11 @@ automatically.
 Plan. The next authorized gate is:
 
 ```text
-LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION
+LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW
 ```
 
-Source implementation, dependency changes, tests, runtime validation, and
-historical recovery remain unauthorized until that gate is separately opened.
+Runtime validation, subject/configuration bootstrap, and historical recovery
+remain unauthorized until that gate is separately opened.
 
 ## 6. Amendment A1 — pinned configuration revision
 
@@ -274,5 +281,5 @@ as needed for that semantic distinction and are never persisted wholesale.
 For this bounded POC the gateway owns a context-managed synchronous
 `httpx.Client` per `record(...)` call. No application-lifespan client or
 `app_factory.py` change is required. The exact nine-path implementation
-allowlist remains unchanged, and source implementation is not authorized by
-this amendment.
+allowlist remains unchanged, and source implementation is complete/canonical
+at the SHA recorded above. Runtime POC actions remain outside this amendment.

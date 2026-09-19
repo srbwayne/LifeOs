@@ -2,9 +2,10 @@
 
 ## Reading → Logos POC Integration
 
-The following typed infrastructure settings are reserved for the approved
-Reading → Logos POC. They are documented here for the future implementation;
-this publication does not activate the integration.
+The following typed infrastructure settings are implemented and canonical for
+the approved Reading → Logos POC. Integration remains disabled by default;
+this documentation does not activate the runtime or provide real environment
+values.
 
 | Variable | Purpose | Required when enabled? | Secret / default | Validation |
 |---|---|---|---|---|

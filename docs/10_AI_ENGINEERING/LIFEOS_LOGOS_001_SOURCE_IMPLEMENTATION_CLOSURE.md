@@ -20,6 +20,10 @@ Historical replay: NOT AUTHORIZED
 
 Next gate: `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`
 
+Current canonical source: `a4e9758a553ffd924303bd8e871183314642320f`
+
+Current closure/governance publication: `25322af61d81c3fc95253d4f2ce3c3e50b97e5f7`
+
 ## Canonical Evidence Chain
 
 - Architecture publication: `41e93cd5381e9497461943994dbfd0daed6dd7ae`
@@ -27,13 +31,20 @@ Next gate: `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`
 - Initial source implementation: `427fd2953bac1c286519bbc27ef15847bf69e63e`
 - A1 source-conformance remediation: `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6`
 - Exact HTTP success-contract hardening: `a4e9758a553ffd924303bd8e871183314642320f`
+- PR #94: merged, initial source implementation, `427fd2953bac1c286519bbc27ef15847bf69e63e`
+- PR #95: CLOSED / NOT MERGED / SUPERSEDED
+- PR #96: merged, pinned-revision remediation, `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6`
+- PR #97: merged, final HTTP/revision-boundary conformance, `a4e9758a553ffd924303bd8e871183314642320f`
+- PR #98: merged, closure publication, `25322af61d81c3fc95253d4f2ce3c3e50b97e5f7`
 
 Current canonical source: `a4e9758a553ffd924303bd8e871183314642320f`
 
 PR #94 introduced the bounded source implementation. The approved A1
 amendment entered canonical main immediately before its squash merge and
 required a positive pinned configuration revision for enabled delivery. PR #96
-applied the bounded source-conformance remediation without reverting PR #94.
+applied the pinned-revision remediation without reverting PR #94; PR #97 then
+completed the exact HTTP-200 and gateway-boundary conformance. PR #98 is the
+closure publication only; it is not the source implementation SHA.
 
 ## Validation
 
