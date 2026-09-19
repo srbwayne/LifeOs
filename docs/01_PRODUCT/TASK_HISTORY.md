@@ -25,6 +25,22 @@
 12. No runtime, HTTP, JWT, subject bootstrap, historical replay, operational
     DB write, or real ReadingSession was executed.
 13. Next gate: `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`.
+14. After the A1 remediation became canonical, source hardening
+    `a4e9758a553ffd924303bd8e871183314642320f` aligned the adapter with the
+    exact Logos POST success contract: only HTTP 200 is treated as successful.
+15. The same hardening added gateway-level rejection of manually constructed
+    enabled settings with nonpositive revision.
+16. The hardening changed only the gateway and its tests; no Architecture,
+    dispatcher, delivery repository, handler, dependency, migration, runtime,
+    or operational-state boundary changed.
+17. Main CI `35409223058` passed all three Quality Gates with 811 tests,
+    98.54% coverage, and Alembic `0011`.
+18. Current canonical source is
+    `a4e9758a553ffd924303bd8e871183314642320f`.
+19. Source remains IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED.
+20. Runtime POC remains NOT AUTHORIZED / NOT EXECUTED.
+21. Next gate =
+    `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`.
 
 ---
 

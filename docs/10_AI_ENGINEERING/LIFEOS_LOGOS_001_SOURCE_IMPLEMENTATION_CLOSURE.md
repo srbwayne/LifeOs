@@ -26,6 +26,9 @@ Next gate: `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`
 - A1 architecture amendment: `f1d1a944ee353cb3d518b1187f93ba240afb4c5e`
 - Initial source implementation: `427fd2953bac1c286519bbc27ef15847bf69e63e`
 - A1 source-conformance remediation: `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6`
+- Exact HTTP success-contract hardening: `a4e9758a553ffd924303bd8e871183314642320f`
+
+Current canonical source: `a4e9758a553ffd924303bd8e871183314642320f`
 
 PR #94 introduced the bounded source implementation. The approved A1
 amendment entered canonical main immediately before its squash merge and
@@ -34,13 +37,16 @@ applied the bounded source-conformance remediation without reverting PR #94.
 
 ## Validation
 
-- Main CI: `35407381801`, push on canonical main, all three Quality Gates
+- Main CI: `35409223058`, push on canonical main, all three Quality Gates
   successful.
-- Coverage: `98.52%`.
+- Tests: `811 passed`.
+- Coverage: `98.54%`.
 - Repository Alembic: `0011`.
 - The source preserves disabled `NoOpProgressionGateway`, enabled durable
   composition, deterministic internal HTTP client closure, and the approved
   failure/recovery semantics.
+- The supported Logos execution POST succeeds with HTTP 200. Unsupported 2xx
+  responses are not treated as delivered success.
 
 ## Operational Boundary
 

@@ -7,10 +7,16 @@
 - The concurrent canonical A1 amendment required a pinned positive
   configuration revision for enabled delivery; PR #96 remediated source
   conformance.
-- Canonical source SHA: `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6`.
+- Canonical source sequence: PR #94 introduced the bounded implementation;
+  PR #96 applied A1 pinned-revision conformance; and
+  `a4e9758a553ffd924303bd8e871183314642320f` added exact Logos HTTP
+  success-contract hardening and gateway positive-revision defense.
+- Canonical source SHA: `a4e9758a553ffd924303bd8e871183314642320f`.
 - Source implementation is IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED.
-- Main CI `35407381801` passed all three Quality Gates; coverage was 98.52%
-  and repository Alembic remained `0011`.
+- Main CI `35409223058` passed all three Quality Gates with 811 tests and
+  98.54% coverage; repository Alembic remained `0011`.
+- The supported Logos execution POST succeeds with HTTP 200; unsupported 2xx
+  responses are not treated as delivered success.
 - No runtime POC, subject bootstrap, historical delivery replay, or real E2E
   evidence exists. The next gate is `LIFEOS-LOGOS-001C — RUNTIME / E2E POC
   AUTHORIZATION REVIEW`.

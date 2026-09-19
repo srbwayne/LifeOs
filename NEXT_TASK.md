@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Decision/current baseline | `8200f6d9c491f1367c58d0f8cf4cae5ce9ca0de6` |
+| Decision/current baseline | `a4e9758a553ffd924303bd8e871183314642320f` |
 | Repository Alembic | `0011` |
 | Operational DB documented revision | `0011` |
 | Selected initiative | `LIFEOS-LOGOS-001 — Reading → Logos POC Integration` |
@@ -26,6 +26,10 @@ gate is a read-only operational pre-flight and human decision review; it does
 not authorize runtime execution. No source, dependency, migration, runtime,
 operational database, historical replay, subject bootstrap, or WORK-001 work
 is authorized by this state.
+
+Post-A1 HTTP contract hardening =
+`a4e9758a553ffd924303bd8e871183314642320f`.
+Supported successful Logos execution response = HTTP 200.
 
 ---
 
