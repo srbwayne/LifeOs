@@ -1,4 +1,22 @@
-## LIFEOS-LOGOS-001 Architecture / Technical Plan Approved — 2026-09-17
+## LIFEOS-LOGOS-001B Source Implementation Canonical — 2026-09-19
+
+- LIFEOS-LOGOS-001B is COMPLETE / CANONICAL at
+  `a4e9758a553ffd924303bd8e871183314642320f`.
+- PR #94 introduced the adapter, PR #96 canonicalized pinned revision
+  enforcement, and PR #97 completed exact HTTP 200 and gateway-boundary
+  conformance. PR #95 is CLOSED / NOT MERGED / SUPERSEDED BY PR #96 + PR #97.
+- Architecture / Technical Plan remains APPROVED / FROZEN / AMENDED.
+- No migration was added; LifeOS remains at Alembic `0011` and Logos at
+  Flyway `V43`. Runtime POC is NOT STARTED and the operational database is
+  untouched.
+- The next gate is `LIFEOS-LOGOS-001C — CONTROLLED POC BOOTSTRAP / E2E
+  VALIDATION`. This publication does not authorize its operational actions.
+- WORK-001 remains Product Contract APPROVED / FROZEN and temporarily
+  deferred at its Architecture gate; it is not cancelled or resumed.
+
+---
+
+## Historical — LIFEOS-LOGOS-001 Architecture / Technical Plan Approved — 2026-09-17
 
 - `LIFEOS-LOGOS-001A` and `LIFEOS-LOGOS-001A-R1` passed; human decision
   `LIFEOS-LOGOS-001A-DEC-001` approved the Architecture / Technical Plan.
@@ -16,11 +34,12 @@
   Plan remains frozen and is amended only for deterministic configuration
   revision handling. A positive revision is required when enabled, and key
   plus revision remain unchanged while recoverable deliveries are unresolved.
-- Source implementation remains not canonical and not started. No migration,
-  dependency, runtime, or operational database change is included. Next gate:
-  `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
-- WORK-001 remains Product Contract APPROVED / FROZEN and temporarily deferred
-  at its Architecture gate. Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`.
+- At this architecture checkpoint, source implementation remained not canonical
+  and not started. No migration, dependency, runtime, or operational database
+  change was included. The next gate at that time was `LIFEOS-LOGOS-001B —
+  SOURCE IMPLEMENTATION`.
+- At that checkpoint WORK-001 remained Product Contract APPROVED / FROZEN and
+  temporarily deferred at its Architecture gate.
 
 ---
 

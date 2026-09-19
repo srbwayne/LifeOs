@@ -4,11 +4,14 @@ Status: APPROVED / FROZEN / AMENDED
 Amendment: `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED`
 Decision: `LIFEOS-LOGOS-001A-DEC-001 — APPROVED`
 Baseline: `41e93cd5381e9497461943994dbfd0daed6dd7ae`
-Next gate: `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
+Source implementation: COMPLETE / CANONICAL
+Canonical source: `a4e9758a553ffd924303bd8e871183314642320f`
+Next gate: `LIFEOS-LOGOS-001C — CONTROLLED POC BOOTSTRAP / E2E VALIDATION`
 
 This is the canonical Architecture / Technical Plan for the bounded Reading →
-Logos POC. It does not authorize source implementation, runtime activation,
-database access, subject bootstrap, or historical delivery replay.
+Logos POC. The source implementation is now canonical. This document does not
+activate runtime, database access, subject bootstrap, or historical delivery
+replay.
 
 ## 1. Purpose and frozen boundaries
 
@@ -151,7 +154,7 @@ remain untouched.
 
 ## 3. Technical Plan
 
-### 3.1 Exact future allowlist
+### 3.1 Exact implementation allowlist
 
 New production:
 
@@ -182,22 +185,23 @@ tests/read/application/test_read_dependencies.py
 tests/read/application/test_progression_delivery_dispatcher.py
 ```
 
-Exactly nine future paths are authorized. The production dispatcher,
+Exactly nine paths were authorized and are now the bounded implementation
+allowlist. The production dispatcher,
 `progression_delivery_repository.py`, `requirements.txt`, and migrations are
 not in the allowlist.
 
-### 3.2 Implementation slices
+### 3.2 Implementation result
 
-1. Typed settings, disabled default, enabled fail-fast validation, production
-   `httpx` promotion, and configuration documentation.
-2. Synchronous gateway, supported request mapping, Bearer header, finite
-   timeout, safe logging, and semantic failure classifications.
-3. DI wiring: disabled → NoOp; valid enabled → Logos gateway; invalid enabled
-   → fail fast.
-4. Direct settings tests, gateway/payload/auth/timeout/network/HTTP matrix
-   tests, semantic 409 tests, DI tests, secret-handling tests, and recovery
-   eligibility tests. Dispatcher production code remains unchanged.
-5. Manual subject/bootstrap and one-session E2E POC under a separate runtime
+1. Typed settings, disabled default, enabled fail-fast validation, runtime
+   `httpx` dependency, and configuration documentation were implemented.
+2. The synchronous gateway, supported request mapping, Bearer header, finite
+   timeout, safe logging, and semantic failure classifications were implemented.
+3. DI wiring preserves disabled → NoOp and valid enabled → Logos gateway;
+   invalid enabled configuration fails fast.
+4. Settings, gateway, payload, HTTP matrix, semantic 409, DI, secret-handling,
+   and recovery-eligibility tests were implemented without changing dispatcher
+   production code.
+5. Manual subject/bootstrap and one-session E2E POC remain a separate runtime
    authorization gate.
 
 ### 3.3 Migration and database boundary
@@ -237,11 +241,11 @@ automatically.
 Plan. The next authorized gate is:
 
 ```text
-LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION
+LIFEOS-LOGOS-001C — CONTROLLED POC BOOTSTRAP / E2E VALIDATION
 ```
 
-Source implementation, dependency changes, tests, runtime validation, and
-historical recovery remain unauthorized until that gate is separately opened.
+Runtime validation, subject/configuration bootstrap, and historical recovery
+remain unauthorized until that gate is separately opened.
 
 ## 6. Amendment A1 — pinned configuration revision
 
@@ -266,7 +270,8 @@ that design is outside this POC.
 
 The no-migration decision remains valid: LifeOS Alembic `0011`, Logos Flyway
 `V43`, and no schema change. HTTP 200 is success without persisting the Logos
-response. HTTP 400 remains terminal; HTTP 409 with
+response; unsupported 2xx responses such as 201, 202, and 204 are retryable
+unsupported statuses. HTTP 400 remains terminal; HTTP 409 with
 `PROGRESSION_CONFIGURATION_NOT_ACTIVE` is recoverable operator action, while
 an idempotency or unknown 409 remains terminal. Error bodies are inspected only
 as needed for that semantic distinction and are never persisted wholesale.
@@ -274,5 +279,5 @@ as needed for that semantic distinction and are never persisted wholesale.
 For this bounded POC the gateway owns a context-managed synchronous
 `httpx.Client` per `record(...)` call. No application-lifespan client or
 `app_factory.py` change is required. The exact nine-path implementation
-allowlist remains unchanged, and source implementation is not authorized by
-this amendment.
+allowlist remains unchanged, and the source implementation is complete/canonical
+at the SHA recorded above. Runtime POC actions remain outside this amendment.
