@@ -1,8 +1,31 @@
 # LIFEOS-LOGOS-001 — Reading → Logos POC Integration Selection
 
-Status: CURRENT GOVERNANCE DECISION — DOCUMENTATION ONLY
+Status: CURRENT GOVERNANCE / SOURCE CLOSURE — DOCUMENTATION ONLY
 
-## Canonical follow-up — Architecture / Technical Plan approved
+## Current canonical state — source implementation closed
+
+`LIFEOS-LOGOS-001B — IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED`
+
+Canonical source: `a4e9758a553ffd924303bd8e871183314642320f`
+
+Closure publication: `25322af61d81c3fc95253d4f2ce3c3e50b97e5f7`
+
+PR #94 introduced the source, PR #95 was closed/not merged/superseded, PR #96
+applied pinned-revision remediation, PR #97 completed final HTTP/revision
+boundary conformance, and PR #98 published this closure state.
+
+The implemented adapter remains disabled by default. Runtime POC activation,
+manual subject/configuration bootstrap, real HTTP, and historical replay have
+not occurred.
+
+The next gate is:
+
+`LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`
+
+This is a read-only operational pre-flight/human decision review. It does not
+authorize runtime actions.
+
+## Historical selection and architecture approval
 
 `LIFEOS-LOGOS-001A-DEC-001 — APPROVED`
 
@@ -10,13 +33,12 @@ The Architecture / Technical Plan is APPROVED / FROZEN at:
 
 `docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_ARCHITECTURE_TECHNICAL_PLAN.md`
 
-The next authorized gate after canonical publication is:
+The next authorized gate at that historical checkpoint was:
 
 `LIFEOS-LOGOS-001B — SOURCE IMPLEMENTATION`
 
-No runtime or end-to-end validation is authorized by this publication. Subject
-bootstrap, HTTP calls, historical replay, and source implementation require
-their separate authorized gates.
+No runtime or end-to-end validation was authorized by that historical
+publication. Source implementation was subsequently completed and closed.
 
 ## Decision
 
@@ -26,11 +48,11 @@ before continuing WORK-001 architecture work. The selected activity is
 level; it is temporarily deferred at its architecture gate, not cancelled or
 rejected.
 
-The next authorized gate is:
+The next authorized gate at that historical checkpoint was:
 
 `LIFEOS-LOGOS-001A — READING → LOGOS POC ARCHITECTURE / TECHNICAL PLAN`
 
-LIFEOS-LOGOS-001G authorizes no source, tests, migration, runtime, or
+LIFEOS-LOGOS-001G authorized no source, tests, migration, runtime, or
 operational-database work.
 
 ## Evidence for the selected activity
@@ -60,10 +82,10 @@ domains are excluded.
 LifeOS owns the observed reading fact. Logos owns progression interpretation,
 including XP, attribute distribution, stress, and skill-policy rules.
 
-The Logos configuration key and optional revision are integration configuration
-concerns, not ReadingSession domain facts.
+The Logos configuration key and required positive pinned revision are
+integration configuration concerns, not ReadingSession domain facts.
 
-The future adapter targets the supported Logos HTTP V1 execution resource:
+The implemented adapter targets the supported Logos HTTP V1 execution resource:
 
 ```http
 POST /api/internal/v1/progression/executions
@@ -102,7 +124,7 @@ The POC must not be described as production-ready authentication.
 
 ## Delivery and durability boundary
 
-The implementation gate must preserve the existing chain:
+The implementation preserves the existing chain:
 
 ```text
 CreateReadingSessionCommandHandler
@@ -123,16 +145,15 @@ delivery records must remain untouched. Startup must not automatically call
 ReadingSession; historical recovery requires a separate explicit review.
 
 The existing terminal classification for HTTP 400 and 409 remains unchanged.
-The next technical gate must explicitly classify network failures, timeouts,
-401, 403, 404, and 5xx responses before changing dispatcher behavior.
+The implemented gateway classifies network failures, timeouts, 401, 403, 404,
+429, and 5xx responses without changing dispatcher behavior. Only HTTP 200 is
+success; unsupported 2xx responses are retryable unsupported statuses.
 
 ## Implementation prerequisites to resolve at the next gate
 
-The technical plan must freeze typed settings for enabled state, Logos base
-URL, bearer token, Reading configuration key, optional revision, and HTTP
-timeout. The repository currently has `httpx==0.28.1` in test optional
-dependencies and `requirements.txt`, but not in `[project].dependencies`; a
-real runtime adapter may therefore require a dependency decision.
+The approved plan froze typed settings for enabled state, Logos base URL,
+bearer token, Reading configuration key, required positive pinned revision, and
+HTTP timeout. The implemented runtime uses `httpx==0.28.1`.
 
 LifeOS Alembic remains `0011`; this pilot is expected to require no new
 migration because `progression_delivery_records` already exists. Logos remains
