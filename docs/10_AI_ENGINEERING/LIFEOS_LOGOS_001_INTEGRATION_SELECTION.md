@@ -1,6 +1,20 @@
 # LIFEOS-LOGOS-001 — Reading → Logos POC Integration Selection
 
-Status: CURRENT GOVERNANCE / SOURCE CLOSURE — DOCUMENTATION ONLY
+Status: CURRENT GOVERNANCE / POC VERIFIED / CLOSED — DOCUMENTATION ONLY
+
+## Current canonical initiative state
+
+`LIFEOS-LOGOS-001 — VERIFIED / CLOSED`
+
+The first bounded real Reading → Logos POC was executed and subsequently
+verified by `LIFEOS-LOGOS-001D-RECOVERY-001`. The canonical closure evidence is
+`docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_POC_CLOSURE.md`.
+
+The retained operational evidence proves one LifeOS `ReadingSession` produced
+one delivered progression execution in Logos, with global XP `+3`,
+`Conhecimento` XP `+3`, stress delta `0`, and an identical downstream
+resubmit returning HTTP 200 without a duplicate execution or progression
+application. Historical unresolved deliveries were not replayed.
 
 ## Current canonical state — source implementation closed
 
@@ -14,16 +28,14 @@ PR #94 introduced the source, PR #95 was closed/not merged/superseded, PR #96
 applied pinned-revision remediation, PR #97 completed final HTTP/revision
 boundary conformance, and PR #98 published this closure state.
 
-The implemented adapter remains disabled by default. Runtime POC activation,
-manual subject/configuration bootstrap, real HTTP, and historical replay have
-not occurred.
+At this historical source-closure checkpoint, the implemented adapter remained
+disabled by default and runtime POC activation, manual bootstrap, real HTTP,
+and historical replay had not occurred. That checkpoint is preserved here for
+traceability; it is not the current initiative state.
 
-The next gate is:
-
-`LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW`
-
-This is a read-only operational pre-flight/human decision review. It does not
-authorize runtime actions.
+`LIFEOS-LOGOS-001C-DEC-001` subsequently froze and approved the bounded runtime
+decision. The runtime execution and recovery verification are documented in
+the canonical POC closure document referenced above.
 
 ## Historical selection and architecture approval
 
@@ -139,25 +151,27 @@ transitions, attempt counts, failure classification, and delivery completion.
 LifeOS delivery remains at-least-once. Logos execution idempotency provides
 downstream duplicate protection; it does not make source delivery exactly-once.
 
-The real downstream is not activated by this decision. Historical unresolved
-delivery records must remain untouched. Startup must not automatically call
-`dispatch_unresolved()`. The first pilot may attempt delivery for a new
-ReadingSession; historical recovery requires a separate explicit review.
+At the historical decision-freeze checkpoint, the real downstream had not yet
+been activated. The completed POC preserved the boundary: historical unresolved
+delivery records remained untouched, startup did not call
+`dispatch_unresolved()`, and only the newly created ReadingSession delivery was
+allowed to execute.
 
 The existing terminal classification for HTTP 400 and 409 remains unchanged.
 The implemented gateway classifies network failures, timeouts, 401, 403, 404,
 429, and 5xx responses without changing dispatcher behavior. Only HTTP 200 is
 success; unsupported 2xx responses are retryable unsupported statuses.
 
-## Implementation prerequisites to resolve at the next gate
+## Historical pre-execution prerequisites
 
 The approved plan froze typed settings for enabled state, Logos base URL,
 bearer token, Reading configuration key, required positive pinned revision, and
 HTTP timeout. The implemented runtime uses `httpx==0.28.1`.
 
-LifeOS Alembic remains `0011`; this pilot is expected to require no new
-migration because `progression_delivery_records` already exists. Logos remains
-at Flyway `V43`; no Logos migration is expected.
+LifeOS Alembic remained `0011`; the pilot required no new migration because
+`progression_delivery_records` already existed. Logos remained at Flyway
+`V43`; no Logos migration was required. These were pre-execution constraints,
+not an outstanding current gate.
 
 ## References
 
@@ -168,5 +182,5 @@ at Flyway `V43`; no Logos migration is expected.
 - `app/read/infrastructure/integrations/durable_progression_gateway.py`
 - `app/read/infrastructure/integrations/noop_progression_gateway.py`
 
-After the bounded pilot closes, initiative priority must be re-evaluated
-explicitly before resuming WORK-001 architecture work.
+The POC is now closed. Initiative priority must be re-evaluated explicitly
+before any productionization work or resumption of WORK-001 architecture.
