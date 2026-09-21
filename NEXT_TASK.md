@@ -24,8 +24,12 @@
 | WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
 | Post-POC priority decision | APPROVED — OPTION C |
 | Selected direction | REUSABLE STRUCTURAL HARDENING BEFORE PRODUCTIZATION DECISION |
-| Current decision state | OPTION C SELECTED; HARDENING SCOPE REVIEW PENDING |
-| Next authorized gate | `LIFEOS-LOGOS-001G — CROSS-SYSTEM HARDENING ARCHITECTURE / SCOPE FREEZE` |
+| Current decision state | OPTION C SELECTED; HARDENING ARCHITECTURE APPROVED / FROZEN |
+| Hardening architecture | APPROVED / FROZEN / AMENDED BY `LIFEOS-LOGOS-001G-R1-A1` |
+| Immediate foundation | HARD-001 / HARD-002 / HARD-003 / HARD-005 / HARD-004 / HARD-006 |
+| Deployment boundary | HARD-007 DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER |
+| Implementation | NOT AUTHORIZED |
+| Next authorized gate | `LIFEOS-LOGOS-001H — WORKLOAD IDENTITY / TRUST ARCHITECTURE` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -45,14 +49,22 @@ Reading → Logos remains `VERIFIED / CLOSED AS A BOUNDED POC` and
 productionization remains unauthorized. WORK-001 remains approved/frozen and
 temporarily deferred. No other initiative is selected automatically.
 
-Candidate reusable hardening areas for the next read-only gate include service
-identity/authentication, source and namespace authorization, external identity
-ownership/trust, recovery policy, unresolved delivery handling, observability,
-secret lifecycle, and deployment/configuration boundaries. No solution is
-selected or implemented here.
+The human decision `LIFEOS-LOGOS-001F-DEC-001` approved Option C: a minimum
+reusable cross-system hardening foundation before any productization decision.
+The architecture is approved/frozen and amended by
+`LIFEOS-LOGOS-001G-R1-A1`, which places minimum correlation before bounded
+recovery. The immediate foundation is HARD-001 Workload Trust, HARD-002 Source
+/ Namespace / Operation Authorization, HARD-003 External Subject Ownership,
+HARD-005 Minimum Cross-System Correlation, HARD-004 Bounded Delivery Recovery,
+and HARD-006 Secret / Configuration Lifecycle. HARD-007 Deployment Boundary is
+deferred as `PRODUCTIONIZATION_REQUIRED_LATER`.
 
-The only next governance gate is `LIFEOS-LOGOS-001G — CROSS-SYSTEM HARDENING
-ARCHITECTURE / SCOPE FREEZE`. It is authorized but not executed. Productization,
+No implementation, productization, deployment, migration, runtime, recovery,
+historical replay, or WORK-001 resumption is authorized. Concrete technology
+choices remain undecided.
+
+The only next governance gate is `LIFEOS-LOGOS-001H — WORKLOAD IDENTITY /
+TRUST ARCHITECTURE`. It is authorized but not executed. Productization,
 WORK-001 resumption, security or service-identity implementation, recovery
 implementation, historical replay, observability, deployment, runtime,
 progression, and new migrations remain unauthorized.
