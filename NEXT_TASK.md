@@ -1,6 +1,6 @@
 # NEXT_TASK.md
 
-## Current Authoritative State — LIFEOS-LOGOS-001 Source Implementation Closed
+## Current Authoritative State — LIFEOS-LOGOS-001 POC Verified / Closed
 
 | Field | Value |
 |---|---|
@@ -9,24 +9,41 @@
 | Repository Alembic | `0011` |
 | Operational DB documented revision | `0011` |
 | Selected initiative | `LIFEOS-LOGOS-001 — Reading → Logos POC Integration` |
-| Selection | `APPROVED` |
+| Initiative state | `VERIFIED / CLOSED` |
 | Architecture decision | `LIFEOS-LOGOS-001A-DEC-001 — APPROVED` |
 | Architecture amendment | `LIFEOS-LOGOS-001A-A1-DEC-001 — APPROVED` |
 | Architecture | APPROVED / FROZEN / AMENDED |
 | Technical Plan | APPROVED / FROZEN / AMENDED |
-| Source implementation | IMPLEMENTED / CANONICAL / A1-CONFORMANT / CLOSED |
-| Runtime POC | NOT AUTHORIZED / NOT EXECUTED |
-| Subject bootstrap | NOT AUTHORIZED / NOT EXECUTED |
-| Historical replay | NOT AUTHORIZED |
-| Real E2E | NOT YET ESTABLISHED |
+| Source implementation | IMPLEMENTED / CANONICAL / CLOSED |
+| Runtime POC | EXECUTED / VERIFIED / CLOSED |
+| Real E2E | ESTABLISHED FOR THE BOUNDED POC |
+| Original `LIFEOS-LOGOS-001D` | HISTORICAL HARD STOP AFTER MUTATION POINT / LOCAL VERIFIER DEFECT |
+| `LIFEOS-LOGOS-001D-RECOVERY-001` | PASS |
+| Historical replay | NOT EXECUTED |
+| Productionization | NOT AUTHORIZED |
 | WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001C — RUNTIME / E2E POC AUTHORIZATION REVIEW` |
+| Current decision state | READY FOR HUMAN POST-POC PRIORITY DECISION |
+| Next human gate | `LIFEOS-LOGOS-001F-DEC-001 — HUMAN POST-POC PRIORITY DECISION` |
 
-The source implementation is closed as canonical and A1-conformant. The next
-gate is a read-only operational pre-flight and human decision review; it does
-not authorize runtime execution. No source, dependency, migration, runtime,
-operational database, historical replay, subject bootstrap, or WORK-001 work
-is authorized by this state.
+The first bounded LifeOS → Logos Reading POC is verified and closed. The
+retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
+0RNXGW8J67V68`, and `Delivery = 0RNXGW8JCPZ17 / DELIVERED`; Logos recorded
+one execution, global XP `3`, Conhecimento XP `3`, stress `0`, and an
+identical resubmit returned HTTP 200 without duplication. Full evidence is in
+`docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_POC_CLOSURE.md`.
+
+`LIFEOS-LOGOS-001F-DEC-001` is a human governance decision, not an
+implementation authorization. It will consider, without preselection:
+
+- A — keep Reading → Logos closed as a POC and resume WORK-001;
+- B — productize Reading → Logos;
+- C — perform reusable structural hardening before deciding productization;
+- D — keep the POC closed and prioritize another initiative.
+
+No option is selected here. Productization, WORK-001 resumption, security or
+service-identity implementation, recovery implementation, historical replay,
+observability, deployment, runtime, progression, and new migrations remain
+unauthorized.
 
 Post-A1 HTTP contract hardening =
 `a4e9758a553ffd924303bd8e871183314642320f`.
