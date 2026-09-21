@@ -22,8 +22,10 @@
 | Historical replay | NOT EXECUTED |
 | Productionization | NOT AUTHORIZED |
 | WORK-001 | PRODUCT CONTRACT APPROVED / FROZEN / TEMPORARILY DEFERRED AT ARCHITECTURE GATE / IMPLEMENTATION NOT AUTHORIZED |
-| Current decision state | READY FOR HUMAN POST-POC PRIORITY DECISION |
-| Next human gate | `LIFEOS-LOGOS-001F-DEC-001 — HUMAN POST-POC PRIORITY DECISION` |
+| Post-POC priority decision | APPROVED — OPTION C |
+| Selected direction | REUSABLE STRUCTURAL HARDENING BEFORE PRODUCTIZATION DECISION |
+| Current decision state | OPTION C SELECTED; HARDENING SCOPE REVIEW PENDING |
+| Next authorized gate | `LIFEOS-LOGOS-001G — CROSS-SYSTEM HARDENING ARCHITECTURE / SCOPE FREEZE` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -32,18 +34,28 @@ one execution, global XP `3`, Conhecimento XP `3`, stress `0`, and an
 identical resubmit returned HTTP 200 without duplication. Full evidence is in
 `docs/10_AI_ENGINEERING/LIFEOS_LOGOS_001_POC_CLOSURE.md`.
 
-`LIFEOS-LOGOS-001F-DEC-001` is a human governance decision, not an
-implementation authorization. It will consider, without preselection:
+`LIFEOS-LOGOS-001F-DEC-001` recorded the human decision:
 
-- A — keep Reading → Logos closed as a POC and resume WORK-001;
-- B — productize Reading → Logos;
-- C — perform reusable structural hardening before deciding productization;
-- D — keep the POC closed and prioritize another initiative.
+```text
+APPROVED — OPTION C SELECTED:
+REUSABLE STRUCTURAL HARDENING BEFORE PRODUCTIZATION DECISION
+```
 
-No option is selected here. Productization, WORK-001 resumption, security or
-service-identity implementation, recovery implementation, historical replay,
-observability, deployment, runtime, progression, and new migrations remain
-unauthorized.
+Reading → Logos remains `VERIFIED / CLOSED AS A BOUNDED POC` and
+productionization remains unauthorized. WORK-001 remains approved/frozen and
+temporarily deferred. No other initiative is selected automatically.
+
+Candidate reusable hardening areas for the next read-only gate include service
+identity/authentication, source and namespace authorization, external identity
+ownership/trust, recovery policy, unresolved delivery handling, observability,
+secret lifecycle, and deployment/configuration boundaries. No solution is
+selected or implemented here.
+
+The only next governance gate is `LIFEOS-LOGOS-001G — CROSS-SYSTEM HARDENING
+ARCHITECTURE / SCOPE FREEZE`. It is authorized but not executed. Productization,
+WORK-001 resumption, security or service-identity implementation, recovery
+implementation, historical replay, observability, deployment, runtime,
+progression, and new migrations remain unauthorized.
 
 Post-A1 HTTP contract hardening =
 `a4e9758a553ffd924303bd8e871183314642320f`.
