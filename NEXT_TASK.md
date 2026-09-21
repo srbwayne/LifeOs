@@ -28,8 +28,15 @@
 | Hardening architecture | APPROVED / FROZEN / AMENDED BY `LIFEOS-LOGOS-001G-R1-A1` |
 | Immediate foundation | HARD-001 / HARD-002 / HARD-003 / HARD-005 / HARD-004 / HARD-006 |
 | Deployment boundary | HARD-007 DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER |
+| HARD-001 | APPROVED / FROZEN |
+| Workload trust model | ASYMMETRIC WORKLOAD-SIGNED ASSERTION |
+| Workload principal | WORKLOAD / lifeos |
+| External IdP | NOT REQUIRED |
+| Human AppUser for service authentication | PROHIBITED |
+| Opaque service-key fallback | NOT SELECTED |
+| Replay control | REQUIRED |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001H — WORKLOAD IDENTITY / TRUST ARCHITECTURE` |
+| Next authorized gate | `LIFEOS-LOGOS-001I — SOURCE / NAMESPACE / OPERATION AUTHORIZATION ARCHITECTURE` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -63,8 +70,14 @@ No implementation, productization, deployment, migration, runtime, recovery,
 historical replay, or WORK-001 resumption is authorized. Concrete technology
 choices remain undecided.
 
-The only next governance gate is `LIFEOS-LOGOS-001H — WORKLOAD IDENTITY /
-TRUST ARCHITECTURE`. It is authorized but not executed. Productization,
+`LIFEOS-LOGOS-001H-DEC-001` approved and froze the asymmetric workload-signed
+assertion trust model. LifeOS authenticates as the distinct `WORKLOAD / lifeos`
+principal; an external IdP is not required now, human AppUser service
+authentication is prohibited, and replay control is required. No keys or
+credentials were generated, and implementation remains unauthorized.
+
+The only next governance gate is `LIFEOS-LOGOS-001I — SOURCE / NAMESPACE /
+OPERATION AUTHORIZATION ARCHITECTURE`. It is authorized but not executed. Productization,
 WORK-001 resumption, security or service-identity implementation, recovery
 implementation, historical replay, observability, deployment, runtime,
 progression, and new migrations remain unauthorized.
