@@ -35,8 +35,15 @@
 | Human AppUser for service authentication | PROHIBITED |
 | Opaque service-key fallback | NOT SELECTED |
 | Replay control | REQUIRED |
+| HARD-002 | APPROVED / FROZEN |
+| Authorization model | LOGOS-MANAGED RELATIONAL AUTHORIZATION REGISTRY |
+| Initial workload authorization | `WORKLOAD / lifeos`: `PROGRESSION_EXECUTE` only; `source=lifeos`; `namespace=lifeos` |
+| Authorization default | DENY |
+| LifeOS read grants | NOT GRANTED |
+| LifeOS subject provisioning grant | NOT GRANTED |
+| External-subject ownership lifecycle | DEFERRED TO HARD-003 / `LIFEOS-LOGOS-001J` |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001I — SOURCE / NAMESPACE / OPERATION AUTHORIZATION ARCHITECTURE` |
+| Next authorized gate | `LIFEOS-LOGOS-001J — EXTERNAL SUBJECT OWNERSHIP LIFECYCLE` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -76,11 +83,19 @@ principal; an external IdP is not required now, human AppUser service
 authentication is prohibited, and replay control is required. No keys or
 credentials were generated, and implementation remains unauthorized.
 
-The only next governance gate is `LIFEOS-LOGOS-001I — SOURCE / NAMESPACE /
-OPERATION AUTHORIZATION ARCHITECTURE`. It is authorized but not executed. Productization,
-WORK-001 resumption, security or service-identity implementation, recovery
-implementation, historical replay, observability, deployment, runtime,
-progression, and new migrations remain unauthorized.
+`LIFEOS-LOGOS-001I-DEC-001` approved and froze HARD-002 as a
+Logos-managed relational authorization registry. The stable authorization
+identity is `principalType + principalId`, initially `WORKLOAD / lifeos`.
+The initial policy grants only `PROGRESSION_EXECUTE` with `source=lifeos` and
+`subject.namespace=lifeos`; default deny applies, and neither read nor subject
+provisioning authority is granted. Subject ownership remains deferred to
+HARD-003. The next authorized governance gate is
+`LIFEOS-LOGOS-001J — EXTERNAL SUBJECT OWNERSHIP LIFECYCLE`.
+
+Implementation, productization, WORK-001 resumption, security or
+service-identity implementation, recovery implementation, historical replay,
+observability, deployment, runtime, progression, and new migrations remain
+unauthorized.
 
 Post-A1 HTTP contract hardening =
 `a4e9758a553ffd924303bd8e871183314642320f`.
