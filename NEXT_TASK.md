@@ -60,7 +60,22 @@
 | Historical replay | NOT AUTHORIZED |
 | Scheduler | NOT AUTHORIZED |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001M — HARD-006 SECRET / CONFIGURATION LIFECYCLE CONTRACT` |
+| HARD-006 | APPROVED / FROZEN |
+| HARD-006 model | OPTION B — BOUNDED WORKLOAD-KEY PROVIDER + DEPLOYMENT-INJECTED SECRET MATERIAL/REFERENCE + STARTUP-IMMUTABLE LOADING |
+| Private-key owner | LifeOS / authorized deployment boundary |
+| `kid` | NEVER REUSED |
+| Rotation | NEW TRUST BEFORE NEW SIGNING; OLD ISSUANCE STOPS BEFORE NORMAL RETIREMENT |
+| Multi-instance retirement | ALL ACTIVE EMITTERS OFF OLD KEY BEFORE NORMAL REVOCATION |
+| Compromise | IMMEDIATE REVOCATION / FAIL CLOSED / NO FALLBACK |
+| Credential loss | NEW CREDENTIAL / SAME WORKLOAD PRINCIPAL; OLD CREDENTIAL NON-ACTIVE AFTER REPLACEMENT |
+| Private-key ordinary backup | NO |
+| Trust bootstrap | LOGOS ADMINISTRATIVE / NO TOFU / NO SELF-REGISTRATION |
+| POC bearer | RETIRE AT WORKLOAD CUTOVER / NO HIDDEN FALLBACK |
+| Secret technology | DEFERRED |
+| HARD-007 | DEFERRED |
+| Hardening foundation architecture | COMPLETE / FROZEN |
+| Implementation | NOT AUTHORIZED |
+| Next authorized gate | `LIFEOS-LOGOS-HARDENING-TP-001 — FOUNDATION TECHNICAL / IMPLEMENTATION SEQUENCING REVIEW` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -120,9 +135,20 @@ explicit bounded recovery lifecycle with total `maxAttempts` semantics,
 lease-based claims, pre-network attempt reservation, strict original
 configuration, conservative ambiguous-outcome handling, and default
 same-owner blocking with explicit successor release. The numeric budget and
-implementation details remain deferred and unauthorized. The next authorized
-governance gate is `LIFEOS-LOGOS-001M — HARD-006 SECRET / CONFIGURATION
-LIFECYCLE CONTRACT`.
+implementation details remain deferred and unauthorized. `LIFEOS-LOGOS-001M-
+DEC-001` now approves and freezes Option B: a bounded workload-key provider,
+deployment-injected secret material/reference, startup-immutable loading,
+controlled rotation, and no hidden bearer fallback. The structural hardening
+foundation is complete at the architecture/governance level only. The next
+authorized gate is `LIFEOS-LOGOS-HARDENING-TP-001 — FOUNDATION TECHNICAL /
+IMPLEMENTATION SEQUENCING REVIEW`.
+
+The canonical Logos reference for this decision is
+`7a2b75aaa4413ab0e352c6f3d75d46f39ea16b74`. Its PR #41 change provides the
+canonical V45 workload trust/replay persistence foundation
+(`IMPLEMENTED / CANONICAL`), but runtime workload authentication, trust
+seeding, real credentials, LifeOS signing, and authorization remain
+unestablished by this governance gate.
 
 Implementation, productization, WORK-001 resumption, security or
 service-identity implementation, recovery implementation, historical replay,
