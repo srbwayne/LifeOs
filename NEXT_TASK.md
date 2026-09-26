@@ -41,9 +41,11 @@
 | Authorization default | DENY |
 | LifeOS read grants | NOT GRANTED |
 | LifeOS subject provisioning grant | NOT GRANTED |
-| External-subject ownership lifecycle | DEFERRED TO HARD-003 / `LIFEOS-LOGOS-001J` |
+| HARD-003 | APPROVED / FROZEN |
+| HARD-003 ownership model | STATEFUL OWNERSHIP LIFECYCLE / IMMUTABLE-BY-DEFAULT |
+| External-subject ownership lifecycle | APPROVED / FROZEN — `LIFEOS-LOGOS-001J-DEC-001` |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001J — EXTERNAL SUBJECT OWNERSHIP LIFECYCLE` |
+| Next authorized gate | `LIFEOS-LOGOS-001L — MINIMUM CROSS-SYSTEM CORRELATION CONTRACT (HARD-005)` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -88,9 +90,13 @@ Logos-managed relational authorization registry. The stable authorization
 identity is `principalType + principalId`, initially `WORKLOAD / lifeos`.
 The initial policy grants only `PROGRESSION_EXECUTE` with `source=lifeos` and
 `subject.namespace=lifeos`; default deny applies, and neither read nor subject
-provisioning authority is granted. Subject ownership remains deferred to
-HARD-003. The next authorized governance gate is
-`LIFEOS-LOGOS-001J — EXTERNAL SUBJECT OWNERSHIP LIFECYCLE`.
+provisioning authority is granted. `LIFEOS-LOGOS-001J-DEC-001` then approved
+and froze HARD-003 as a stateful ownership lifecycle with immutable-by-default
+bindings, controlled transfer/correction, disable/revoke support, and no
+ordinary hard delete. Ownership proof, lifecycle persistence, and
+implementation remain unselected and unauthorized. The next authorized
+governance gate is `LIFEOS-LOGOS-001L — MINIMUM CROSS-SYSTEM CORRELATION
+CONTRACT` (HARD-005), which precedes HARD-004.
 
 Implementation, productization, WORK-001 resumption, security or
 service-identity implementation, recovery implementation, historical replay,
