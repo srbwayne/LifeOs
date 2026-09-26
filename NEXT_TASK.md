@@ -44,8 +44,14 @@
 | HARD-003 | APPROVED / FROZEN |
 | HARD-003 ownership model | STATEFUL OWNERSHIP LIFECYCLE / IMMUTABLE-BY-DEFAULT |
 | External-subject ownership lifecycle | APPROVED / FROZEN — `LIFEOS-LOGOS-001J-DEC-001` |
+| HARD-005 | APPROVED / FROZEN |
+| Correlation model | OPTION B — STABLE DELIVERY-ROOT PLUS PER-ATTEMPT REQUEST IDENTITY |
+| Correlation root | LifeOS Delivery ID |
+| Business execution identity | `source + idempotencyKey` |
+| Attempt identity | `attemptNumber + requestId` |
+| LifeOS read grants | NOT GRANTED |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001L — MINIMUM CROSS-SYSTEM CORRELATION CONTRACT (HARD-005)` |
+| Next authorized gate | `LIFEOS-LOGOS-001K — HARD-004 BOUNDED DELIVERY RECOVERY POLICY` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -94,9 +100,13 @@ provisioning authority is granted. `LIFEOS-LOGOS-001J-DEC-001` then approved
 and froze HARD-003 as a stateful ownership lifecycle with immutable-by-default
 bindings, controlled transfer/correction, disable/revoke support, and no
 ordinary hard delete. Ownership proof, lifecycle persistence, and
-implementation remain unselected and unauthorized. The next authorized
-governance gate is `LIFEOS-LOGOS-001L — MINIMUM CROSS-SYSTEM CORRELATION
-CONTRACT` (HARD-005), which precedes HARD-004.
+implementation remain unselected and unauthorized. `LIFEOS-LOGOS-001L-DEC-001`
+then approved and froze HARD-005 as Option B: the LifeOS Delivery ID is the
+correlation root, while each attempt has a monotonic attempt number and a new
+request ID. Business execution identity remains `source + idempotencyKey`;
+correlation metadata does not change idempotency. The next authorized
+governance gate is `LIFEOS-LOGOS-001K — HARD-004 BOUNDED DELIVERY RECOVERY
+POLICY`.
 
 Implementation, productization, WORK-001 resumption, security or
 service-identity implementation, recovery implementation, historical replay,
