@@ -50,8 +50,17 @@
 | Business execution identity | `source + idempotencyKey` |
 | Attempt identity | `attemptNumber + requestId` |
 | LifeOS read grants | NOT GRANTED |
+| HARD-004 | APPROVED / FROZEN |
+| HARD-004 policy | POLICY B — EXPLICIT BOUNDED RECOVERY LIFECYCLE |
+| Retry budget | `maxAttempts` / finite / numeric value deferred |
+| Recovery claim | LEASE WITH EXPIRY + STALE-WORKER PROTECTION |
+| Attempt reservation | BEFORE HTTP |
+| Configuration retry | STRICT ORIGINAL KEY + REVISION |
+| Same-owner ordering | BLOCK BY DEFAULT / EXPLICIT RELEASE |
+| Historical replay | NOT AUTHORIZED |
+| Scheduler | NOT AUTHORIZED |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-001K — HARD-004 BOUNDED DELIVERY RECOVERY POLICY` |
+| Next authorized gate | `LIFEOS-LOGOS-001M — HARD-006 SECRET / CONFIGURATION LIFECYCLE CONTRACT` |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -106,11 +115,19 @@ correlation root, while each attempt has a monotonic attempt number and a new
 request ID. Business execution identity remains `source + idempotencyKey`;
 correlation metadata does not change idempotency. The next authorized
 governance gate is `LIFEOS-LOGOS-001K — HARD-004 BOUNDED DELIVERY RECOVERY
-POLICY`.
+POLICY`. `LIFEOS-LOGOS-001K-DEC-001` then approved and froze Policy B: an
+explicit bounded recovery lifecycle with total `maxAttempts` semantics,
+lease-based claims, pre-network attempt reservation, strict original
+configuration, conservative ambiguous-outcome handling, and default
+same-owner blocking with explicit successor release. The numeric budget and
+implementation details remain deferred and unauthorized. The next authorized
+governance gate is `LIFEOS-LOGOS-001M — HARD-006 SECRET / CONFIGURATION
+LIFECYCLE CONTRACT`.
 
 Implementation, productization, WORK-001 resumption, security or
 service-identity implementation, recovery implementation, historical replay,
-observability, deployment, runtime, progression, and new migrations remain
+observability, deployment, runtime, progression, new migrations, and scheduler
+or redispatch mechanisms remain
 unauthorized.
 
 Post-A1 HTTP contract hardening =
