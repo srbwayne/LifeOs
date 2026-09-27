@@ -6,12 +6,14 @@
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001 = APPROVED / FROZEN / AMENDED
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1 = APPROVED / FROZEN
 Foundation Technical Plan = APPROVED / FROZEN / CANONICAL / RECONCILED
-implementation = NOT AUTHORIZED
+implementation overall = PARTIAL
+F1A-F1D = IMPLEMENTED / CANONICAL
+F1E = IMPLEMENTATION AUTHORIZED / PR #45 OPEN / IN REVIEW / NOT CANONICAL
 ```
 
 This document is a documentation-only implementation sequencing plan. It
-does not authorize implementation, activation, bootstrap, deployment, or
-operational mutation.
+does not itself authorize additional implementation or operational activation,
+bootstrap, deployment, or mutation.
 
 ## Baselines and governance
 
@@ -70,6 +72,32 @@ adds replay storage/guard and authentication completion, but does not add
 SecurityConfig integration, route activation, progression changes, HARD-002
 authorization, or trust bootstrap.
 
+## A3 — current-state correction after canonical A2 publication
+
+A2 remains the historical canonical reconciliation of F1D. Two later facts
+make parts of its current-state summary stale: F1E subsequently received direct
+Logos-side implementation authorization and is now under review in PR #45; and
+canonical Logos already had scheduling infrastructure, so F1D replay-cleanup
+scheduling eligibility can be established from the canonical tree. This
+correction does not rewrite A2's historical checkpoint.
+
+F1E implementation was directly authorized in the Logos execution workflow
+and is currently under review in PR #45. The separately planned
+`LOGOS-HARD-001-F1E-IA-001` was not executed under that identifier and is not
+retroactively claimed. This is governance sequencing reconciliation only; it
+is not an architecture conflict, security-model rejection, retroactive IA
+completion, or merge authorization. PR #45 remains non-canonical until
+independent review, explicit merge authorization, merge, and post-merge push CI
+verification.
+
+The canonical Logos reference remains
+`c095fbb2ce0643b8622bbf0bf24bc62b2177157e`; observed PR #45 HEAD
+`d8440954a06412f8bce04e2435e6c51a5f236b27` is review evidence only. Current
+implementation state is partial: F1A–F1D are implemented/canonical; F1E is
+authorized/in review/not canonical; F1F, B1, B2, C1, and C2 remain unauthorized.
+Bootstrap, cutover, productization, productionization, and recovery remain
+unauthorized. HARD-007 remains deferred and WORK-001 remains deferred.
+
 ## Canonical slice map
 
 | Slice | Owner | Status and invariant |
@@ -78,7 +106,7 @@ authorization, or trust bootstrap.
 | F1B | Logos | Trust domain/read adapter and P-256/SPKI validation, IMPLEMENTED / CANONICAL |
 | F1C | Logos | Signed assertion verifier core, IMPLEMENTED / CANONICAL |
 | F1D | Logos | Durable `issuer + jti` replay consumption and normalized authentication, IMPLEMENTED / CANONICAL |
-| F1E | Logos | Workload-only Spring Security integration, 401/503 boundary, no fallback, PLANNED / NOT AUTHORIZED |
+| F1E | Logos | Workload-only Spring Security integration, 401/503 boundary, no fallback, AUTHORIZED / PR #45 OPEN / IN REVIEW / NOT CANONICAL |
 | F1F | Logos | Administrative trust lifecycle capability, PLANNED / NOT AUTHORIZED |
 | B1 | Logos | HARD-002 relational authorization persistence/domain, PLANNED / NOT AUTHORIZED |
 | B2 | Logos | HARD-002 evaluator/enforcement, default deny, PLANNED / NOT AUTHORIZED |
@@ -121,9 +149,16 @@ authenticationStatus = VERIFIED
 
 PR #44 added no Flyway migration; F1D migration remains **NONE**. Its replay
 cleanup support deletes rows only when `expires_at < now - acceptedClockSkew`.
-The cleanup component is present in code, but no `@EnableScheduling` evidence
-was established from PR #44 alone. This is distinct from the unauthorized
-HARD-004 recovery scheduler.
+Canonical Logos already had `@EnableScheduling` in `LogosSrvApplication`;
+PR #44 did not need to introduce it. `WorkloadAssertionReplayCleanupScheduler`
+is a Spring-wired `@Component`, limited to `@Profile("!test")`, and its
+`@ConditionalOnProperty` defaults to enabled when
+`logos.security.workload.replay-cleanup.enabled` is absent. Thus it is
+eligible/active at application-context level in a normal non-test context
+unless explicitly disabled. This does not prove that any deployed instance
+actually executed a cleanup cycle. Replay cleanup is HARD-001 authentication
+state housekeeping and is distinct from the unauthorized HARD-004 delivery
+recovery scheduler.
 
 ## F1D — replay and authentication completion
 
@@ -223,11 +258,12 @@ redispatch, replay, backfill, or scheduler creation.
 
 ## Dependency DAG and parallelization
 
-The canonical completed Logos prefix is `F1A → F1B → F1C → F1D`. The
-remaining serialized Logos critical path is:
+The canonical completed Logos prefix is `F1A → F1B → F1C → F1D`. F1E remains
+in review and is not yet canonical; the current serialized Logos critical path
+is:
 
 ```text
-F1E → F1F → B1 → B2 → C1 → C2
+F1E review/closure → F1F → B1 → B2 → C1 → C2
 ```
 
 D1 and E1 are safe parallel candidates after separate authorization when their
@@ -267,23 +303,30 @@ Implementation approval, merge, bootstrap, cutover, recovery activation, and
 HARD-007 deployment approval are separate decisions. Historical deliveries are
 evidence only and are not replayed or rewritten.
 
-## First remaining implementation candidate and next gate
+## Current next Logos action
 
-The first remaining primary candidate is:
+F1E implementation already exists under explicit Logos-side authorization and
+is in review, so the next action is not an implementation-authorization
+pre-flight. It is:
 
 ```text
 LOGOS-HARD-001-F1E
-WORKLOAD SPRING SECURITY INTEGRATION + 401/503 + PROFILE SEPARATION
+INDEPENDENT FINAL REVIEW / MERGE DECISION — PR #45
 ```
 
-F1D-IA-001 was not executed and is not retroactively claimed. This plan does
-not authorize F1E. The next gate is
-`LOGOS-HARD-001-F1E-IA-001`, a read-only implementation authorization /
-pre-flight review for the then-current Logos baseline, writer overlap, exact
-source/test allowlist, workload/AppUser profile boundary, and 401/503 evidence.
+The separately planned `LOGOS-HARD-001-F1E-IA-001` was not executed under that
+identifier and is not retroactively claimed. No merge is authorized by this
+LifeOS documentation. A future merge decision still requires exact-HEAD,
+scope, profile-isolation, dormancy, 401/503, and CI review, explicit merge
+authorization, and post-merge push-CI verification.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
 WORK-001 = DEFERRED
-implementation = NOT AUTHORIZED
+implementation overall = PARTIAL
+F1A-F1D = IMPLEMENTED / CANONICAL
+F1E = AUTHORIZED / IN REVIEW / NOT CANONICAL
+F1F/B1/B2/C1/C2 = NOT AUTHORIZED
+bootstrap/cutover/productionization = NOT AUTHORIZED
+this plan itself = DOES NOT AUTHORIZE ADDITIONAL IMPLEMENTATION OR OPERATIONAL ACTIVATION
 ```
