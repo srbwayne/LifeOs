@@ -5,7 +5,7 @@
 ```text
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001 = APPROVED / FROZEN / AMENDED
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1 = APPROVED / FROZEN
-Foundation Technical Plan = APPROVED / FROZEN
+Foundation Technical Plan = APPROVED / FROZEN / CANONICAL / RECONCILED
 implementation = NOT AUTHORIZED
 ```
 
@@ -17,7 +17,7 @@ operational mutation.
 
 The LifeOS planning baseline is `a3ba1b0d800de85b97499234b74b511ad8f0cdfe`.
 The canonical remote Logos baseline is
-`a1b8f936857d4b31fa39d592a63ed777524865f9`, with F1A, F1B, and F1C
+`c095fbb2ce0643b8622bbf0bf24bc62b2177157e`, with F1A through F1D
 canonical. The structural architecture foundation is frozen:
 
 ```text
@@ -46,6 +46,30 @@ F1F = trust administration
 
 No dependency, security invariant, or activation boundary is weakened.
 
+## A2 — canonical F1D implementation-state reconciliation
+
+After this plan was merged, Logos PR #44 advanced F1D canonically before the
+planned `LOGOS-HARD-001-F1D-IA-001` pre-flight gate ran. This is recorded as a
+**GOVERNANCE SEQUENCING DEVIATION**. It is not an architecture conflict,
+security-model rejection, or plan invalidation. The deviation is reconciled as
+canonical external reality; it does not claim that F1D-IA-001 occurred and
+does not grant retroactive LifeOS authorization. No revert or reimplementation
+is requested.
+
+```text
+LIFEOS-LOGOS-HARDENING-TP-001 = COMPLETE
+DEC-001 = APPROVED / FROZEN / CANONICAL / AMENDED
+A1 = APPROVED / FROZEN / CANONICAL
+A2 = IMPLEMENTATION-STATE RECONCILIATION / CANONICAL F1D ADVANCEMENT
+implementation overall = PARTIAL
+```
+
+PR #44 (`LOGOS-HARD-001-F1D — Add atomic replay protection and authenticated
+principal`) is canonical at `c095fbb2ce0643b8622bbf0bf24bc62b2177157e`. It
+adds replay storage/guard and authentication completion, but does not add
+SecurityConfig integration, route activation, progression changes, HARD-002
+authorization, or trust bootstrap.
+
 ## Canonical slice map
 
 | Slice | Owner | Status and invariant |
@@ -53,7 +77,7 @@ No dependency, security invariant, or activation boundary is weakened.
 | F1A | Logos | V45 trust/replay persistence, IMPLEMENTED / CANONICAL |
 | F1B | Logos | Trust domain/read adapter and P-256/SPKI validation, IMPLEMENTED / CANONICAL |
 | F1C | Logos | Signed assertion verifier core, IMPLEMENTED / CANONICAL |
-| F1D | Logos | Durable `issuer + jti` replay consumption and normalized authentication, PLANNED / NOT AUTHORIZED |
+| F1D | Logos | Durable `issuer + jti` replay consumption and normalized authentication, IMPLEMENTED / CANONICAL |
 | F1E | Logos | Workload-only Spring Security integration, 401/503 boundary, no fallback, PLANNED / NOT AUTHORIZED |
 | F1F | Logos | Administrative trust lifecycle capability, PLANNED / NOT AUTHORIZED |
 | B1 | Logos | HARD-002 relational authorization persistence/domain, PLANNED / NOT AUTHORIZED |
@@ -68,9 +92,38 @@ No dependency, security invariant, or activation boundary is weakened.
 | G1 | LifeOS | HARD-004 bounded recovery implementation, PLANNED / NOT AUTHORIZED |
 | G2 | Cross-system | Recovery activation and legacy disposition, OPERATIONAL / NOT AUTHORIZED |
 
-F1A/F1B/F1C must not be re-planned as future work. F1C produces a
-`VerifiedWorkloadAssertion`; it does not itself consume replay or establish an
+F1A/F1B/F1C/F1D must not be re-planned as future work. F1C produces a
+`VerifiedWorkloadAssertion`; F1D consumes replay and establishes the
 authenticated workload principal.
+
+## Canonical F1D evidence
+
+F1D consumes replay identity `issuer + jti` using the V45 replay table with
+database-backed `INSERT ... ON CONFLICT (issuer, jti) DO NOTHING` semantics:
+an inserted row is first use and a conflict is replay. The replay guard uses
+an independent `REQUIRES_NEW` transaction, so replay consumption survives an
+outer rollback and is never restored after later authorization, business, or
+server failure. Concurrent identical assertions permit at most one
+authentication completion. Invalid F1C assertions do not invoke replay
+consumption. Replay-store failure fails closed without an authenticated
+principal; HTTP 503 translation remains F1E scope.
+
+F1D transforms `VerifiedWorkloadAssertion` into an `AuthenticatedPrincipal`
+only after successful consumption:
+
+```text
+principalType = WORKLOAD
+principalId = lifeos
+authenticationMethod = ASYMMETRIC_SIGNED_ASSERTION
+credentialIdentity = verified kid
+authenticationStatus = VERIFIED
+```
+
+PR #44 added no Flyway migration; F1D migration remains **NONE**. Its replay
+cleanup support deletes rows only when `expires_at < now - acceptedClockSkew`.
+The cleanup component is present in code, but no `@EnableScheduling` evidence
+was established from PR #44 alone. This is distinct from the unauthorized
+HARD-004 recovery scheduler.
 
 ## F1D — replay and authentication completion
 
@@ -170,10 +223,11 @@ redispatch, replay, backfill, or scheduler creation.
 
 ## Dependency DAG and parallelization
 
-The serialized Logos critical path is:
+The canonical completed Logos prefix is `F1A → F1B → F1C → F1D`. The
+remaining serialized Logos critical path is:
 
 ```text
-F1A → F1B → F1C → F1D → F1E → F1F → B1 → B2 → C1 → C2
+F1E → F1F → B1 → B2 → C1 → C2
 ```
 
 D1 and E1 are safe parallel candidates after separate authorization when their
@@ -213,20 +267,20 @@ Implementation approval, merge, bootstrap, cutover, recovery activation, and
 HARD-007 deployment approval are separate decisions. Historical deliveries are
 evidence only and are not replayed or rewritten.
 
-## First implementation candidate and next gate
+## First remaining implementation candidate and next gate
 
-The first primary candidate after this plan is canonical is:
+The first remaining primary candidate is:
 
 ```text
-LOGOS-HARD-001-F1D
-DURABLE ASSERTION REPLAY CONSUMPTION + AUTHENTICATION COMPLETION
+LOGOS-HARD-001-F1E
+WORKLOAD SPRING SECURITY INTEGRATION + 401/503 + PROFILE SEPARATION
 ```
 
-This plan does not authorize it. The next gate is
-`LOGOS-HARD-001-F1D-IA-001`, a read-only implementation authorization /
-pre-flight review to verify the then-current Logos baseline, writer overlap,
-V45 schema, F1C boundary, exact allowlist, independent transaction semantics,
-normalized principal boundary, test evidence, and migration necessity.
+F1D-IA-001 was not executed and is not retroactively claimed. This plan does
+not authorize F1E. The next gate is
+`LOGOS-HARD-001-F1E-IA-001`, a read-only implementation authorization /
+pre-flight review for the then-current Logos baseline, writer overlap, exact
+source/test allowlist, workload/AppUser profile boundary, and 401/503 evidence.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
