@@ -74,8 +74,22 @@
 | Secret technology | DEFERRED |
 | HARD-007 | DEFERRED |
 | Hardening foundation architecture | COMPLETE / FROZEN |
+| Foundation Technical Plan | APPROVED / FROZEN / AMENDED |
+| Technical Plan decision | `LIFEOS-LOGOS-HARDENING-TP-001-DEC-001` — APPROVED |
+| Technical Plan amendment | `LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1` — APPROVED |
+| Logos canonical reference | `a1b8f936857d4b31fa39d592a63ed777524865f9` |
+| Logos F1A | IMPLEMENTED / CANONICAL |
+| Logos F1B | IMPLEMENTED / CANONICAL |
+| Logos F1C | IMPLEMENTED / CANONICAL — SIGNED WORKLOAD ASSERTION VERIFIER CORE |
+| Remaining primary Logos path | F1D → F1E → F1F → B1 → B2 → C1 → C2 |
+| Parallel LifeOS candidates | D1 / E1 |
+| Operational bootstrap | T1 TRUST / T2 AUTHORIZATION / T3 OWNERSHIP READINESS |
+| Authentication cutover | SEPARATE / NOT AUTHORIZED |
+| Recovery implementation | SEPARATE / NOT AUTHORIZED |
+| Recovery activation | SEPARATE / NOT AUTHORIZED |
+| Migration numbering | NEXT AVAILABLE AT IMPLEMENTATION TIME |
 | Implementation | NOT AUTHORIZED |
-| Next authorized gate | `LIFEOS-LOGOS-HARDENING-TP-001 — FOUNDATION TECHNICAL / IMPLEMENTATION SEQUENCING REVIEW` |
+| Next authorized gate | `LOGOS-HARD-001-F1D-IA-001` — DURABLE ASSERTION REPLAY CONSUMPTION + AUTHENTICATION COMPLETION IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
@@ -159,6 +173,16 @@ unauthorized.
 Post-A1 HTTP contract hardening =
 `a4e9758a553ffd924303bd8e871183314642320f`.
 Supported successful Logos execution response = HTTP 200.
+
+`LIFEOS-LOGOS-HARDENING-TP-001-DEC-001` is approved/frozen and amended by
+`LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1` to reflect canonical Logos PR #43:
+F1A, F1B, and F1C are implemented/canonical, while F1D onward is planned and
+not authorized. The primary Logos path is F1D → F1E → F1F → B1 → B2 → C1 → C2;
+D1 and E1 are parallel LifeOS candidates subject to separate authorization.
+T1/T2/T3 bootstrap, authentication cutover, recovery implementation, and
+recovery activation remain separate and unauthorized. Migration numbers are
+not reserved. The next authorized gate is
+`LOGOS-HARD-001-F1D-IA-001`.
 
 ---
 
