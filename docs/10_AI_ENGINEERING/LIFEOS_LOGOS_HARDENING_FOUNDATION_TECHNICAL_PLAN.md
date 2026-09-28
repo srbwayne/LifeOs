@@ -79,6 +79,10 @@ authorization, or trust bootstrap.
 
 ## A3 — current-state correction after canonical A2 publication
 
+This section is the historical A3 checkpoint. Its references to PR #45 being
+open, in review, or non-canonical describe that checkpoint only and are
+superseded by A4 below.
+
 A2 remains the historical canonical reconciliation of F1D. Two later facts
 make parts of its current-state summary stale: F1E subsequently received direct
 Logos-side implementation authorization and is now under review in PR #45; and
@@ -315,12 +319,13 @@ redispatch, replay, backfill, or scheduler creation.
 
 ## Dependency DAG and parallelization
 
-The canonical completed Logos prefix is `F1A → F1B → F1C → F1D`. F1E remains
-in review and is not yet canonical; the current serialized Logos critical path
+The canonical completed foundation is `F1A → F1B → F1C → F1D` plus the
+canonical dormant F1E adapter foundation. F1E overall remains
+`PARTIAL / NOT CLOSED`. The current serialized remaining Logos critical path
 is:
 
 ```text
-F1E review/closure → F1F → B1 → B2 → C1 → C2
+F1E-R2 → F1F → B1 → B2 → C1 → C2
 ```
 
 D1 and E1 are safe parallel candidates after separate authorization when their
