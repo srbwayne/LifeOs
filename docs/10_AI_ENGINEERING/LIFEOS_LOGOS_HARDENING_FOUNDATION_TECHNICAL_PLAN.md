@@ -3,12 +3,15 @@
 ## Status
 
 ```text
-LIFEOS-LOGOS-HARDENING-TP-001-DEC-001 = APPROVED / FROZEN / AMENDED
+LIFEOS-LOGOS-HARDENING-TP-001-DEC-001 = APPROVED / FROZEN / CANONICAL / AMENDED
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1 = APPROVED / FROZEN
+LIFEOS-LOGOS-HARDENING-TP-001-A4 = F1E CANONICAL DORMANT FOUNDATION + RESIDUAL F1E-R2 DECISION
 Foundation Technical Plan = APPROVED / FROZEN / CANONICAL / RECONCILED
 implementation overall = PARTIAL
 F1A-F1D = IMPLEMENTED / CANONICAL
-F1E = IMPLEMENTATION AUTHORIZED / PR #45 OPEN / IN REVIEW / NOT CANONICAL
+F1E PR #45 foundation = IMPLEMENTED / CANONICAL / DORMANT
+F1E overall = PARTIAL / NOT CLOSED
+F1E-R2 = PLANNED / NOT AUTHORIZED
 ```
 
 This document is a documentation-only implementation sequencing plan. It
@@ -17,10 +20,12 @@ bootstrap, deployment, or mutation.
 
 ## Baselines and governance
 
-The LifeOS planning baseline is `a3ba1b0d800de85b97499234b74b511ad8f0cdfe`.
+The LifeOS canonical reference for this reconciliation is
+`eef3659bcfea0186a2a2b30a27d18f8a76db071d`.
 The canonical remote Logos baseline is
-`c095fbb2ce0643b8622bbf0bf24bc62b2177157e`, with F1A through F1D
-canonical. The structural architecture foundation is frozen:
+`760e9fda55dc2543c42594ebe2ad2edf6ce0b450`, with F1A through F1D and the
+canonical dormant F1E foundation present. The structural architecture
+foundation is frozen:
 
 ```text
 HARD-001 / HARD-002 / HARD-003 / HARD-005 / HARD-004 / HARD-006
@@ -74,6 +79,10 @@ authorization, or trust bootstrap.
 
 ## A3 — current-state correction after canonical A2 publication
 
+This section is the historical A3 checkpoint. Its references to PR #45 being
+open, in review, or non-canonical describe that checkpoint only and are
+superseded by A4 below.
+
 A2 remains the historical canonical reconciliation of F1D. Two later facts
 make parts of its current-state summary stale: F1E subsequently received direct
 Logos-side implementation authorization and is now under review in PR #45; and
@@ -98,6 +107,57 @@ authorized/in review/not canonical; F1F, B1, B2, C1, and C2 remain unauthorized.
 Bootstrap, cutover, productization, productionization, and recovery remain
 unauthorized. HARD-007 remains deferred and WORK-001 remains deferred.
 
+## A4 — current F1E canonical dormant foundation and residual decision
+
+A3 remains the historical F1E review checkpoint and is not rewritten. After
+A3, Logos PR #45 merged canonically at
+`760e9fda55dc2543c42594ebe2ad2edf6ce0b450` with successful post-merge CI.
+This A4 reconciliation records the current state:
+
+```text
+LIFEOS-LOGOS-HARDENING-TP-001-A4 =
+F1E CANONICAL DORMANT FOUNDATION + RESIDUAL F1E-R2 DECISION
+
+LOGOS-HARD-001-F1E-R1-DEC-001 = APPROVED / FROZEN
+PR #45 = IMPLEMENTED / CANONICAL / DORMANT SPRING SECURITY WORKLOAD ADAPTER FOUNDATION
+F1E = PARTIAL IMPLEMENTATION / CANONICAL DORMANT FOUNDATION / NOT CLOSED
+F1E-R2 = PLANNED / NOT AUTHORIZED
+```
+
+The human F1E-R1 decision occurred after PR #45 implementation and merge. It
+is authoritative for the remaining target, not retroactive authorization for
+PR #45. PR #45 provides the request/principal tokens, F1D provider adapter,
+bounded Bearer parser, generic 401/503 responder, and dormancy evidence, but
+does not wire production `SecurityConfig`, the exact workload POST matcher,
+default-off activation, exclusive chain ownership, the pre-B2 `denyAll`
+barrier, or production integration behavior.
+
+The residual slice is:
+
+```text
+LOGOS-HARD-001-F1E-R2
+WIRE AND COMPLETE DORMANT WORKLOAD SPRING SECURITY PROFILE
+WITHOUT ACTIVATING REAL WORKLOAD TRAFFIC
+```
+
+Its frozen boundary is a conditional higher-priority workload chain for exact
+`POST /api/internal/v1/progression/executions`, default-disabled through the
+conceptual `logos.security.workload.http.enabled` setting. When enabled, the
+matched request is exclusively owned by the workload chain; authentication
+only produces identity, and before B2 the chain uses `denyAll`, returns 403,
+and never invokes the controller. Authentication failures return generic 401;
+replay/trust infrastructure failures return generic 503. GET execution,
+history, and subject provisioning remain outside the workload profile.
+
+R2 may modify exactly `SecurityConfig.java` and
+`JwtAuthenticationFilter.java`, and may add exactly the approved workload
+integration test plus modify the existing progression security test. No
+migration or dependency change is expected. Human filter servlet
+auto-registration must be explicitly disabled, and its hardening is limited
+to expected JWT credential failures; it must not gain workload responsibilities.
+Trust/authorization/ownership bootstrap, cutover, bearer retirement, F1F,
+recovery, HARD-007, and WORK-001 remain outside this decision.
+
 ## Canonical slice map
 
 | Slice | Owner | Status and invariant |
@@ -106,7 +166,8 @@ unauthorized. HARD-007 remains deferred and WORK-001 remains deferred.
 | F1B | Logos | Trust domain/read adapter and P-256/SPKI validation, IMPLEMENTED / CANONICAL |
 | F1C | Logos | Signed assertion verifier core, IMPLEMENTED / CANONICAL |
 | F1D | Logos | Durable `issuer + jti` replay consumption and normalized authentication, IMPLEMENTED / CANONICAL |
-| F1E | Logos | Workload-only Spring Security integration, 401/503 boundary, no fallback, AUTHORIZED / PR #45 OPEN / IN REVIEW / NOT CANONICAL |
+| F1E | Logos | Dormant Spring Security workload adapter foundation, IMPLEMENTED / CANONICAL / PARTIAL / NOT CLOSED |
+| F1E-R2 | Logos | Production chain wiring and completion without activation, PLANNED / NOT AUTHORIZED |
 | F1F | Logos | Administrative trust lifecycle capability, PLANNED / NOT AUTHORIZED |
 | B1 | Logos | HARD-002 relational authorization persistence/domain, PLANNED / NOT AUTHORIZED |
 | B2 | Logos | HARD-002 evaluator/enforcement, default deny, PLANNED / NOT AUTHORIZED |
@@ -258,12 +319,13 @@ redispatch, replay, backfill, or scheduler creation.
 
 ## Dependency DAG and parallelization
 
-The canonical completed Logos prefix is `F1A → F1B → F1C → F1D`. F1E remains
-in review and is not yet canonical; the current serialized Logos critical path
+The canonical completed foundation is `F1A → F1B → F1C → F1D` plus the
+canonical dormant F1E adapter foundation. F1E overall remains
+`PARTIAL / NOT CLOSED`. The current serialized remaining Logos critical path
 is:
 
 ```text
-F1E review/closure → F1F → B1 → B2 → C1 → C2
+F1E-R2 → F1F → B1 → B2 → C1 → C2
 ```
 
 D1 and E1 are safe parallel candidates after separate authorization when their
@@ -305,27 +367,29 @@ evidence only and are not replayed or rewritten.
 
 ## Current next Logos action
 
-F1E implementation already exists under explicit Logos-side authorization and
-is in review, so the next action is not an implementation-authorization
-pre-flight. It is:
+PR #45 is now canonical as a dormant F1E adapter foundation. The remaining
+work is not F1F and is not a new authentication-core implementation:
 
 ```text
-LOGOS-HARD-001-F1E
-INDEPENDENT FINAL REVIEW / MERGE DECISION — PR #45
+LOGOS-HARD-001-F1E-R2
+WIRE AND COMPLETE DORMANT WORKLOAD SPRING SECURITY PROFILE
+IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW
 ```
 
-The separately planned `LOGOS-HARD-001-F1E-IA-001` was not executed under that
-identifier and is not retroactively claimed. No merge is authorized by this
-LifeOS documentation. A future merge decision still requires exact-HEAD,
-scope, profile-isolation, dormancy, 401/503, and CI review, explicit merge
-authorization, and post-merge push-CI verification.
+The R2 boundary is exactly two production modifications
+(`SecurityConfig.java` and `JwtAuthenticationFilter.java`) and two test paths:
+one new workload Spring Security integration test and the existing progression
+security test. R2 remains migration-free, dependency-free, disabled by
+default, and unauthorized until its separate IA gate.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
 WORK-001 = DEFERRED
 implementation overall = PARTIAL
 F1A-F1D = IMPLEMENTED / CANONICAL
-F1E = AUTHORIZED / IN REVIEW / NOT CANONICAL
+F1E PR #45 foundation = IMPLEMENTED / CANONICAL / DORMANT
+F1E overall = PARTIAL / NOT CLOSED
+F1E-R2 = PLANNED / NOT AUTHORIZED
 F1F/B1/B2/C1/C2 = NOT AUTHORIZED
 bootstrap/cutover/productionization = NOT AUTHORIZED
 this plan itself = DOES NOT AUTHORIZE ADDITIONAL IMPLEMENTATION OR OPERATIONAL ACTIVATION
