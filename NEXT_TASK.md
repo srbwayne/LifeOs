@@ -79,22 +79,30 @@
 | Technical Plan amendment | `LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1` — APPROVED |
 | Technical Plan reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A2` — CANONICAL F1D ADVANCEMENT |
 | Current-state correction | `LIFEOS-LOGOS-HARDENING-TP-001-A3` — F1E REVIEW + REPLAY CLEANUP SCHEDULING |
-| Logos canonical reference | `c095fbb2ce0643b8622bbf0bf24bc62b2177157e` |
+| Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A4` — F1E CANONICAL DORMANT FOUNDATION + RESIDUAL R2 DECISION |
+| Logos canonical reference | `760e9fda55dc2543c42594ebe2ad2edf6ce0b450` |
 | Logos F1A | IMPLEMENTED / CANONICAL |
 | Logos F1B | IMPLEMENTED / CANONICAL |
 | Logos F1C | IMPLEMENTED / CANONICAL — SIGNED WORKLOAD ASSERTION VERIFIER CORE |
 | Logos F1D | IMPLEMENTED / CANONICAL — REPLAY + AUTHENTICATION COMPLETION |
 | F1D governance sequencing | IMPLEMENTED BEFORE PLANNED IA GATE; RECONCILED AS CANONICAL EXTERNAL FACT; NO RETROACTIVE AUTHORIZATION CLAIM |
-| Logos F1E | AUTHORIZED / IN REVIEW / NOT CANONICAL — PR #45 |
-| Remaining primary Logos path | F1E REVIEW/CLOSURE → F1F → B1 → B2 → C1 → C2 |
+| Logos F1E PR #45 foundation | IMPLEMENTED / CANONICAL / DORMANT |
+| F1E overall | PARTIAL / NOT CLOSED |
+| F1E decision | `LOGOS-HARD-001-F1E-R1-DEC-001` — APPROVED / FROZEN |
+| F1E-R2 | PLANNED / NOT AUTHORIZED |
+| Remaining primary Logos path | F1E-R2 → F1F → B1 → B2 → C1 → C2 |
 | Parallel LifeOS candidates | D1 / E1 |
 | Operational bootstrap | T1 TRUST / T2 AUTHORIZATION / T3 OWNERSHIP READINESS |
 | Authentication cutover | SEPARATE / NOT AUTHORIZED |
 | Recovery implementation | SEPARATE / NOT AUTHORIZED |
 | Recovery activation | SEPARATE / NOT AUTHORIZED |
 | Migration numbering | NEXT AVAILABLE AT IMPLEMENTATION TIME |
-| Implementation | PARTIAL — F1A–F1D CANONICAL; F1E AUTHORIZED / IN REVIEW / NOT CANONICAL |
-| Next Logos action | `LOGOS-HARD-001-F1E` — INDEPENDENT FINAL REVIEW / MERGE DECISION — PR #45; no merge authorized |
+| Implementation | PARTIAL — F1A–F1D CANONICAL; F1E DORMANT FOUNDATION CANONICAL; R2 NOT AUTHORIZED |
+| R2 source allowlist | 2 exact paths |
+| R2 test allowlist | 2 exact paths |
+| F1E-R2 migration | NONE |
+| F1E-R2 dependencies | NONE |
+| Next authorized gate | `LOGOS-HARD-001-F1E-R2-IA-001` — WIRE AND COMPLETE DORMANT WORKLOAD SPRING SECURITY PROFILE IMPLEMENTATION AUTHORIZATION / PRE-FLIGHT REVIEW |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
