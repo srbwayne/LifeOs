@@ -6,12 +6,14 @@
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001 = APPROVED / FROZEN / CANONICAL / AMENDED
 LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1 = APPROVED / FROZEN
 LIFEOS-LOGOS-HARDENING-TP-001-A4 = F1E CANONICAL DORMANT FOUNDATION + RESIDUAL F1E-R2 DECISION
+LIFEOS-LOGOS-HARDENING-TP-001-A5 = CANONICAL F1F DORMANT TRUST ADMINISTRATION ADVANCEMENT
 Foundation Technical Plan = APPROVED / FROZEN / CANONICAL / RECONCILED
 implementation overall = PARTIAL
 F1A-F1D = IMPLEMENTED / CANONICAL
 F1E PR #45 foundation = IMPLEMENTED / CANONICAL / DORMANT
 F1E overall = PARTIAL / NOT CLOSED
 F1E-R2 = PLANNED / NOT AUTHORIZED
+F1F = IMPLEMENTED / CANONICAL / DORMANT TRUST ADMINISTRATION CAPABILITY
 ```
 
 This document is a documentation-only implementation sequencing plan. It
@@ -21,10 +23,11 @@ bootstrap, deployment, or mutation.
 ## Baselines and governance
 
 The LifeOS canonical reference for this reconciliation is
-`eef3659bcfea0186a2a2b30a27d18f8a76db071d`.
+`760009bc59ea196a1d45e71fd773840cdc6dbd7e`.
 The canonical remote Logos baseline is
-`760e9fda55dc2543c42594ebe2ad2edf6ce0b450`, with F1A through F1D and the
-canonical dormant F1E foundation present. The structural architecture
+`0d03fe34c522df2e0ca12a2681d7e81e50c62654`, with F1A through F1D, the
+canonical dormant F1E foundation, and canonical dormant F1F trust
+administration present. The structural architecture
 foundation is frozen:
 
 ```text
@@ -158,6 +161,39 @@ to expected JWT credential failures; it must not gain workload responsibilities.
 Trust/authorization/ownership bootstrap, cutover, bearer retirement, F1F,
 recovery, HARD-007, and WORK-001 remain outside this decision.
 
+## A5 — canonical F1F dormant trust administration advancement
+
+A4 is preserved as the historical/current checkpoint before the later Logos
+advancement. Logos PR #46 subsequently advanced from
+`760e9fda55dc2543c42594ebe2ad2edf6ce0b450` to
+`0d03fe34c522df2e0ca12a2681d7e81e50c62654`. PR #46 is canonical and provides
+dormant trust-administration capability. F1F advanced before F1E-R2 closure;
+this is a **GOVERNANCE SEQUENCING DEVIATION**, not an architecture conflict,
+security-model rejection, A4 invalidation, retroactive authorization, or F1E-R2
+completion. No prior F1F implementation-authorization gate is claimed, and no
+revert or reimplementation is requested.
+
+```text
+LIFEOS-LOGOS-HARDENING-TP-001-A5 =
+CANONICAL F1F DORMANT TRUST ADMINISTRATION ADVANCEMENT
+
+LOGOS-HARD-001-F1F = IMPLEMENTED / CANONICAL / DORMANT TRUST ADMINISTRATION CAPABILITY
+F1E = PARTIAL / NOT CLOSED
+F1E-R2 = PLANNED / NOT AUTHORIZED
+F1F sequencing = ADVANCED BEFORE F1E-R2 CLOSURE / GOVERNANCE SEQUENCING DEVIATION
+retroactive F1F authorization = NONE
+```
+
+Canonical F1F provides internal application/storage capability for workload
+principal and credential registration, principal lifecycle transitions,
+credential lifecycle transitions, and transactional trust audit events. Its
+canonical tests cover idempotent identical registration, issuer/principal and
+kid/fingerprint conflict rejection, invalid lifecycle transitions, and
+rejection of credential activation for revoked principals. It is not a public
+HTTP administration API, deployment tooling, secret manager, private-key
+handler, authorization registry, ownership implementation, or workload HTTP
+cutover. Real trust bootstrap and real LifeOS registration remain unexecuted.
+
 ## Canonical slice map
 
 | Slice | Owner | Status and invariant |
@@ -168,7 +204,7 @@ recovery, HARD-007, and WORK-001 remain outside this decision.
 | F1D | Logos | Durable `issuer + jti` replay consumption and normalized authentication, IMPLEMENTED / CANONICAL |
 | F1E | Logos | Dormant Spring Security workload adapter foundation, IMPLEMENTED / CANONICAL / PARTIAL / NOT CLOSED |
 | F1E-R2 | Logos | Production chain wiring and completion without activation, PLANNED / NOT AUTHORIZED |
-| F1F | Logos | Administrative trust lifecycle capability, PLANNED / NOT AUTHORIZED |
+| F1F | Logos | Administrative trust lifecycle capability, IMPLEMENTED / CANONICAL / DORMANT |
 | B1 | Logos | HARD-002 relational authorization persistence/domain, PLANNED / NOT AUTHORIZED |
 | B2 | Logos | HARD-002 evaluator/enforcement, default deny, PLANNED / NOT AUTHORIZED |
 | C1 | Logos | HARD-003 lifecycle/history persistence and legacy classification, PLANNED / NOT AUTHORIZED |
@@ -320,12 +356,12 @@ redispatch, replay, backfill, or scheduler creation.
 ## Dependency DAG and parallelization
 
 The canonical completed foundation is `F1A → F1B → F1C → F1D` plus the
-canonical dormant F1E adapter foundation. F1E overall remains
-`PARTIAL / NOT CLOSED`. The current serialized remaining Logos critical path
-is:
+canonical dormant F1E adapter foundation and canonical dormant F1F trust
+administration capability. F1E overall remains `PARTIAL / NOT CLOSED`. The
+current serialized remaining Logos critical path is:
 
 ```text
-F1E-R2 → F1F → B1 → B2 → C1 → C2
+F1E-R2 → B1 → B2 → C1 → C2
 ```
 
 D1 and E1 are safe parallel candidates after separate authorization when their
@@ -390,7 +426,8 @@ F1A-F1D = IMPLEMENTED / CANONICAL
 F1E PR #45 foundation = IMPLEMENTED / CANONICAL / DORMANT
 F1E overall = PARTIAL / NOT CLOSED
 F1E-R2 = PLANNED / NOT AUTHORIZED
-F1F/B1/B2/C1/C2 = NOT AUTHORIZED
+F1F = IMPLEMENTED / CANONICAL / DORMANT
+B1/B2/C1/C2 = NOT AUTHORIZED
 bootstrap/cutover/productionization = NOT AUTHORIZED
 this plan itself = DOES NOT AUTHORIZE ADDITIONAL IMPLEMENTATION OR OPERATIONAL ACTIVATION
 ```
