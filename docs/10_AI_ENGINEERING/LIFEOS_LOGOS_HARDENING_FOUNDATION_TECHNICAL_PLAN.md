@@ -225,9 +225,10 @@ activation remains NOT ACTIVE.
 The F1F sequencing fact is retained: F1F advanced canonically before F1E-R2
 closure. This remains a GOVERNANCE SEQUENCING DEVIATION, not an architecture or
 security-model conflict, invalid F1F implementation, rollback requirement, or
-retroactive authorization. With both slices now canonical, their dependency
-ordering is satisfied in implementation state. F1E overall is IMPLEMENTED /
-CANONICAL / CLOSED / DEFAULT-OFF; F1F remains IMPLEMENTED / CANONICAL /
+retroactive authorization. R2 nevertheless advanced before its planned human
+IA decision; no retroactive approval is claimed. F1E overall remains PARTIAL /
+NOT CLOSED because the residual `UsernameNotFoundException` gap is open;
+F1E-R2 is IMPLEMENTED / CANONICAL / DEFAULT-OFF / RESIDUAL GAP OPEN. F1F remains IMPLEMENTED / CANONICAL /
 DORMANT. HARD-001's implementation foundation is complete/canonical but
 operationally NOT ACTIVATED. No real LifeOS credential, private key, trust
 bootstrap, workload assertion emission, POC bearer retirement, or cutover is

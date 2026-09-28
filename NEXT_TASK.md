@@ -81,7 +81,7 @@
 | Current-state correction | `LIFEOS-LOGOS-HARDENING-TP-001-A3` — F1E REVIEW + REPLAY CLEANUP SCHEDULING |
 | Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A4` — F1E CANONICAL DORMANT FOUNDATION + RESIDUAL R2 DECISION |
 | Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A5` — CANONICAL F1F DORMANT TRUST ADMINISTRATION ADVANCEMENT |
-| Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A6` — F1E-R2 CANONICAL CLOSURE + F1F SEQUENCING RECONCILIATION |
+| Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A6` — CANONICAL F1E-R2 ADVANCEMENT + RESIDUAL HUMAN-AUTH GAP |
 | Logos canonical reference | `d475838e529e32a81074094f291f45892076e9f5` |
 | Logos F1A | IMPLEMENTED / CANONICAL |
 | Logos F1B | IMPLEMENTED / CANONICAL |
@@ -89,13 +89,13 @@
 | Logos F1D | IMPLEMENTED / CANONICAL — REPLAY + AUTHENTICATION COMPLETION |
 | F1D governance sequencing | IMPLEMENTED BEFORE PLANNED IA GATE; RECONCILED AS CANONICAL EXTERNAL FACT; NO RETROACTIVE AUTHORIZATION CLAIM |
 | Logos F1E foundation (PR #45) | IMPLEMENTED / CANONICAL / DORMANT |
-| F1E overall | IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF |
+| F1E overall | PARTIAL / NOT CLOSED |
 | F1E decision | `LOGOS-HARD-001-F1E-R1-DEC-001` — APPROVED / FROZEN |
-| F1E-R2 (PR #47) | IMPLEMENTED / CANONICAL / DEFAULT-OFF |
-| R2 security behavior | Exact POST workload chain; denyAll before B2; profile isolation verified; 401/403/503 boundaries |
+| F1E-R2 (PR #47) | IMPLEMENTED / CANONICAL / DEFAULT-OFF / RESIDUAL GAP OPEN |
+| R2 security behavior | Exact POST workload chain; denyAll before B2; profile isolation verified; 401/403/503 boundaries; UsernameNotFoundException gap open |
 | Logos F1F | IMPLEMENTED / CANONICAL / DORMANT TRUST ADMINISTRATION CAPABILITY |
 | F1F sequencing | ADVANCED BEFORE F1E-R2 CLOSURE / GOVERNANCE SEQUENCING DEVIATION / NO RETROACTIVE AUTHORIZATION CLAIM |
-| Remaining primary Logos path | B1 → B2 → C1 → C2 |
+| Remaining primary Logos path | F1E-R2 RESIDUAL CLOSURE → B1 → B2 → C1 → C2 |
 | Parallel LifeOS candidates | D1 / E1 |
 | Operational bootstrap | T1 TRUST / T2 AUTHORIZATION / T3 OWNERSHIP READINESS |
 | Authentication cutover | SEPARATE / NOT AUTHORIZED |
@@ -107,7 +107,7 @@
 | R2 test allowlist | 2 exact paths |
 | F1E-R2 migration | NONE |
 | F1E-R2 dependencies | NONE |
-| Current next Logos gate | `LOGOS-HARD-002-B1-TP-001` — AUTHORIZATION REGISTRY PERSISTENCE / DOMAIN TECHNICAL PREFLIGHT (READ-ONLY) |
+| Current next Logos gate | `LOGOS-HARD-001-F1E-R2-CLOSE-IA-001` — RESIDUAL CLOSURE PRE-FLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW |
 
 The first bounded LifeOS → Logos Reading POC is verified and closed. The
 retained evidence is `Book = 0RNXGW86RWC70`, `ReadingSession =
