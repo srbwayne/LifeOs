@@ -421,14 +421,6 @@ B2 = PLANNED / NOT AUTHORIZED
 HARD-001 implementation foundation = COMPLETE / CANONICAL / NOT OPERATIONALLY ACTIVATED
 ```
 
-Closure decision `LOGOS-HARD-001-F1E-R2-CLOSE-IA-001-DEC-001` remains
-APPROVED / FROZEN and is SATISFIED BY CANONICAL PR #49. PR #49 merged after
-that decision was frozen, but before A8 canonicalization and before the
-planned guarded retry. `LOGOS-HARD-001-F1E-R2-CLOSE-IMPL-001-R2` did not execute
-and is SUPERSEDED BY CANONICAL PR #49. Since the underlying closure decision
-was already approved/frozen, no retroactive architecture/security decision
-is required. PR #49 is not a reason for rollback.
-
 The B1-before-F1E-R2-closure ordering remains a historical sequencing
 deviation. Both prerequisites now exist canonically; B2 still needs its own
 authorization gate. The current remaining path is:
@@ -687,9 +679,8 @@ Authorization Evaluator / Enforcement Technical Preflight
 READ-ONLY TECHNICAL PREFLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW
 ```
 
-F1E-R2 residual closure is already canonical through PR #49. The previously
-planned `LOGOS-HARD-001-F1E-R2-CLOSE-IMPL-001-R2` retry was not executed and is
-superseded by PR #49. B2 implementation remains unauthorized.
+Canonical Logos PR #49 closed the residual F1E-R2 human-subject authentication
+gap. B2 implementation remains unauthorized.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER

@@ -86,7 +86,7 @@
 | Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A8` — CANONICAL B1 ADVANCEMENT + CANONICAL F1E-R2 RESIDUAL CLOSURE |
 | LifeOS canonical baseline for A8 | `47a8d4a8eb12714fccb75c3f4d6591617f6ef1f2` |
 | PR #118 | MERGED — `docs(governance): reconcile F1E-R2 closure and F1F sequencing` / `4fea64478b1053c724b56d234d66fbc8d671dc1b` / 2 files / HISTORICAL A6 CHECKPOINT; its premature F1E closure was superseded by A7 gap correction and later closed by canonical PR #49 |
-| PR #117 | OPEN / NOT MERGED / SUPERSEDED BY PR #118 / DO NOT MERGE |
+| PR #117 | CLOSED / NOT MERGED / SUPERSEDED BY PR #118 / DO NOT MERGE |
 | Logos canonical reference | `bc13dce086c865d1db4a4811b764fdc2bdd155d7` |
 | Logos canonical migration | V46 — B1 authorization registry foundation |
 | PR #48 | MERGED — `LOGOS-HARD-002-B1 — Add workload authorization registry foundation` / `d475838e529e32a81074094f291f45892076e9f5` → `001fa70108d6640e85f01be643d71177935fb40c` / 1 commit / 18 files / +665 / -4 |
@@ -119,17 +119,13 @@
 | R2 test allowlist | 2 exact paths |
 | F1E-R2 migration | NONE |
 | F1E-R2 dependencies | NONE |
-| F1E-R2 closure IA decision | `LOGOS-HARD-001-F1E-R2-CLOSE-IA-001-DEC-001` — APPROVED / FROZEN / SATISFIED BY CANONICAL PR #49 |
-| Closure decision baseline | The two approved target paths were unchanged by PR #48; PR #49 implements the approved 1+1 scope. Its canonical blobs are `JwtAuthenticationFilter.java` = `bb70d4ac3b68dd9e45c3d22773b7a4340f74883d` and `ProgressionExecutionSecurityPostgresTest.java` = `ece57149ad0d8ab430b8a5dfaf708868140a9813` |
-| Planned R2 retry | `LOGOS-HARD-001-F1E-R2-CLOSE-IMPL-001-R2` — SUPERSEDED BY CANONICAL PR #49; NOT EXECUTED |
 | Current next Logos gate after A8 canonicalization | `LOGOS-HARD-002-B2-TP-001` — Authorization Evaluator / Enforcement Technical Preflight |
 
 ## Current Logos Hardening Reconciliation — A8
 
 `LIFEOS-LOGOS-HARDENING-TP-001-A8` reconciles canonical Logos PR #48 and
-PR #49. A7 remains the historical gap-open checkpoint. This correction makes
-the open A8 reconciliation current when PR #120 is merged. The canonical
-advancement sequence is:
+PR #49. A7 remains the historical gap-open checkpoint. A8 records the current
+canonical state and the advancement sequence:
 
 ```text
 d475838e529e32a81074094f291f45892076e9f5
@@ -168,16 +164,6 @@ the protected GET. The test uses `JdbcTemplate` count queries instead of the
 pre-flight's suggested `AppUserRepository.findByEmail(...)`; this is an
 INFORMATIONAL / ACCEPTABLE IMPLEMENTATION VARIANCE that proves the same absence
 invariant within the approved existing test path.
-
-The closure decision
-`LOGOS-HARD-001-F1E-R2-CLOSE-IA-001-DEC-001` remains APPROVED / FROZEN and is
-SATISFIED BY CANONICAL PR #49. PR #49 merged after the decision was frozen,
-but before A8 canonicalization and before the planned guarded implementation
-retry. That retry,
-`LOGOS-HARD-001-F1E-R2-CLOSE-IMPL-001-R2`, was not executed and is
-SUPERSEDED BY CANONICAL PR #49. The underlying closure decision was already
-approved; no retroactive architecture or security decision is required, and
-no rollback of PR #49 is requested.
 
 Current slice states are:
 
@@ -374,11 +360,9 @@ then-current F1E closure conclusion and B1-first path; A7 corrected that
 conclusion for its current state while preserving A6 historically. A8 records
 canonical PR #48/B1 advancement and PR #49/F1E-R2 closure, superseding A7 for
 current state. B1 advanced before F1E-R2 residual closure as a governance
-sequencing deviation; no retroactive B1 authorization is claimed. PR #49
-satisfied the already-approved/frozen closure decision after approval but
-before A8 canonicalization and before the planned R2 retry; that retry was not
-executed and is superseded. The F1F sequencing deviation
-remains historical fact, not rollback grounds or retroactive authorization.
+sequencing deviation; no retroactive B1 authorization is claimed. The F1F
+sequencing deviation remains historical fact, not rollback grounds or
+retroactive authorization.
 D1 and E1 remain parallel LifeOS candidates subject to separate authorization.
 T1/T2/T3 bootstrap, authentication cutover, recovery implementation, and
 recovery activation remain separate and unauthorized. Migration numbers are
