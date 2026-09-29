@@ -8,13 +8,14 @@ LIFEOS-LOGOS-HARDENING-TP-001-DEC-001-A1 = APPROVED / FROZEN
 LIFEOS-LOGOS-HARDENING-TP-001-A4 = HISTORICAL F1E DORMANT FOUNDATION + RESIDUAL F1E-R2 DECISION
 LIFEOS-LOGOS-HARDENING-TP-001-A5 = HISTORICAL CANONICAL F1F ADVANCEMENT / SEQUENCING DEVIATION
 LIFEOS-LOGOS-HARDENING-TP-001-A6 = HISTORICAL F1E-R2 CLOSURE + F1F SEQUENCING RECONCILIATION
-LIFEOS-LOGOS-HARDENING-TP-001-A7 = CURRENT F1E-R2 CLOSURE CORRECTION + RESIDUAL HUMAN-AUTH GAP RESTORED
+LIFEOS-LOGOS-HARDENING-TP-001-A7 = HISTORICAL F1E-R2 CLOSURE CORRECTION + RESIDUAL HUMAN-AUTH GAP RESTORED
+LIFEOS-LOGOS-HARDENING-TP-001-A8 = CURRENT CANONICAL B1 ADVANCEMENT + CANONICAL F1E-R2 RESIDUAL CLOSURE
 Foundation Technical Plan = APPROVED / FROZEN / CANONICAL / RECONCILED
 implementation overall = PARTIAL
 F1A-F1D = IMPLEMENTED / CANONICAL
 F1E PR #45 foundation = IMPLEMENTED / CANONICAL / DORMANT
-F1E overall = PARTIAL / NOT CLOSED
-F1E-R2 = IMPLEMENTED / CANONICAL / DEFAULT-OFF / RESIDUAL GAP OPEN
+F1E overall = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
+F1E-R2 = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
 F1F = IMPLEMENTED / CANONICAL / DORMANT TRUST ADMINISTRATION CAPABILITY
 ```
 
@@ -24,12 +25,13 @@ bootstrap, deployment, or mutation.
 
 ## Baselines and governance
 
-The LifeOS canonical reference for historical A6 is
-`73d95c9cc8c47b6756230278c0c38cbd836b3054`. A7 current-state correction is
-based on LifeOS canonical `4fea64478b1053c724b56d234d66fbc8d671dc1b`.
-The canonical remote Logos reference is
-`d475838e529e32a81074094f291f45892076e9f5`, with F1A through F1F, including
-canonical default-off F1E-R2 wiring, present. The structural architecture
+The A7 current-state correction used LifeOS canonical
+`4fea64478b1053c724b56d234d66fbc8d671dc1b`; A8 uses LifeOS canonical
+`47a8d4a8eb12714fccb75c3f4d6591617f6ef1f2`. The A7 Logos reference was
+`d475838e529e32a81074094f291f45892076e9f5`; PR #48 advanced Logos to
+`001fa70108d6640e85f01be643d71177935fb40c` with canonical B1, and PR #49
+advanced it to current A8 baseline
+`bc13dce086c865d1db4a4811b764fdc2bdd155d7` with canonical F1E-R2 closure. The structural architecture
 foundation is frozen:
 
 ```text
@@ -246,9 +248,10 @@ At the A6 checkpoint, the then-current remaining Logos path was
 `B1 → B2 → C1 → C2`. Its next gate was
 `LOGOS-HARD-002-B1-TP-001` — Authorization Registry Persistence / Domain
 Technical Preflight, a READ-ONLY preflight. A6 did not authorize B1
-implementation. A7 below supersedes that path for CURRENT state.
+implementation. A7 later superseded that path for its CURRENT state; A8 now
+supersedes A7 for CURRENT state.
 
-## A7 — F1E-R2 closure correction and residual human-auth gap restoration
+## Historical A7 — F1E-R2 closure correction and residual human-auth gap restoration
 
 This current-state correction is based on canonical LifeOS PR #118 merge
 `4fea64478b1053c724b56d234d66fbc8d671dc1b`
@@ -314,21 +317,22 @@ The deferred provider minor remains: an unexpected
 `AuthenticationServiceException` and returns 503; it is
 `MINOR / FAIL-CLOSED / DEFERRED` and is outside immediate R2 closure.
 
-The current serialized path is:
+The A7 serialized path at that historical checkpoint was:
 
 ```text
 F1E-R2 residual closure → B1 → B2 → C1 → C2
 ```
 
-`LOGOS-HARD-002-B1` is planned / not authorized and does not begin before F1E
-closure is complete and canonical. The next gate is
+At the A7 checkpoint, `LOGOS-HARD-002-B1` was planned / not authorized and
+was sequenced after F1E closure. A8 records its subsequent canonical
+advancement as a governance sequencing deviation. The next gate at A7 was
 `LOGOS-HARD-001-F1E-R2-CLOSE-IA-001`, a READ-ONLY RESIDUAL CLOSURE PRE-FLIGHT /
-IMPLEMENTATION AUTHORIZATION REVIEW. Its current review hypothesis is a
+IMPLEMENTATION AUTHORIZATION REVIEW. Its then-current review hypothesis was a
 possible `JwtAuthenticationFilter.java` change to catch the expected
 `UsernameNotFoundException` and continue unauthenticated, with a regression
 test for a valid human JWT whose subject has no AppUser in
-`ProgressionExecutionSecurityPostgresTest.java`. This is a hypothesis only;
-A7 authorizes no source or test implementation. `SecurityConfig`, workload
+`ProgressionExecutionSecurityPostgresTest.java`. This was a hypothesis only;
+A7 authorized no source or test implementation. `SecurityConfig`, workload
 adapters, migration, dependencies, and runtime activation remain unchanged.
 
 Current boundaries remain:
@@ -349,6 +353,118 @@ HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
 WORK-001 = DEFERRED
 ```
 
+## A8 — canonical B1 advancement and F1E-R2 residual closure
+
+A7 remains the historical gap-open checkpoint. A8 reconciles the canonical
+advancement chronology: PR #48 made B1 canonical, then PR #49 closed the F1E-R2
+residual gap. The Logos baseline sequence is:
+
+```text
+d475838e529e32a81074094f291f45892076e9f5
+→ 001fa70108d6640e85f01be643d71177935fb40c (PR #48 / B1)
+→ bc13dce086c865d1db4a4811b764fdc2bdd155d7 (PR #49 / F1E-R2 closure)
+```
+
+PR #48 canonically implements `LOGOS-HARD-002-B1` as the relational
+authorization registry foundation through V46. The registry and domain/store
+capabilities remain as documented above: applicable principal/operation/source/
+namespace dimensions, semantic uniqueness, `insertIfAbsent(...)`, and
+`findExact(...)`. The registry is empty; no grant was seeded, no
+`WORKLOAD/lifeos` grant was inserted, and authorization bootstrap did not
+occur. B1 is not B2: no authorization evaluator or enforcement was introduced,
+and grant presence does not grant request permission.
+
+B1 advanced before F1E-R2 residual closure. This is a GOVERNANCE SEQUENCING
+DEVIATION; no retroactive B1 authorization is claimed. PR #48 and V46 remain
+canonical; no rollback is requested.
+
+PR #49 merged as:
+
+```text
+PR #49 = LOGOS-HARD-001-F1E-R2 — Close unknown human subject authentication gap
+base = 001fa70108d6640e85f01be643d71177935fb40c
+head = 6d8daede87ddaa821f9914ed24aaf196a37dce9c
+merge = bc13dce086c865d1db4a4811b764fdc2bdd155d7
+parent = 001fa70108d6640e85f01be643d71177935fb40c
+tree = 5f81e369238a73fd4be5b2d0c1155eb0be3e61e3
+commit = fix(security): keep unknown human JWT subject unauthenticated (#49)
+files = 2 / +40 / -1
+PR CI = 36499176463 / pull_request / SUCCESS / test SUCCESS
+post-merge CI = 36499878899 / push / SUCCESS / test SUCCESS
+```
+
+Its exact files are `JwtAuthenticationFilter.java` and the existing
+`ProgressionExecutionSecurityPostgresTest.java`. At AppUser lookup the filter
+catches only `UsernameNotFoundException`, continues the filter chain
+unauthenticated, and returns. Existing `JwtException` behavior remains. It
+adds no broad `RuntimeException`, `Exception`, or `AuthenticationException`
+catch. No `SecurityConfig` or workload security component changed.
+
+The canonical regression
+`validHumanBearerForUnknownSubjectRemainsUnauthenticated` uses a unique
+synthetic subject and a generated valid human JWT; it verifies the subject is
+absent from `app_user` before and after the protected GET and expects 403. The
+test uses `JdbcTemplate` count queries rather than the pre-flight suggestion
+`AppUserRepository.findByEmail(...)`. This is INFORMATIONAL / ACCEPTABLE
+IMPLEMENTATION VARIANCE: it establishes the same missing-user invariant in the
+approved existing integration test file without changing production scope.
+
+The residual defect is CLOSED IN CANONICAL LOGOS. Current states are:
+
+```text
+F1E foundation = IMPLEMENTED / CANONICAL / DORMANT
+F1E-R2 = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
+F1E = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
+F1F = IMPLEMENTED / CANONICAL / DORMANT
+B1 = IMPLEMENTED / CANONICAL / RELATIONAL AUTHORIZATION REGISTRY FOUNDATION
+B2 = PLANNED / NOT AUTHORIZED
+HARD-001 implementation foundation = COMPLETE / CANONICAL / NOT OPERATIONALLY ACTIVATED
+```
+
+Closure decision `LOGOS-HARD-001-F1E-R2-CLOSE-IA-001-DEC-001` remains
+APPROVED / FROZEN and is SATISFIED BY CANONICAL PR #49. PR #49 merged after
+that decision was frozen, but before A8 canonicalization and before the
+planned guarded retry. `LOGOS-HARD-001-F1E-R2-CLOSE-IMPL-001-R2` did not execute
+and is SUPERSEDED BY CANONICAL PR #49. Since the underlying closure decision
+was already approved/frozen, no retroactive architecture/security decision
+is required. PR #49 is not a reason for rollback.
+
+The B1-before-F1E-R2-closure ordering remains a historical sequencing
+deviation. Both prerequisites now exist canonically; B2 still needs its own
+authorization gate. The current remaining path is:
+
+```text
+B2 → C1 → C2
+```
+
+After A8 becomes canonical, the next gate is
+`LOGOS-HARD-002-B2-TP-001` — Authorization Evaluator / Enforcement Technical
+Preflight, a READ-ONLY TECHNICAL PREFLIGHT / IMPLEMENTATION AUTHORIZATION
+REVIEW. It does not authorize implementation. Its future review will define
+default-deny authorization through the B1 registry; no grant is inserted by
+this A8 reconciliation.
+
+The `WorkloadAuthenticationProvider` unexpected `RuntimeException` mapping to
+`AuthenticationServiceException` / 503 remains MINOR / FAIL-CLOSED / DEFERRED;
+it does not reopen F1E closure.
+
+Current boundaries remain:
+
+```text
+Flyway current = V46
+V47 = NOT RESERVED
+authorization grants seeded = NONE
+authorization bootstrap = NOT EXECUTED
+workload HTTP activation = NOT AUTHORIZED / default false
+T1 trust bootstrap = NOT AUTHORIZED
+T2 authorization bootstrap = NOT AUTHORIZED
+T3 ownership readiness = NOT AUTHORIZED
+LifeOS workload-auth cutover = NOT AUTHORIZED
+POC bearer retirement = NOT AUTHORIZED
+HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
+WORK-001 = DEFERRED
+```
+
 ## Canonical slice map
 
 | Slice | Owner | Status and invariant |
@@ -357,10 +473,10 @@ WORK-001 = DEFERRED
 | F1B | Logos | Trust domain/read adapter and P-256/SPKI validation, IMPLEMENTED / CANONICAL |
 | F1C | Logos | Signed assertion verifier core, IMPLEMENTED / CANONICAL |
 | F1D | Logos | Durable `issuer + jti` replay consumption and normalized authentication, IMPLEMENTED / CANONICAL |
-| F1E | Logos | Spring Security workload adapter foundation, IMPLEMENTED / CANONICAL / DORMANT; overall F1E PARTIAL / NOT CLOSED |
-| F1E-R2 | Logos | Exact workload chain wiring, IMPLEMENTED / CANONICAL / DEFAULT-OFF / RESIDUAL GAP OPEN (`UsernameNotFoundException` handling) |
+| F1E | Logos | Spring Security workload adapter, IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF |
+| F1E-R2 | Logos | Exact workload chain wiring, IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF; PR #49 closes missing AppUser subject handling |
 | F1F | Logos | Administrative trust lifecycle capability, IMPLEMENTED / CANONICAL / DORMANT |
-| B1 | Logos | HARD-002 relational authorization persistence/domain, PLANNED / NOT AUTHORIZED |
+| B1 | Logos | HARD-002 relational authorization registry persistence/domain foundation, IMPLEMENTED / CANONICAL; no grants seeded; no evaluator/enforcement |
 | B2 | Logos | HARD-002 evaluator/enforcement, default deny, PLANNED / NOT AUTHORIZED |
 | C1 | Logos | HARD-003 lifecycle/history persistence and legacy classification, PLANNED / NOT AUTHORIZED |
 | C2 | Logos | HARD-003 enforcement and audited administration, PLANNED / NOT AUTHORIZED |
@@ -510,14 +626,17 @@ redispatch, replay, backfill, or scheduler creation.
 
 ## Dependency DAG and parallelization
 
-Canonical HARD-001 capabilities include `F1A → F1B → F1C → F1D → F1E`
-including the default-off F1E-R2 wiring, plus canonical dormant F1F trust
-administration. F1E-R2 still has an open closure gap, so the current serialized
+Canonical capabilities include `F1A → F1B → F1C → F1D → F1E` with closed,
+default-off F1E-R2 wiring, canonical dormant F1F trust administration, and
+B1's relational authorization registry foundation. The current serialized
 remaining Logos path is:
 
 ```text
-F1E-R2 residual closure → B1 → B2 → C1 → C2
+B2 → C1 → C2
 ```
+
+B1 is already canonical and has been removed from the future implementation
+queue.
 
 D1 and E1 are safe parallel candidates after separate authorization when their
 file allowlists and migrations do not overlap and all cross-system contracts
@@ -529,10 +648,12 @@ canonical remote main is evidence.
 
 ## Migration and ownership policy
 
-No future migration number is reserved. Each implementation pre-flight reads
-the then-current canonical head and uses the next available LifeOS Alembic or
-Logos Flyway revision. A repository migration must leave that repository valid
-independently; no cross-repository transaction is assumed.
+Logos V46 is canonical for the B1 authorization registry foundation. V47 is
+not reserved. The F1E-R2 residual closure requires no migration. Each future
+implementation pre-flight reads the then-current canonical head and uses the
+next available LifeOS Alembic or Logos Flyway revision. A repository migration
+must leave that repository valid independently; no cross-repository transaction
+is assumed.
 
 ```text
 LifeOS provider/signer and delivery/recovery = LifeOS
@@ -556,32 +677,35 @@ Implementation approval, merge, bootstrap, cutover, recovery activation, and
 HARD-007 deployment approval are separate decisions. Historical deliveries are
 evidence only and are not replayed or rewritten.
 
-## Current next Logos action — A7
+## Current next Logos action — A8
 
-The next gate is:
+The next gate after A8 canonicalization is:
 
 ```text
-LOGOS-HARD-001-F1E-R2-CLOSE-IA-001
-READ-ONLY RESIDUAL CLOSURE PRE-FLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW
+LOGOS-HARD-002-B2-TP-001
+Authorization Evaluator / Enforcement Technical Preflight
+READ-ONLY TECHNICAL PREFLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW
 ```
 
-This A7 documentation correction does not implement the residual fix, does not
-authorize it, and does not authorize B1 implementation. B1 remains planned / not
-authorized until F1E-R2 closure is complete and canonical.
+F1E-R2 residual closure is already canonical through PR #49. The previously
+planned `LOGOS-HARD-001-F1E-R2-CLOSE-IMPL-001-R2` retry was not executed and is
+superseded by PR #49. B2 implementation remains unauthorized.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
 WORK-001 = DEFERRED
 implementation overall = PARTIAL
 F1A-F1D = IMPLEMENTED / CANONICAL
-F1E = PARTIAL / NOT CLOSED
-F1E-R2 = IMPLEMENTED / CANONICAL / DEFAULT-OFF / RESIDUAL GAP OPEN
+F1E = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
+F1E-R2 = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
 F1F = IMPLEMENTED / CANONICAL / DORMANT
-B1/B2/C1/C2 = NOT IMPLEMENTED / NOT AUTHORIZED
+B1 = IMPLEMENTED / CANONICAL / RELATIONAL AUTHORIZATION REGISTRY FOUNDATION
+B2/C1/C2 = PLANNED / NOT AUTHORIZED
 real trust bootstrap = NOT EXECUTED
+authorization grant bootstrap = NOT EXECUTED
 workload HTTP operational activation = NOT ACTIVE
 cutover/productionization = NOT AUTHORIZED
-remaining path = F1E-R2 residual closure → B1 → B2 → C1 → C2
-next gate = LOGOS-HARD-001-F1E-R2-CLOSE-IA-001 / READ-ONLY RESIDUAL CLOSURE PRE-FLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW
+remaining path = B2 → C1 → C2
+next gate = LOGOS-HARD-002-B2-TP-001 / READ-ONLY AUTHORIZATION EVALUATOR / ENFORCEMENT TECHNICAL PREFLIGHT
 this plan itself = DOES NOT AUTHORIZE ADDITIONAL IMPLEMENTATION OR OPERATIONAL ACTIVATION
 ```
