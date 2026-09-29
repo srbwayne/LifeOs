@@ -87,8 +87,10 @@
 | Historical current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A9` — CANONICAL HISTORICAL CHECKPOINT; B2 DESIGN SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN BY A10 / R1-R2 |
 | Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A10` — CURRENT B2 R2 TECHNICAL DECISION APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED |
 | LifeOS canonical baseline for A8 | `47a8d4a8eb12714fccb75c3f4d6591617f6ef1f2` |
-| LifeOS current baseline for A9 | `3f4cf47531c7a1e00167919eef612b08958da8a8` |
-| LifeOS A9 baseline CI | `36504632848` — push / completed / SUCCESS; all three required jobs SUCCESS |
+| LifeOS A9 input baseline | `3f4cf47531c7a1e00167919eef612b08958da8a8` |
+| LifeOS A9 canonical merge | `579328182034f4059fd7a7701f4ea0b223db96f1` |
+| LifeOS A9 canonical CI | `36507368056` — push / completed / SUCCESS; 811 tests / 98.54% coverage; all three required jobs SUCCESS |
+| LifeOS A10 input baseline | `579328182034f4059fd7a7701f4ea0b223db96f1` |
 | PR #121 | MERGED — `docs(governance): correct canonical A8 metadata`; base `c2418867008b3e3b6c289446de7ae8f5b175b0d2`; head `267b12432558f8fcf63dc24fa593cf393468fe21`; merge `3f4cf47531c7a1e00167919eef612b08958da8a8`; 1 commit / 2 documentation files / +8 / -33 |
 | PR #117 | CLOSED / NOT MERGED / SUPERSEDED / DO NOT MERGE |
 | PR #118 | MERGED — `docs(governance): reconcile F1E-R2 closure and F1F sequencing` / `4fea64478b1053c724b56d234d66fbc8d671dc1b` / 2 files / HISTORICAL A6 CHECKPOINT; its premature F1E closure was superseded by A7 gap correction and later closed by canonical PR #49 |
