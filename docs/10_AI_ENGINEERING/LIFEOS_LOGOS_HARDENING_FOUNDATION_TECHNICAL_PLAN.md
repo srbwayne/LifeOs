@@ -10,7 +10,8 @@ LIFEOS-LOGOS-HARDENING-TP-001-A5 = HISTORICAL CANONICAL F1F ADVANCEMENT / SEQUEN
 LIFEOS-LOGOS-HARDENING-TP-001-A6 = HISTORICAL F1E-R2 CLOSURE + F1F SEQUENCING RECONCILIATION
 LIFEOS-LOGOS-HARDENING-TP-001-A7 = HISTORICAL F1E-R2 CLOSURE CORRECTION + RESIDUAL HUMAN-AUTH GAP RESTORED
 LIFEOS-LOGOS-HARDENING-TP-001-A8 = HISTORICAL CANONICAL B1 ADVANCEMENT + CANONICAL F1E-R2 RESIDUAL CLOSURE
-LIFEOS-LOGOS-HARDENING-TP-001-A9 = CURRENT B2 TECHNICAL DECISION APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED
+LIFEOS-LOGOS-HARDENING-TP-001-A9 = HISTORICAL CANONICAL CHECKPOINT; B2 DESIGN SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN
+LIFEOS-LOGOS-HARDENING-TP-001-A10 = CURRENT B2 R2 TECHNICAL DECISION APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED
 Foundation Technical Plan = APPROVED / FROZEN / CANONICAL / RECONCILED
 implementation overall = PARTIAL
 F1A-F1D = IMPLEMENTED / CANONICAL
@@ -468,7 +469,16 @@ HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
 WORK-001 = DEFERRED
 ```
 
-## A9 — B2 technical decision approved / frozen; implementation not authorized
+## Historical A9 — B2 technical decision approved / frozen; implementation not authorized
+
+> A9 remains valid historical canonical governance. It records that B2
+> implementation was NOT AUTHORIZED, the earlier technical decision was
+> frozen, no B2 code or real grant existed, and workload activation had not
+> occurred. Its design and 7-production / 4-test allowlist are SUPERSEDED FOR
+> CURRENT IMPLEMENTATION DESIGN by A10 / R1-R2. This is post-A9 technical
+> refinement, not A9 or B1 invalidation, rollback, incident, implementation
+> drift, or runtime defect. No code was implemented under A9; no rollback is
+> required. The historical detail below is deliberately retained.
 
 A9 records the frozen human decision
 `LOGOS-HARD-002-B2-TP-001-DEC-001 = APPROVED / FROZEN`. The B2 technical
@@ -636,6 +646,134 @@ four test paths. The remaining path is:
 ```text
 B2 → C1 → C2
 ```
+
+## A10 — current B2 R2 technical design; implementation not authorized
+
+`LIFEOS-LOGOS-HARDENING-TP-001-A10` is the current documentation-only
+reconciliation. A9 remains historical canonical state; its B2 design is
+SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN. The current technical authority
+is executed read-only gate `LOGOS-HARD-002-B2-TP-001-R2`, APPROVED / FROZEN.
+A10 does not invent DEC-002. B2 implementation remains NOT AUTHORIZED.
+
+A9 remains the valid checkpoint where implementation was not authorized, its
+earlier design was frozen, no B2 code or real grant existed, and workload
+activation had not occurred. PR #122 merged at
+`579328182034f4059fd7a7701f4ea0b223db96f1`; post-merge run `36507368056`
+succeeded with all required jobs, 811 tests, and 98.54% coverage. This
+refinement is not A9/B1 invalidation, rollback, incident, implementation drift,
+or runtime defect. No code was implemented under A9; no rollback is required.
+The historical A9 decision and its 7-production / 4-test allowlist remain
+above as evidence and are not current implementation authority.
+
+### Current architecture and enforcement
+
+Authentication remains assertion verification → replay consumption →
+`WorkloadPrincipalAuthenticationToken` → `AuthenticatedPrincipal`.
+Authorization identity uses only `principalType + principalId`, operation,
+and applicable source/namespace. The Spring-independent
+`AuthorizationEvaluator` receives principal, operation, and optional source
+and namespace and returns `AuthorizationVerdict` (`ALLOW` / `DENY`). It
+requires WORKLOAD and VERIFIED. Exact grant allows; absent or wrong principal,
+operation, source, or namespace denies. No wildcard, prefix, fallback,
+role/trust-derived grant, cache, or mutation. No `kid`, credential identity,
+`jti`, or authentication method as policy identity. Supported operations are
+`PROGRESSION_EXECUTE`, `PROGRESSION_EXECUTION_READ`,
+`PROGRESSION_HISTORY_READ`, and `SUBJECT_PROVISION`; initial enforcement is
+`PROGRESSION_EXECUTE` only.
+
+Enforcement is E3-B custom method security after MVC body binding and before
+the controller target. Marker
+`com.josecjuniors.logossrv.config.security.authorization.AuthorizeProgressionExecute`
+applies only to `ProgressionExecutionController.create(...)`. The bridge
+`ProgressionExecuteAuthorizationManager implements
+AuthorizationManager<MethodInvocation>` reads the bound request from method
+arguments and requires authenticated workload-token and
+`AuthenticatedPrincipal` types. It derives operation, source, and namespace
+from that request. No manual controller authorization, `@PreAuthorize`, SpEL,
+`@P`, servlet body parsing/wrapping, or authority synthesis.
+
+The public pointcut is Spring Framework 6.1.10
+`AnnotationMatchingPointcut.forMethodAnnotation(AuthorizeProgressionExecute.class)`.
+Spring Security 6.3.1 `AuthorizationMethodPointcuts` is package-private and
+must not be imported or called. The named bean
+`progressionExecuteAuthorizationAdvisor` is an
+`AuthorizationManagerBeforeMethodInterceptor` advisor with
+`BeanDefinition.ROLE_INFRASTRUCTURE`. Configure
+`@EnableMethodSecurity(prePostEnabled = false)`; `securedEnabled` and
+`jsr250Enabled` stay false.
+
+C1 is selected: condition the advisor bean on
+`logos.security.workload.http.enabled=true` with `matchIfMissing=false`.
+When absent/false, workload chain and advisor are absent, the method marker is
+inert, and existing human-chain behavior is unchanged. Enabled workload
+routing preserves exact `POST /api/internal/v1/progression/executions` and
+changes only `denyAll()` to `authenticated()`; never `permitAll()`. GET
+execution/history and subject provisioning remain on the human chain.
+Production stays default-off; no operational activation.
+
+Malformed JSON is 400. Missing authorization dimensions and invalid source or
+namespace grammar are 403 before controller target invocation; only expected
+`IllegalArgumentException` during authorization-dimension construction is
+converted to DENY. With valid dimensions and ALLOW, invalid business fields
+such as missing configuration/details remain 400. Ordinary denial is 403 and
+invokes neither controller target nor use case. A no-grant first assertion is
+replay-consumed and receives 403; the same assertion retries as 401 without
+evaluator re-entry.
+
+Only bounded Spring `DataAccessException` from
+`JdbcAuthorizationGrantStore.findExact(...)` translates to
+`AuthorizationRegistryUnavailableException`; no row is ordinary DENY. The
+bounded exception maps to generic 503 body
+`{"error":"Authorization service temporarily unavailable"}`. No broad
+runtime catch. Registry outage after valid workload authentication consumes
+replay, returns 503 without business invocation, and retry returns 401.
+`AuthorizationRegistryCorruptedException` is historical A9 detail and is not
+part of current R2. The exact ephemeral test grant
+`WORKLOAD/lifeos/PROGRESSION_EXECUTE/source=lifeos/namespace=lifeos` permits a
+fresh valid request to return 200 and call the use case once; no real grant is
+inserted.
+
+### Current R2 implementation allowlist — exactly 15 paths
+
+This is future implementation scope only; A10 does not authorize implementation.
+
+New production (6):
+1. `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationEvaluator.java`
+2. `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationVerdict.java`
+3. `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/exception/AuthorizationRegistryUnavailableException.java`
+4. `src/main/java/com/josecjuniors/logossrv/config/security/authorization/AuthorizeProgressionExecute.java`
+5. `src/main/java/com/josecjuniors/logossrv/config/security/authorization/ProgressionExecuteAuthorizationManager.java`
+6. `src/main/java/com/josecjuniors/logossrv/config/security/authorization/WorkloadAuthorizationMethodSecurityConfig.java`
+
+Existing production modified (4):
+1. `src/main/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionController.java`
+2. `src/main/java/com/josecjuniors/logossrv/config/SecurityConfig.java`
+3. `src/main/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStore.java`
+4. `src/main/java/com/josecjuniors/logossrv/adapters/in/web/exception/GlobalExceptionHandler.java`
+
+New tests (3):
+1. `src/test/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationEvaluatorTest.java`
+2. `src/test/java/com/josecjuniors/logossrv/config/security/authorization/ProgressionExecuteAuthorizationManagerTest.java`
+3. `src/test/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStoreTest.java`
+
+Existing tests modified (2):
+1. `src/test/java/com/josecjuniors/logossrv/config/security/workload/WorkloadSpringSecurityIntegrationPostgresTest.java`
+2. `src/test/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionSecurityPostgresTest.java`
+
+Migration: NONE. Dependency: NONE. No sixteenth path without separate human
+review. `JdbcAuthorizationGrantStorePostgresTest.java` remains unchanged; the
+new mocked-`JdbcTemplate` unit test tests DataAccessException translation and
+canonical PostgreSQL store tests retain real exact-query semantics. Default-off
+regression retains `SecurityFilterChain` count one and asserts the named
+advisor absent. Enabled-context regression proves advisor active, no-grant and
+wrong-dimension 403, exact-grant ALLOW/200, one business invocation, replay,
+and outage. No human POST fixture is required for this gate.
+
+B1 and V46 remain canonical and unchanged. No port/schema change, migration,
+dependency, real grant, bootstrap, T2, activation, cutover, or productionization
+is included. Next gate remains `LOGOS-HARD-002-B2-IMPL-001` — BOUNDED
+IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PRE-FLIGHT; it may authorize
+only this 15-path allowlist. The path remains B2 → C1 → C2.
 
 ## Canonical slice map
 
@@ -849,18 +987,20 @@ Implementation approval, merge, bootstrap, cutover, recovery activation, and
 HARD-007 deployment approval are separate decisions. Historical deliveries are
 evidence only and are not replayed or rewritten.
 
-## Current next Logos action — A9
+## Current next Logos action — A10
 
-The next gate after A9 canonicalization is:
+The next gate after A10 canonicalization is:
 
 ```text
 LOGOS-HARD-002-B2-IMPL-001
 BOUNDED IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PRE-FLIGHT
 ```
 
-The read-only B2 technical pre-flight is complete and
-`LOGOS-HARD-002-B2-TP-001-DEC-001` is APPROVED / FROZEN. B2 implementation
-remains NOT AUTHORIZED until that next gate and its separate authorization.
+The read-only R2 technical gate is complete and
+`LOGOS-HARD-002-B2-TP-001-R2` is APPROVED / FROZEN. Historical A9
+`LOGOS-HARD-002-B2-TP-001-DEC-001` is superseded for current implementation
+design, not removed from A9 history. B2 implementation remains NOT AUTHORIZED
+until that next gate and its separate authorization.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
@@ -877,7 +1017,11 @@ authorization grant bootstrap = NOT EXECUTED
 workload HTTP operational activation = NOT ACTIVE
 cutover/productionization = NOT AUTHORIZED
 remaining path = B2 → C1 → C2
-B2 preflight = COMPLETE / DECISION APPROVED / FROZEN
+B2 preflight = COMPLETE / R2 TECHNICAL DECISION APPROVED / FROZEN
+A9 B2 design = HISTORICAL / SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN
+A10 = CURRENT / R2 TECHNICAL DECISION APPROVED / FROZEN
+current B2 technical authority = LOGOS-HARD-002-B2-TP-001-R2
+current B2 allowlist = 15 paths
 B2 implementation = NOT AUTHORIZED
 next gate = LOGOS-HARD-002-B2-IMPL-001 / BOUNDED IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PRE-FLIGHT
 this plan itself = DOES NOT AUTHORIZE ADDITIONAL IMPLEMENTATION OR OPERATIONAL ACTIVATION

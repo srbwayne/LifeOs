@@ -84,7 +84,8 @@
 | Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A6` — F1E-R2 CLOSURE + F1F SEQUENCING RECONCILIATION AS RECORDED AT A6 |
 | Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A7` — F1E-R2 CLOSURE CORRECTION + RESIDUAL HUMAN-AUTH GAP RESTORED |
 | Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A8` — CANONICAL B1 ADVANCEMENT + CANONICAL F1E-R2 RESIDUAL CLOSURE |
-| Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A9` — B2 TECHNICAL DECISION APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED |
+| Historical current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A9` — CANONICAL HISTORICAL CHECKPOINT; B2 DESIGN SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN BY A10 / R1-R2 |
+| Current-state reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A10` — CURRENT B2 R2 TECHNICAL DECISION APPROVED / FROZEN / IMPLEMENTATION NOT AUTHORIZED |
 | LifeOS canonical baseline for A8 | `47a8d4a8eb12714fccb75c3f4d6591617f6ef1f2` |
 | LifeOS current baseline for A9 | `3f4cf47531c7a1e00167919eef612b08958da8a8` |
 | LifeOS A9 baseline CI | `36504632848` — push / completed / SUCCESS; all three required jobs SUCCESS |
@@ -99,7 +100,7 @@
 | B1 sequencing | ADVANCED BEFORE F1E-R2 RESIDUAL CLOSURE / GOVERNANCE SEQUENCING DEVIATION / NO RETROACTIVE AUTHORIZATION |
 | Authorization grants seeded | NONE — `WORKLOAD/lifeos` / `PROGRESSION_EXECUTE` grant NOT INSERTED |
 | B2 preflight | `LOGOS-HARD-002-B2-TP-001` — PRE-FLIGHT COMPLETE |
-| B2 decision | `LOGOS-HARD-002-B2-TP-001-DEC-001` — APPROVED / FROZEN |
+| Historical A9 B2 decision | `LOGOS-HARD-002-B2-TP-001-DEC-001` — APPROVED / FROZEN; SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN |
 | B2 implementation | NOT AUTHORIZED |
 | Logos F1A | IMPLEMENTED / CANONICAL |
 | Logos F1B | IMPLEMENTED / CANONICAL |
@@ -125,11 +126,20 @@
 | R2 test allowlist | 2 exact paths |
 | F1E-R2 migration | NONE |
 | F1E-R2 dependencies | NONE |
-| Current next Logos gate after A9 canonicalization | `LOGOS-HARD-002-B2-IMPL-001` — BOUNDED IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PRE-FLIGHT |
+| Current next Logos gate after A10 canonicalization | `LOGOS-HARD-002-B2-IMPL-001` — BOUNDED IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PRE-FLIGHT |
 
-## Current Logos Hardening Reconciliation — A9
+## Historical Logos Hardening Reconciliation — A9
 
-A9 canonicalizes the already approved and frozen decision
+> **Historical canonical checkpoint.** A9 remains valid and preserved as the
+> checkpoint where B2 implementation was NOT AUTHORIZED, the earlier design
+> was frozen, no B2 code or real grant existed, and workload activation had not
+> occurred. Its B2 implementation design and 7-production / 4-test allowlist
+> are **SUPERSEDED FOR CURRENT IMPLEMENTATION DESIGN** by A10 / R1-R2 below.
+> This is a post-A9 technical design refinement, not A9 invalidation, B1
+> invalidation, rollback, security incident, implementation drift, or runtime
+> defect. No code was implemented under the A9 design; no rollback is required.
+
+A9 historically canonicalized the approved and frozen decision
 `LOGOS-HARD-002-B2-TP-001-DEC-001`. A8 remains the historical canonical
 checkpoint. PR #121 is a canonical A8 metadata / housekeeping correction and
 does not invalidate A8, B1, F1E closure, the completed B2 pre-flight, or its
@@ -1354,3 +1364,68 @@ ONLY THE PYTHON 3.11 PLATFORM TRANSITION IMPLEMENTATION IS AUTHORIZED.
 DO NOT MODIFY PR #46, APPLY MIGRATION 0008 TO REAL DATA, EXECUTE THE COORDINATED CUTOVER, OR EXPAND THE PYTHON 3.11 PLATFORM IMPLEMENTATION BEYOND THE FROZEN SIX-FILE ALLOWLIST.
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
+
+## Current B2 reconciliation — A10 / R2
+
+`LIFEOS-LOGOS-HARDENING-TP-001-A10` is the current documentation-only
+reconciliation. It preserves A9 as historical canonical governance and
+supersedes A9's B2 implementation design for current state. Current technical
+authority is `LOGOS-HARD-002-B2-TP-001-R2`, APPROVED / FROZEN;
+implementation remains NOT AUTHORIZED. A10 creates no DEC-002 identifier.
+
+A9 remains the valid checkpoint where implementation was not authorized, its
+earlier design was frozen, no B2 code or real grant existed, and workload
+activation had not occurred. This post-A9 technical refinement is not A9 or B1
+invalidation, rollback, incident, implementation drift, or runtime defect. No
+code was implemented under A9, so no rollback is required. PR #122 is merged at
+`579328182034f4059fd7a7701f4ea0b223db96f1`; post-merge run `36507368056`
+succeeded with all three required jobs, 811 tests, and 98.54% coverage.
+
+Current enforcement is E3-B custom method security after MVC binding and
+before the controller target. A Spring-independent `AuthorizationEvaluator`
+returns `AuthorizationVerdict` (`ALLOW` / `DENY`) from exact matches over
+WORKLOAD + VERIFIED principal identity (`principalType + principalId`),
+operation, and applicable source/namespace. No credential identity, `kid`,
+`jti`, wildcard, prefix, fallback, role/trust-derived grant, cache, or mutation
+is used. The marker is only on `ProgressionExecutionController.create(...)`;
+initial enforcement is `PROGRESSION_EXECUTE` only. The bridge is
+`ProgressionExecuteAuthorizationManager implements
+AuthorizationManager<MethodInvocation>`.
+
+Use public Spring Framework 6.1.10
+`AnnotationMatchingPointcut.forMethodAnnotation(AuthorizeProgressionExecute.class)`;
+Spring Security 6.3.1 `AuthorizationMethodPointcuts` is package-private and
+not used. The named `progressionExecuteAuthorizationAdvisor` is an
+`AuthorizationManagerBeforeMethodInterceptor` advisor with
+`BeanDefinition.ROLE_INFRASTRUCTURE`. Enable with
+`@EnableMethodSecurity(prePostEnabled = false)`; secured and JSR-250 support
+remain false.
+
+C1 is selected: condition the advisor bean on
+`logos.security.workload.http.enabled=true`, `matchIfMissing=false`. If absent
+or false, the workload chain and advisor are absent, the marker is inert, and
+human-chain behavior is unchanged. When enabled, only the exact workload POST
+matcher changes from `denyAll()` to `authenticated()`; never `permitAll()`.
+GET execution/history and subject provisioning remain on the human chain.
+Production defaults remain off; no activation occurs.
+
+Malformed JSON is 400. Missing authorization dimensions and invalid source or
+namespace grammar are 403 without controller-target invocation; only expected
+dimension-construction `IllegalArgumentException` becomes denial. With valid
+authorization dimensions and ALLOW, other invalid business fields retain 400.
+Ordinary DENY is 403, with controller target and use case not executed. A
+no-grant first assertion consumes replay and gets 403; retry gets 401.
+`DataAccessException` from `findExact(...)` is narrowly translated to
+`AuthorizationRegistryUnavailableException` and generic 503; no-row is DENY.
+Outage after valid authentication consumes replay, returns 503 without
+business execution, and retry returns 401. The corruption-specific exception
+is historical A9 detail and excluded from current R2. An exact ephemeral test
+grant permits a valid fresh request to return 200 and call the use case once;
+no real grant is inserted.
+
+Current R2 implementation allowlist: **15 paths** (6 new production, 4
+modified production, 3 new tests, 2 modified tests), exactly as listed in the
+Foundation Technical Plan's A10 section. No migration or dependency. The
+current next gate remains `LOGOS-HARD-002-B2-IMPL-001` — BOUNDED IMPLEMENTATION
+AUTHORIZATION / EXCLUSIVE-WRITER PRE-FLIGHT; no C1, C2, HARD-003, bootstrap,
+activation, cutover, or productionization begins here.
