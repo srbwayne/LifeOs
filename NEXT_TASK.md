@@ -104,7 +104,7 @@
 | PR #121 | MERGED — `docs(governance): correct canonical A8 metadata`; base `c2418867008b3e3b6c289446de7ae8f5b175b0d2`; head `267b12432558f8fcf63dc24fa593cf393468fe21`; merge `3f4cf47531c7a1e00167919eef612b08958da8a8`; 1 commit / 2 documentation files / +8 / -33 |
 | PR #117 | CLOSED / NOT MERGED / SUPERSEDED / DO NOT MERGE |
 | PR #118 | MERGED — `docs(governance): reconcile F1E-R2 closure and F1F sequencing` / `4fea64478b1053c724b56d234d66fbc8d671dc1b` / 2 files / HISTORICAL A6 CHECKPOINT; its premature F1E closure was superseded by A7 gap correction and later closed by canonical PR #49 |
-| Logos canonical reference | `bc13dce086c865d1db4a4811b764fdc2bdd155d7` |
+| Logos pre-B2 / F1E-R2 canonical baseline | `bc13dce086c865d1db4a4811b764fdc2bdd155d7` |
 | Logos canonical migration | V46 — B1 authorization registry foundation |
 | PR #48 | MERGED — `LOGOS-HARD-002-B1 — Add workload authorization registry foundation` / `d475838e529e32a81074094f291f45892076e9f5` → `001fa70108d6640e85f01be643d71177935fb40c` / 1 commit / 18 files / +665 / -4 |
 | PR #49 | MERGED — `LOGOS-HARD-001-F1E-R2 — Close unknown human subject authentication gap` / `001fa70108d6640e85f01be643d71177935fb40c` → `bc13dce086c865d1db4a4811b764fdc2bdd155d7` / 1 commit / 2 files / +40 / -1 |
