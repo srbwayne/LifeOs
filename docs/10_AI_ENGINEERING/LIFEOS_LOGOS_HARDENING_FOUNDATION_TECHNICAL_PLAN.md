@@ -11,9 +11,10 @@ LIFEOS-LOGOS-HARDENING-TP-001-A6 = HISTORICAL F1E-R2 CLOSURE + F1F SEQUENCING RE
 LIFEOS-LOGOS-HARDENING-TP-001-A7 = HISTORICAL F1E-R2 CLOSURE CORRECTION + RESIDUAL HUMAN-AUTH GAP RESTORED
 LIFEOS-LOGOS-HARDENING-TP-001-A8 = HISTORICAL CANONICAL B1 ADVANCEMENT + CANONICAL F1E-R2 RESIDUAL CLOSURE
 LIFEOS-LOGOS-HARDENING-TP-001-A9 = HISTORICAL CANONICAL B2 DECISION CHECKPOINT; DESIGN APPROVED / FROZEN
-LIFEOS-LOGOS-HARDENING-TP-001-A10 = HISTORICAL CANONICAL CHECKPOINT; CURRENT-STATE DESCRIPTION SUPERSEDED BY A11
-LIFEOS-LOGOS-HARDENING-TP-001-A11 = CURRENT CANONICAL B2 IMPLEMENTATION + A10 RACE RECONCILIATION
-B2 = IMPLEMENTED / CANONICAL / DEFAULT-OFF
+LIFEOS-LOGOS-HARDENING-TP-001-A10 = CANONICAL / CURRENT R2 TECHNICAL AUTHORITY
+LIFEOS-LOGOS-HARDENING-TP-001-A11 = HISTORICAL CANONICAL RECONCILIATION / CURRENT CONCLUSIONS SUPERSEDED BY A12
+LIFEOS-LOGOS-HARDENING-TP-001-A12 = CURRENT B2 SEQUENCING-DEVIATION / R2 FORWARD-ALIGNMENT RECONCILIATION
+B2 = CANONICAL A9 IMPLEMENTATION PRESENT / DEFAULT-OFF / R2 FORWARD ALIGNMENT OPEN
 B2 canonical SHA = 096fc1a5124358997771d1bb0b0db291a2d81935 / PR #50
 B2 canonical scope = 11 paths / 7 production + 4 tests
 B2 post-merge CI = 36639505288 / SUCCESS / 404 tests / 0 failures / 0 errors / 0 skipped
@@ -479,9 +480,10 @@ WORK-001 = DEFERRED
 > A9 remains valid historical canonical governance. It records that B2
 > implementation was NOT AUTHORIZED, the approved design was frozen, no B2
 > code or real grant existed, and workload activation had not occurred. The
-> separately authorized implementation later delivered this frozen design
-> canonically in Logos PR #50. A9 remains valid and is not invalidated or
-> rolled back; this section records its historical checkpoint state.
+> Logos PR #50 later implemented that frozen design, but implementation
+> authorization was not present when PR #50 merged. This is a sequencing deviation,
+> not retroactive authorization. A9 remains valid and is not invalidated or rolled
+> back; this section records its historical checkpoint state.
 
 A9 records the frozen human decision
 `LOGOS-HARD-002-B2-TP-001-DEC-001 = APPROVED / FROZEN`. The B2 technical
@@ -650,126 +652,159 @@ four test paths. The remaining path is:
 B2 → C1 → C2
 ```
 
-## A10 historical checkpoint and A11 current-state reconciliation
+## A10 and A11 historical checkpoints; current A12 reconciliation
 
-A10 is a CANONICAL HISTORICAL CHECKPOINT. Its current-state description
-canonically recorded the concurrent R2/custom-method-security/15-path
-proposal, but that proposal no longer represented canonical Logos reality when
-A10 merged. A10's history is preserved; its current-state description is
-SUPERSEDED BY A11. This governance reconciliation race is not a security
-incident, B2 rollback/failure, A9 invalidation, or Logos canonical failure.
+A10 became canonical in PR #123 at `80e40c8fd3531e68135926c1e60afd3f73377b3d`
+on `2026-09-29T22:46:05Z`. Its R2 technical design remains the current,
+approved and frozen authority. Its statement that B2 had not been implemented
+became stale when canonical Logos PR #50 merged earlier, at
+`2026-09-29T22:25:40Z`. PR #50 preceded A10; at that merge, A9 was canonical
+and implementation was explicitly NOT AUTHORIZED. The classification is a
+GOVERNANCE SEQUENCING DEVIATION: B2 implementation advanced before its explicit
+authorization gate. No retroactive authorization is claimed.
 
-```text
-PR #123 current head e7c4a6e550b10166cc411c3c3ff8a053934b419f = 2026-09-29T22:25:16Z
-Logos PR #50 canonical merge 096fc1a5124358997771d1bb0b0db291a2d81935 = 2026-09-29T22:25:40Z
-LifeOS PR #123 merge 80e40c8fd3531e68135926c1e60afd3f73377b3d = 2026-09-29T22:46:05Z
-```
+A11 is a HISTORICAL CANONICAL RECONCILIATION CHECKPOINT. Its external facts
+about PR #50, canonical SHA, CI, test count, default-off posture, and lack of
+repository bootstrap or activation remain preserved. Its conclusions that B2
+was complete, A10/R2 was superseded, and C1 was next are superseded by A12.
+A11 remains in canonical history and is not rewritten.
 
-LifeOS PR #123 merged at `80e40c8fd3531e68135926c1e60afd3f73377b3d`, with
-base `579328182034f4059fd7a7701f4ea0b223db96f1`, head
-`e7c4a6e550b10166cc411c3c3ff8a053934b419f`, 2 commits, and exactly the two
-governance paths `NEXT_TASK.md` and
-`docs/10_AI_ENGINEERING/LIFEOS_LOGOS_HARDENING_FOUNDATION_TECHNICAL_PLAN.md`.
-The documentation candidate was authored before B2 became canonical and
-merged after canonical B2 existed. A9 remains the historical canonical B2
-decision checkpoint. `LOGOS-HARD-002-B2-TP-001-DEC-001` and
-`LOGOS-HARD-002-B2-IMPL-001-DEC-001` remain APPROVED / FROZEN. A11 does not
-rewrite those decisions or claim retroactive authorization.
+### Current A12 reconciliation
 
-## A11 — canonical B2 implementation + A10 race reconciliation
-
-`LIFEOS-LOGOS-HARDENING-TP-001-A11` records canonical external B2 and corrects
-current LifeOS governance. It does not modify Logos, rewrite A10 history, or
-start C1.
+`LIFEOS-LOGOS-HARDENING-TP-001-A12` is the current reconciliation. PR #50 is a
+canonical external implementation fact and reflects the historical A9 design.
+No authorization bypass was found; automatic rollback is not required. The
+current state is:
 
 ```text
-LIFEOS-LOGOS-HARDENING-TP-001-A11 = CANONICAL B2 IMPLEMENTATION + A10 RACE RECONCILIATION
-LifeOS A11 input baseline = 80e40c8fd3531e68135926c1e60afd3f73377b3d
-A10 = CANONICAL HISTORICAL CHECKPOINT / CURRENT-STATE DESCRIPTION SUPERSEDED BY A11
-LOGOS-HARD-002-B2-TP-001-DEC-001 = APPROVED / FROZEN
-LOGOS-HARD-002-B2-IMPL-001-DEC-001 = APPROVED / FROZEN
-LOGOS-HARD-002-B2-IMPL-001-EXEC-001 = IMPLEMENTED / PR #50
-LOGOS-HARD-002-B2-IMPL-001-MERGE = COMPLETE / CANONICAL
-B2 = IMPLEMENTED / CANONICAL / DEFAULT-OFF
-B2 scope = 11 paths / 7 production + 4 tests
+A9 = HISTORICAL / CANONICAL B2 DECISION CHECKPOINT
+A10 = CANONICAL / CURRENT R2 TECHNICAL AUTHORITY
+A11 = HISTORICAL CANONICAL RECONCILIATION / CURRENT CONCLUSIONS SUPERSEDED BY A12
+A12 = CURRENT B2 SEQUENCING-DEVIATION / R2 FORWARD-ALIGNMENT RECONCILIATION
+PR #50 implementation authorization at merge = NOT PRESENT
+sequencing deviation = YES
+B2 = CANONICAL A9 IMPLEMENTATION PRESENT / DEFAULT-OFF / R2 FORWARD ALIGNMENT OPEN
+R2 authority = LOGOS-HARD-002-B2-TP-001-R2 / APPROVED / FROZEN
+recovery preflight = LOGOS-HARD-002-B2-R2-RECOVERY-IA-001 / COMPLETE / READ-ONLY
+recovery recommendation = READY_FOR_FORWARD_R2_CORRECTION
+recovery path universe = 19 semantic paths maximum
+C1 = NOT AUTHORIZED
+current path = B2-R2 FORWARD ALIGNMENT → C1 → C2
+next gate = LOGOS-HARD-002-B2-R2-RECOVERY-IMPL-001
 ```
 
-Logos PR #50 (`LOGOS-HARD-002-B2 — Enforce workload authorization grants`)
-merged at `096fc1a5124358997771d1bb0b0db291a2d81935`, parent
+Canonical Logos PR #50 (`LOGOS-HARD-002-B2 — Enforce workload authorization
+grants`) merged at `096fc1a5124358997771d1bb0b0db291a2d81935`, parent
 `bc13dce086c865d1db4a4811b764fdc2bdd155d7`, tree
-`07c5f93b60a520bc768ee58e1c9d2a10ae8afd80`; it is one commit and 11 changed
-files. Post-merge run `36639505288` is push / completed / SUCCESS. Its `test`
-job passed with 404 tests, 0 failures, 0 errors, 0 skips, and `BUILD SUCCESS`.
+`07c5f93b60a520bc768ee58e1c9d2a10ae8afd80`. It changed 11 paths (7 production
+and 4 tests). Pre-merge CI `36637456809` and post-merge CI `36639505288` passed;
+post-merge tests numbered 404, with zero failures, errors, or skips.
 
-The actual generic `AuthorizationEvaluator` is read-only and independent of
-Spring, JDBC, and HTTP. It calls `AuthorizationGrantStore.findExact(...)`, maps
-only `principalType + principalId`, requires
-`AuthenticationStatus.VERIFIED`, and returns ALLOW / DENY based on exact
-principal, operation, source, and namespace equality. `kid`,
-`credentialIdentity`, `jti`, `authenticationMethod`, and Spring authorities
-are not authorization identity.
+### Current canonical Logos implementation facts
 
-Enforcement applies only to workload `PROGRESSION_EXECUTE` at the
-`ProgressionExecutionController` web-application boundary, after normalization
-of `ProgressionExecutionIdentity` and `ExternalSubjectReference`, and before
-`ExecuteIdempotentExternalSubjectProgressionUseCase.execute(...)`. The exact
-conditional workload POST chain changes only `denyAll()` to
-`authenticated()`; no `permitAll()` or route expansion. The B1-backed evaluator
-supplies authorization. The R2 custom advisor, `AnnotationMatchingPointcut`,
-`ProgressionExecuteAuthorizationManager`, and `AuthorizeProgressionExecute`
-were proposal-only and are not canonical B2.
+The implementation is the historical A9 shape. Enforcement is manual inside
+`ProgressionExecutionController.create(...)`; the controller target begins
+before a DENY, though the business use case is not called on denial. The core
+result is `AuthorizationEvaluator.AuthorizationDecision`. Missing, null, or
+invalid authorization dimensions return 400. `AuthorizationRegistryCorruptedException`
+is present, and `AuthorizationRegistryUnavailableException` remains in its old
+application package. The method-security advisor, `AuthorizeProgressionExecute`,
+`ProgressionExecuteAuthorizationManager`, `WorkloadAuthorizationMethodSecurityConfig`,
+and `AuthorizationVerdict` are absent. The workload request rule is
+`authenticated()` and the workload profile is default-off. These are current
+code facts, not the R2 target architecture.
 
-An authenticated `UserDetails` principal bypasses B2 evaluation and preserves
-existing human POST behavior. Workload enforcement applies to
-`AuthenticatedPrincipal`; workload authorities remain empty. Since
-`logos.security.workload.http.enabled` is absent/default false, B2 is canonical
-but operationally dormant.
+Security review found no authorization bypass. No real grant seed, production
+activation configuration, or migration beyond V46 is present in the repository.
+Automatic rollback is NO; forward correction is suitable. No external database
+state is inferred.
 
-For `PROGRESSION_EXECUTE`, source comes from normalized
-`ProgressionExecutionIdentity.source()` and namespace from normalized
-`ExternalSubjectReference.namespace()`. Invalid/null source or namespace is
-400. A valid request with no exact grant is generic 403. Known registry
-availability failures map to generic 503; persisted invalid row/domain
-reconstruction maps to generic 500. Errors disclose no principal, grant,
-operation, source, namespace, token, SQL, or database details.
+### Current R2 technical target and open alignment
 
-Authentication durably consumes replay before authorization. A first valid
-assertion denied by B2 returns 403 and remains consumed; reuse returns 401.
-DENY never calls the progression use case; an exact grant permits the existing
-use case. No workload `GrantedAuthority` is manufactured.
+A10/R2 remains the technical authority: E3-B custom method security after MVC
+body binding and before controller target execution. The Spring-independent
+`AuthorizationEvaluator` returns `AuthorizationVerdict` (`ALLOW` / `DENY`).
+`AuthorizeProgressionExecute` marks only `create(...)`;
+`ProgressionExecuteAuthorizationManager` bridges the bound request to the core
+evaluator, and `WorkloadAuthorizationMethodSecurityConfig` owns method-security
+wiring. The public pointcut is
+`AnnotationMatchingPointcut.forMethodAnnotation(AuthorizeProgressionExecute.class)`;
+`AuthorizationMethodPointcuts`, `@PreAuthorize`, SpEL, and `@P` are not used.
+The evaluator input is `AuthenticatedPrincipal`, operation, and optional source
+and namespace; it defensively requires WORKLOAD / VERIFIED and allows only an
+exact grant. Stable identity is `principalType + principalId`; no credential
+identity, `kid`, wildcard, prefix, cache, role-derived authority, or trust-derived
+grant is used. The manager requires authenticated `WorkloadPrincipalAuthenticationToken`
+with an `AuthenticatedPrincipal`, reads the bound request arguments, and maps
+`AuthorizationVerdict.ALLOW` to Spring allow and DENY to Spring deny. It catches
+only expected `IllegalArgumentException` while constructing authorization
+dimensions; the bounded registry-unavailable exception propagates for 503.
 
-The three-argument `ProgressionExecutionController` compatibility constructor
-is MINOR / NON-BLOCKING / DEFERRED OPTIONAL CLEANUP; runtime Spring wiring uses
-the explicit evaluator constructor. Do not reopen B2 for it. Canonical B2 scope is exactly 11 paths:
+The infrastructure advisor is `progressionExecuteAuthorizationAdvisor`, with
+`ROLE_INFRASTRUCTURE`, conditional on
+`logos.security.workload.http.enabled=true` and `matchIfMissing=false`. When
+the property is absent or false, the workload chain and advisor are absent,
+the marker is inert, and the human chain is unchanged. When enabled, only the
+exact workload POST matcher applies and request authorization is
+`authenticated()`.
 
-Production (7):
-- ADD `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationEvaluator.java`
-- ADD `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationRegistryUnavailableException.java`
-- ADD `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationRegistryCorruptedException.java`
-- MODIFY `src/main/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionController.java`
-- MODIFY `src/main/java/com/josecjuniors/logossrv/config/SecurityConfig.java`
-- MODIFY `src/main/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStore.java`
-- MODIFY `src/main/java/com/josecjuniors/logossrv/adapters/in/web/exception/GlobalExceptionHandler.java`
+Open forward behavioral alignment: malformed JSON remains 400; a
+deserializable request with missing authorization dimensions or invalid source
+or namespace grammar must return 403; valid authorization dimensions followed
+by ALLOW and invalid business fields may return 400. Malformed/unparseable JSON
+remains 400. Only POST `/api/internal/v1/progression/executions` is in the
+workload chain; GET execution, GET history, and subject provisioning stay on the
+human chain. Open architectural
+alignment: DENY must occur before the controller target body, with the business
+use case not invoked. Open registry alignment: move the bounded
+`AuthorizationRegistryUnavailableException` to
+`core/security/authorization/application/exception`, translate only
+`DataAccessException` in `findExact`, and do not include a corruption-specific
+B2 exception in the current target. No-row remains ordinary DENY.
 
-Tests (4):
-- ADD `src/test/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationEvaluatorTest.java`
-- MODIFY `src/test/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionControllerTest.java`
-- MODIFY `src/test/java/com/josecjuniors/logossrv/config/security/workload/WorkloadSpringSecurityIntegrationPostgresTest.java`
-- MODIFY `src/test/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStorePostgresTest.java`
+PR #50's 404 green tests validate the historical implementation but do not
+prove the R2 advisor enabled/default-off states, manager token/principal
+validation, null dimensions and invalid grammar returning 403, controller
+target non-invocation on DENY, valid-auth registry outage returning 503 with
+replay consumed and retry 401, or mocked `JdbcTemplate` DataAccessException
+translation. These remain open R2 evidence.
 
-No migration: Flyway remains V46 and V47 is absent/not reserved. No dependency
-or runtime configuration change. No canonical authorization grant was seeded.
-T1/T2/T3, workload activation, LifeOS signed-workload cutover, and POC bearer
-retirement remain NOT EXECUTED / NOT AUTHORIZED. C1 and C2 remain PLANNED / NOT
-AUTHORIZED; HARD-007 and WORK-001 remain deferred.
+### Frozen forward recovery universe
 
-Current slice map: F1A–F1D IMPLEMENTED / CANONICAL; F1E IMPLEMENTED /
-CANONICAL / CLOSED / DEFAULT-OFF; F1F IMPLEMENTED / CANONICAL / DORMANT; B1
-IMPLEMENTED / CANONICAL; B2 IMPLEMENTED / CANONICAL / DEFAULT-OFF; C1 and C2
-PLANNED / NOT AUTHORIZED. The remaining path is `C1 → C2`. The next gate is
-`LOGOS-HARD-003-C1-TP-001`, a READ-ONLY OWNERSHIP LIFECYCLE / PERSISTENCE
-TECHNICAL PREFLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW. It does not
-authorize C1 implementation; C2 remains separate.
+The maximum semantic universe is 19 paths: the 15 current R2 target paths
+below plus four A9 cleanup paths. No twentieth path is authorized without new
+human review.
+
+R2 target (15):
+1. `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationEvaluator.java`
+2. `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationVerdict.java`
+3. `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/exception/AuthorizationRegistryUnavailableException.java`
+4. `src/main/java/com/josecjuniors/logossrv/config/security/authorization/AuthorizeProgressionExecute.java`
+5. `src/main/java/com/josecjuniors/logossrv/config/security/authorization/ProgressionExecuteAuthorizationManager.java`
+6. `src/main/java/com/josecjuniors/logossrv/config/security/authorization/WorkloadAuthorizationMethodSecurityConfig.java`
+7. `src/main/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionController.java`
+8. `src/main/java/com/josecjuniors/logossrv/config/SecurityConfig.java`
+9. `src/main/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStore.java`
+10. `src/main/java/com/josecjuniors/logossrv/adapters/in/web/exception/GlobalExceptionHandler.java`
+11. `src/test/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationEvaluatorTest.java`
+12. `src/test/java/com/josecjuniors/logossrv/config/security/authorization/ProgressionExecuteAuthorizationManagerTest.java`
+13. `src/test/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStoreTest.java`
+14. `src/test/java/com/josecjuniors/logossrv/config/security/workload/WorkloadSpringSecurityIntegrationPostgresTest.java`
+15. `src/test/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionSecurityPostgresTest.java`
+
+A9 cleanup (4):
+16. Delete `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationRegistryCorruptedException.java`.
+17. Remove old path `src/main/java/com/josecjuniors/logossrv/core/security/authorization/application/AuthorizationRegistryUnavailableException.java` (relocated to target path #3).
+18. Remove only PR #50 B2-specific changes from `src/test/java/com/josecjuniors/logossrv/adapters/in/web/progression/api/ProgressionExecutionControllerTest.java`.
+19. Remove only PR #50 B2-specific changes from `src/test/java/com/josecjuniors/logossrv/adapters/out/security/authorization/JdbcAuthorizationGrantStorePostgresTest.java`.
+
+Flyway remains V46; no migration is part of this recovery, V47 is not
+reserved, and `pom.xml` remains unchanged. No real grant is inserted; T1/T2/T3
+are not executed; operational workload activation is not active by repository
+configuration. The next gate is
+`LOGOS-HARD-002-B2-R2-RECOVERY-IMPL-001` — BOUNDED FORWARD-CORRECTION
+IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PREFLIGHT. This gate is not
+executed here. C1 remains NOT AUTHORIZED.
 
 ## Canonical slice map
 
@@ -783,7 +818,7 @@ authorize C1 implementation; C2 remains separate.
 | F1E-R2 | Logos | Exact workload chain wiring, IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF; PR #49 closes missing AppUser subject handling |
 | F1F | Logos | Administrative trust lifecycle capability, IMPLEMENTED / CANONICAL / DORMANT |
 | B1 | Logos | HARD-002 relational authorization registry persistence/domain foundation, IMPLEMENTED / CANONICAL; no grants seeded (B2 is the separate evaluator/enforcement slice) |
-| B2 | Logos | HARD-002 exact-grant evaluator and `PROGRESSION_EXECUTE` enforcement, IMPLEMENTED / CANONICAL / DEFAULT-OFF (PR #50; 7 production + 4 test paths) |
+| B2 | Logos | Canonical A9 implementation present / DEFAULT-OFF / R2 forward alignment OPEN (PR #50 historical A9 shape) |
 | C1 | Logos | HARD-003 lifecycle/history persistence and legacy classification, PLANNED / NOT AUTHORIZED |
 | C2 | Logos | HARD-003 enforcement and audited administration, PLANNED / NOT AUTHORIZED |
 | D1 | LifeOS | HARD-005 durable delivery/attempt/correlation evidence, PLANNED / NOT AUTHORIZED |
@@ -938,7 +973,7 @@ B1's relational authorization registry foundation. The current serialized
 remaining Logos path is:
 
 ```text
-C1 → C2
+B2-R2 FORWARD ALIGNMENT → C1 → C2
 ```
 
 B1 is already canonical and has been removed from the future implementation
@@ -983,30 +1018,33 @@ Implementation approval, merge, bootstrap, cutover, recovery activation, and
 HARD-007 deployment approval are separate decisions. Historical deliveries are
 evidence only and are not replayed or rewritten.
 
-## Current next Logos action — C1 technical preflight
+## Current next Logos action — B2 R2 forward-alignment authorization
 
-After A11 canonicalization, the next gate is:
+The next gate is:
 
 ```text
-LOGOS-HARD-003-C1-TP-001
-READ-ONLY OWNERSHIP LIFECYCLE / PERSISTENCE TECHNICAL PREFLIGHT /
-IMPLEMENTATION AUTHORIZATION REVIEW
+LOGOS-HARD-002-B2-R2-RECOVERY-IMPL-001
+BOUNDED FORWARD-CORRECTION IMPLEMENTATION AUTHORIZATION /
+EXCLUSIVE-WRITER PREFLIGHT
 ```
 
-This gate does not authorize C1 implementation. C1 is the lifecycle and
-persistence foundation; C2 enforcement and audited administration are a
-separate later slice. The current remaining path is `C1 → C2`.
+It may consider the frozen maximum 19-path forward recovery universe after
+revalidating current baselines and exclusive-writer status. It does not
+authorize C1. C1 remains NOT AUTHORIZED until R2 alignment is complete and
+separately reviewed.
 
 ```text
 HARD-007 = DEFERRED / PRODUCTIONIZATION_REQUIRED_LATER
 WORK-001 = DEFERRED
 implementation overall = PARTIAL
 B1 = IMPLEMENTED / CANONICAL
-B2 = IMPLEMENTED / CANONICAL / DEFAULT-OFF
+A9 = HISTORICAL / CANONICAL B2 DECISION CHECKPOINT
+A10 = CANONICAL / CURRENT R2 TECHNICAL AUTHORITY
+A11 = HISTORICAL CANONICAL RECONCILIATION / CURRENT CONCLUSIONS SUPERSEDED BY A12
+A12 = CURRENT
+B2 = CANONICAL A9 IMPLEMENTATION PRESENT / DEFAULT-OFF / R2 FORWARD ALIGNMENT OPEN
+current path = B2-R2 FORWARD ALIGNMENT → C1 → C2
 C1/C2 = PLANNED / NOT AUTHORIZED
-remaining path = C1 → C2
-A10 = CANONICAL HISTORICAL CHECKPOINT / CURRENT-STATE DESCRIPTION SUPERSEDED BY A11
-A11 = CURRENT CANONICAL B2 IMPLEMENTATION + A10 RACE RECONCILIATION
-next gate = LOGOS-HARD-003-C1-TP-001
+next gate = LOGOS-HARD-002-B2-R2-RECOVERY-IMPL-001
 this plan itself = DOES NOT AUTHORIZE IMPLEMENTATION OR OPERATIONAL ACTIVATION
 ```
