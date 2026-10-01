@@ -87,7 +87,8 @@
 | Historical canonical decision checkpoint | `LIFEOS-LOGOS-HARDENING-TP-001-A9` — B2 DESIGN APPROVED / FROZEN; IMPLEMENTATION NOT AUTHORIZED AT THAT CHECKPOINT |
 | Historical canonical checkpoint | `LIFEOS-LOGOS-HARDENING-TP-001-A10` — CANONICAL / CURRENT R2 TECHNICAL AUTHORITY |
 | Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A11` — CANONICAL CHECKPOINT; CURRENT CONCLUSIONS SUPERSEDED BY A12 |
-| Current reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A12` — B2 SEQUENCING-DEVIATION / R2 FORWARD-ALIGNMENT RECONCILIATION |
+| Historical reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A12` — SEQUENCING-DEVIATION / R2 FORWARD-ALIGNMENT RECONCILIATION; CURRENT CONCLUSIONS SUPERSEDED BY A13 |
+| Current reconciliation | `LIFEOS-LOGOS-HARDENING-TP-001-A13` — POST-R2 CANONICAL RECONCILIATION |
 | LifeOS canonical baseline for A8 | `47a8d4a8eb12714fccb75c3f4d6591617f6ef1f2` |
 | LifeOS A9 input baseline | `3f4cf47531c7a1e00167919eef612b08958da8a8` |
 | LifeOS A9 canonical merge | `579328182034f4059fd7a7701f4ea0b223db96f1` |
@@ -98,9 +99,14 @@
 | LifeOS A12 input baseline | `24b2ab6cc62ea25c9f98b03d54f28b1d8658e67a` |
 | LifeOS PR #123 canonical merge | `80e40c8fd3531e68135926c1e60afd3f73377b3d` — merged after canonical Logos B2 |
 | LifeOS post-A10 CI | `36641497128` — push / completed / SUCCESS; all three required jobs SUCCESS |
-| Logos B2 canonical SHA | `096fc1a5124358997771d1bb0b0db291a2d81935` — parent `bc13dce086c865d1db4a4811b764fdc2bdd155d7`; tree `07c5f93b60a520bc768ee58e1c9d2a10ae8afd80` |
-| Logos PR #50 | MERGED / CANONICAL — B2 implementation |
-| Logos B2 post-merge CI | `36639505288` — push / completed / SUCCESS; 404 tests / 0 failures / 0 errors / 0 skips |
+| Logos historical A9 implementation / PR #50 | `096fc1a5124358997771d1bb0b0db291a2d81935` — parent `bc13dce086c865d1db4a4811b764fdc2bdd155d7`; tree `07c5f93b60a520bc768ee58e1c9d2a10ae8afd80` |
+| Logos canonical R2 correction / PR #51 | `8851871f394de4a9bf121e2be87665c766747157` — parent `096fc1a5124358997771d1bb0b0db291a2d81935`; tree `2dac87bc962ecd7553aea7adcf2c41d827afdfc9` |
+| Logos PR #51 audited HEAD | `7521bdda3e1c226a219fefde0f39a18ff8d61ddf` |
+| Logos PR #51 canonical scope | 18 GitHub entries / 19 semantic paths |
+| Logos PR #51 pre-merge CI | `36799170336` — pull_request / SUCCESS / 408 tests / 0 failures / 0 errors / 0 skipped |
+| Logos PR #51 post-merge CI | `36801328276` — push / SUCCESS / 408 tests / 0 failures / 0 errors / 0 skipped / BUILD SUCCESS |
+| Logos PR #50 | MERGED / CANONICAL — HISTORICAL A9 IMPLEMENTATION SHAPE; NO EXPLICIT B2 IMPLEMENTATION AUTHORIZATION EXISTED AT MERGE |
+| Logos PR #50 historical post-merge CI | `36639505288` — push / completed / SUCCESS; 404 tests / 0 failures / 0 errors / 0 skips |
 | PR #121 | MERGED — `docs(governance): correct canonical A8 metadata`; base `c2418867008b3e3b6c289446de7ae8f5b175b0d2`; head `267b12432558f8fcf63dc24fa593cf393468fe21`; merge `3f4cf47531c7a1e00167919eef612b08958da8a8`; 1 commit / 2 documentation files / +8 / -33 |
 | PR #117 | CLOSED / NOT MERGED / SUPERSEDED / DO NOT MERGE |
 | PR #118 | MERGED — `docs(governance): reconcile F1E-R2 closure and F1F sequencing` / `4fea64478b1053c724b56d234d66fbc8d671dc1b` / 2 files / HISTORICAL A6 CHECKPOINT; its premature F1E closure was superseded by A7 gap correction and later closed by canonical PR #49 |
@@ -114,13 +120,13 @@
 | B2 preflight | `LOGOS-HARD-002-B2-TP-001` — PRE-FLIGHT COMPLETE |
 | A9 B2 decision | `LOGOS-HARD-002-B2-TP-001-DEC-001` — APPROVED / FROZEN; HISTORICAL CANONICAL DECISION CHECKPOINT |
 | B2 implementation authorization at PR #50 merge | NOT PRESENT; no retroactive authorization |
-| B2 current status | CANONICAL A9 IMPLEMENTATION PRESENT / DEFAULT-OFF / R2 FORWARD ALIGNMENT OPEN |
-| B2 canonical scope | 11 paths — 7 production + 4 tests |
+| B2 current status | IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF |
+| B2 historical PR #50 scope | 11 paths — 7 production + 4 tests |
 | A10/R2 technical authority | CURRENT / APPROVED / FROZEN |
 | A11 current conclusions | HISTORICAL / SUPERSEDED BY A12 |
 | B2 sequencing deviation | YES — IMPLEMENTATION ADVANCED BEFORE EXPLICIT AUTHORIZATION |
 | Authorization bypass / rollback | NO / NO |
-| Grant bootstrap / workload activation | NOT EXECUTED / NOT AUTHORIZED |
+| Real grant bootstrap / workload activation | NONE INSERTED / NOT ACTIVATED; ACTIVATION NOT AUTHORIZED |
 | Logos F1A | IMPLEMENTED / CANONICAL |
 | Logos F1B | IMPLEMENTED / CANONICAL |
 | Logos F1C | IMPLEMENTED / CANONICAL — SIGNED WORKLOAD ASSERTION VERIFIER CORE |
@@ -130,14 +136,14 @@
 | F1E overall | IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF |
 | F1E decision | `LOGOS-HARD-001-F1E-R1-DEC-001` — APPROVED / FROZEN |
 | F1E-R2 (PR #47 + PR #49) | IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF — PR #49 closes `UsernameNotFoundException` handling in `JwtAuthenticationFilter` |
-| Workload security behavior | Exact conditional POST chain with `authenticated()`; current PR #50 uses historical manual B2 evaluation; default-off; R2 alignment open |
+| Workload security behavior | Canonical PR #51 R2 authorization; workload HTTP DEFAULT-OFF unless `logos.security.workload.http.enabled=true`; no real grant |
 | Logos F1F | IMPLEMENTED / CANONICAL / DORMANT TRUST ADMINISTRATION CAPABILITY |
 | F1F sequencing | ADVANCED BEFORE F1E-R2 CLOSURE / GOVERNANCE SEQUENCING DEVIATION / NO RETROACTIVE AUTHORIZATION CLAIM |
-| Remaining primary Logos path | B2-R2 FORWARD ALIGNMENT → C1 → C2 |
+| Remaining primary Logos path | C1 → C2 |
 | Parallel LifeOS candidates | D1 / E1 |
 | Operational bootstrap | T1 TRUST / T2 AUTHORIZATION / T3 OWNERSHIP READINESS |
 | Authentication cutover | SEPARATE / NOT AUTHORIZED |
-| Recovery implementation | SEPARATE / NOT AUTHORIZED |
+| B2 R2 forward-alignment implementation | IMPLEMENTED / CANONICAL / CLOSED |
 | Recovery activation | SEPARATE / NOT AUTHORIZED |
 | Migration numbering | NEXT AVAILABLE AT IMPLEMENTATION TIME |
 | Implementation | PARTIAL — HARD-001 foundation F1A–F1F CANONICAL; operational activation remains separate and inactive |
@@ -145,7 +151,7 @@
 | F1E-R2 test allowlist | 2 exact paths |
 | F1E-R2 migration | NONE |
 | F1E-R2 dependencies | NONE |
-| Current next Logos gate | `LOGOS-HARD-002-B2-R2-RECOVERY-IMPL-001` — BOUNDED FORWARD-CORRECTION IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PREFLIGHT |
+| Current next Logos gate | `LOGOS-HARD-003-C1-TP-001` — READ-ONLY OWNERSHIP LIFECYCLE / PERSISTENCE TECHNICAL PREFLIGHT / IMPLEMENTATION AUTHORIZATION REVIEW; C1 IMPLEMENTATION NOT AUTHORIZED |
 
 ## Historical Logos Hardening Reconciliation — A9
 
@@ -155,7 +161,7 @@
 > occurred. Logos PR #50 later implemented that frozen design canonically, but
 > implementation authorization was not present when PR #50 merged. This is a
 > sequencing deviation, not retroactive authorization. A9 remains valid and was
-> not invalidated or rolled back; A12 reconciles current external state.
+> not invalidated or rolled back; A13 reconciles the current post-R2 canonical state.
 
 A9 historically canonicalized the approved and frozen decision
 `LOGOS-HARD-002-B2-TP-001-DEC-001`. A8 remains the historical canonical
@@ -511,7 +517,7 @@ deployment, runtime activation, progression authorization, new migrations,
 and redispatch mechanisms remain unauthorized. F1A–F1F, including closed,
 default-off F1E-R2, are canonical; current F1E is IMPLEMENTED / CANONICAL /
 CLOSED / DEFAULT-OFF. Real trust bootstrap and cutover remain unauthorized and
-unexecuted. At this earlier checkpoint, the planned Logos path was B2 → C1 → C2; A11 later recorded the external PR #50 fact, and A12 reconciles the current state below.
+unexecuted. At this earlier checkpoint, the planned Logos path was B2 → C1 → C2; A11 later recorded the external PR #50 fact, and A12 recorded the then-current state below. A13 supersedes A12 for current state.
 
 Post-A1 HTTP contract hardening =
 `a4e9758a553ffd924303bd8e871183314642320f`.
@@ -1383,7 +1389,7 @@ DO NOT MODIFY PR #46, APPLY MIGRATION 0008 TO REAL DATA, EXECUTE THE COORDINATED
 
 SPRINT 09 AUTHORIZATION IS PROGRAM-LEVEL AUTHORIZATION, NOT BLANKET PERMISSION.
 
-## A10 and A11 historical checkpoints; current A12 reconciliation
+## A10 and A11 historical checkpoints; A12 reconciliation (superseded by A13)
 
 A10 became canonical in PR #123 at `80e40c8fd3531e68135926c1e60afd3f73377b3d`
 on `2026-09-29T22:46:05Z`. Its R2 technical design remains the current,
@@ -1400,12 +1406,13 @@ of repository bootstrap or activation remain preserved. A11's current-state
 conclusions that B2 was complete, A10/R2 was superseded, and C1 was next are
 SUPERSEDED BY A12. A11 remains in canonical history and is not rewritten.
 
-### Current A12 reconciliation
+### Historical A12 reconciliation (current at its checkpoint; superseded by A13)
 
-`LIFEOS-LOGOS-HARDENING-TP-001-A12` is the current reconciliation. PR #50 is a
-canonical external implementation fact and reflects the historical A9 design.
-No authorization bypass was found; automatic rollback is not required. The
-current state is:
+`LIFEOS-LOGOS-HARDENING-TP-001-A12` was the current reconciliation at its
+checkpoint; A13 supersedes its current-state conclusions. PR #50 is a canonical
+external implementation fact and reflects the historical A9 design.
+No authorization bypass was found; automatic rollback was not required. The
+state recorded at that checkpoint was:
 
 ```text
 A9 = HISTORICAL / CANONICAL B2 DECISION CHECKPOINT
@@ -1431,7 +1438,7 @@ grants`) merged at `096fc1a5124358997771d1bb0b0db291a2d81935`, parent
 and 4 tests). Pre-merge CI `36637456809` and post-merge CI `36639505288` passed;
 post-merge coverage included 404 tests, with zero failures, errors, or skips.
 
-### Current canonical Logos implementation facts
+### Historical A12 canonical Logos implementation facts (before PR #51)
 
 The implementation is the historical A9 shape. Enforcement is manual inside
 `ProgressionExecutionController.create(...)`; the controller target begins
@@ -1450,7 +1457,7 @@ activation configuration, or migration beyond V46 is present in the repository.
 Automatic rollback is NO; forward correction is suitable. No external database
 state is inferred.
 
-### Current R2 target and open alignment
+### Historical A12 R2 target and open alignment (implemented by PR #51)
 
 A10/R2 remains the technical authority: E3-B custom method security after MVC
 body binding and before controller target execution. The Spring-independent
@@ -1498,9 +1505,9 @@ prove the R2 advisor enabled/default-off states, manager token/principal
 validation, null dimensions and invalid grammar returning 403, controller
 target non-invocation on DENY, valid-auth registry outage returning 503 with
 replay consumed and retry 401, or mocked `JdbcTemplate` DataAccessException
-translation. These remain open R2 evidence.
+translation. These were open R2 evidence at A12; PR #51 and its canonical CI subsequently completed the alignment.
 
-### Frozen forward recovery universe
+### A12 frozen forward recovery universe (implemented by PR #51)
 
 The maximum semantic universe is 19 paths: the 15 current R2 target paths
 below plus four A9 cleanup paths. No twentieth path is authorized without new
@@ -1536,3 +1543,57 @@ configuration. The next gate is
 `LOGOS-HARD-002-B2-R2-RECOVERY-IMPL-001` — BOUNDED FORWARD-CORRECTION
 IMPLEMENTATION AUTHORIZATION / EXCLUSIVE-WRITER PREFLIGHT. This gate is not
 executed here. C1 remains NOT AUTHORIZED.
+
+
+## LIFEOS-LOGOS-HARDENING-TP-001-A13 — Post-R2 canonical reconciliation
+
+Classification: POST-R2 CANONICAL RECONCILIATION. This candidate records the
+canonical Logos R2 correction. A13 becomes the CURRENT LifeOS reconciliation
+once this documentation change is canonical; until then A12 remains the latest
+canonical LifeOS reconciliation. A9 through A12 remain preserved as history.
+
+```text
+LIFEOS-LOGOS-HARDENING-TP-001-A9 = HISTORICAL CANONICAL B2 DECISION CHECKPOINT
+LIFEOS-LOGOS-HARDENING-TP-001-A10 = CANONICAL R2 TECHNICAL AUTHORITY
+LIFEOS-LOGOS-HARDENING-TP-001-A11 = HISTORICAL CANONICAL RECONCILIATION / CURRENT CONCLUSIONS SUPERSEDED BY A12
+LIFEOS-LOGOS-HARDENING-TP-001-A12 = HISTORICAL SEQUENCING-DEVIATION / R2 FORWARD-ALIGNMENT RECONCILIATION
+LIFEOS-LOGOS-HARDENING-TP-001-A13 = CURRENT POST-R2 CANONICAL RECONCILIATION
+
+B2 = IMPLEMENTED / CANONICAL / CLOSED / DEFAULT-OFF
+B2 historical implementation = PR #50 / 096fc1a5124358997771d1bb0b0db291a2d81935
+B2 canonical R2 correction = PR #51 / 8851871f394de4a9bf121e2be87665c766747157
+current path = C1 → C2
+C1 = NOT AUTHORIZED
+C2 = PLANNED / NOT AUTHORIZED
+next gate candidate = LOGOS-HARD-003-C1-TP-001
+```
+
+PR #50 remains the canonical historical A9 implementation fact. It records the
+implementation shape merged before explicit B2 implementation authorization;
+that sequencing deviation is preserved without retroactive authorization, an
+authorization-bypass claim, or rollback. PR #51 is the bounded forward
+correction from the A9 implementation shape to the approved A10/R2 architecture.
+
+```text
+PR #51 audited HEAD = 7521bdda3e1c226a219fefde0f39a18ff8d61ddf
+canonical squash merge = 8851871f394de4a9bf121e2be87665c766747157
+parent = 096fc1a5124358997771d1bb0b0db291a2d81935
+tree = 2dac87bc962ecd7553aea7adcf2c41d827afdfc9
+scope = 18 GitHub diff entries / 19 semantic paths
+pre-merge CI = 36799170336 / pull_request / SUCCESS / 408 tests / 0 failures / 0 errors / 0 skipped
+post-merge CI = 36801328276 / push / SUCCESS / 408 tests / 0 failures / 0 errors / 0 skipped / BUILD SUCCESS
+```
+
+No migration was added; Flyway remains V46. `pom.xml` is unchanged. No real
+LifeOS authorization grant has been inserted. Workload HTTP remains DEFAULT-OFF;
+`logos.security.workload.http.enabled` must be explicitly true for the workload
+chain and authorization advisor to exist. T1/T2/T3 were not executed, and no
+workload activation occurred.
+
+Authentication is HARD-001 / F1A-F1F; authorization is HARD-002 / B1-B2;
+ownership is HARD-003 / C1-C2. B2 closure does not complete HARD-003 or activate
+runtime integration. The remaining path is C1 -> C2. C1 and C2 remain PLANNED /
+NOT AUTHORIZED. The next gate may be `LOGOS-HARD-003-C1-TP-001` for READ-ONLY
+ownership lifecycle / persistence technical preflight / implementation
+authorization review. That gate is not executed here and A13 does not authorize
+C1 implementation.
